@@ -1,0 +1,211 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[sub_resource type="GDScript" id="GDScript_6jp21"]
+script/source = "extends Resource
+## Valores de balance del juego (HU-01..07). Ajustables desde el inspector.
+
+@export var recursos_hud: Array
+@export var recursos_comando: Array
+@export var segundos_por_sol: float
+@export var soles_historial: int
+@export var inicial: Dictionary
+@export var cap_tanques: float
+@export var cap_almacen_base: float
+@export var cap_almacen_por_nivel: float
+@export var nivel_almacen_max: int
+@export var fraccion_critica: float
+@export var presupuesto_critico: float
+@export var produccion_base: Dictionary
+@export var energia_por_modulo: float
+@export var consumo_por_colono: float
+@export var factor_racion: Dictionary
+@export var soles_estricta_para_riesgo: int
+@export var prob_enfermar_estricta: float
+@export var prob_enfermar_sin_vitales: float
+@export var soles_sin_vitales_derrota: int
+@export var productividad_abundante: float
+@export var productividad_debil: float
+@export var soles_recuperacion: int
+@export var radiacion_enfermedad: float
+@export var radiacion_max: float
+@export var radiacion_intemperie_por_sol: float
+@export var cuartos_base: int
+@export var cuartos_max: int
+@export var expandir_descanso_dinero: int
+@export var expandir_descanso_materiales: int
+@export var expandir_almacen_dinero: int
+@export var expandir_almacen_materiales: int
+@export var demoler_obstaculo_dinero: int
+@export var demoler_obstaculo_materiales: int
+@export var recetas: Array
+@export var tareas: Array
+@export var fraccion_coste_demoler: float
+@export var catalogo: Array
+"
+
+[resource]
+script = SubResource("GDScript_6jp21")
+recursos_hud = ["oxigeno", "energia", "agua", "comida", "presupuesto"]
+recursos_comando = ["oxigeno", "energia", "agua", "comida", "presupuesto", "materiales"]
+segundos_por_sol = 60.0
+soles_historial = 30
+inicial = {
+"agua": 35.0,
+"comida": 35.0,
+"energia": 120.0,
+"materiales": 60.0,
+"oxigeno": 120.0,
+"presupuesto": 1000.0,
+"raciones": 10.0
+}
+cap_tanques = 200.0
+cap_almacen_base = 100.0
+cap_almacen_por_nivel = 50.0
+nivel_almacen_max = 5
+fraccion_critica = 0.2
+presupuesto_critico = 100.0
+produccion_base = {
+"agua": 2.0,
+"comida": 1.5,
+"energia": 4.0,
+"oxigeno": 2.0,
+"presupuesto": 25.0
+}
+energia_por_modulo = 1.0
+consumo_por_colono = 1.0
+factor_racion = {
+0: 1.5,
+1: 1.0,
+2: 0.5
+}
+soles_estricta_para_riesgo = 3
+prob_enfermar_estricta = 0.15
+prob_enfermar_sin_vitales = 0.35
+soles_sin_vitales_derrota = 5
+productividad_abundante = 1.2
+productividad_debil = 0.75
+soles_recuperacion = 3
+radiacion_enfermedad = 100.0
+radiacion_max = 120.0
+radiacion_intemperie_por_sol = 1.0
+cuartos_base = 4
+cuartos_max = 10
+expandir_descanso_dinero = 200
+expandir_descanso_materiales = 30
+expandir_almacen_dinero = 250
+expandir_almacen_materiales = 40
+demoler_obstaculo_dinero = 20
+demoler_obstaculo_materiales = 5
+recetas = [{
+"agua": 1.0,
+"comida": 2.0,
+"nombre": "Ración básica",
+"raciones": 3.0
+}, {
+"agua": 2.0,
+"comida": 4.0,
+"nombre": "Guiso de invernadero",
+"raciones": 8.0
+}]
+tareas = [{
+"exterior": true,
+"id": "mantener_paneles",
+"radiacion": 6.0,
+"recompensa": {
+"energia": 25.0
+},
+"rol": 0,
+"soles": 2,
+"titulo": "Limpiar paneles solares"
+}, {
+"exterior": false,
+"id": "reparar_red",
+"modulo": "comando",
+"radiacion": 0.0,
+"recompensa": {
+"energia": 15.0,
+"materiales": 5.0
+},
+"rol": 0,
+"soles": 3,
+"titulo": "Revisar red eléctrica"
+}, {
+"exterior": true,
+"id": "extraer_regolito",
+"radiacion": 8.0,
+"recompensa": {
+"materiales": 20.0
+},
+"rol": 0,
+"soles": 3,
+"titulo": "Extraer regolito"
+}, {
+"exterior": false,
+"id": "cuidar_cultivos",
+"modulo": "agricultura",
+"radiacion": 0.0,
+"recompensa": {
+"comida": 12.0
+},
+"rol": 1,
+"soles": 2,
+"titulo": "Cuidar cultivos"
+}, {
+"exterior": true,
+"id": "muestras_suelo",
+"radiacion": 6.0,
+"recompensa": {
+"comida": 6.0,
+"investigacion": 15.0
+},
+"rol": 1,
+"soles": 3,
+"titulo": "Analizar suelo para cultivo"
+}, {
+"exterior": false,
+"id": "filtros_agua",
+"modulo": "almacen",
+"radiacion": 0.0,
+"recompensa": {
+"agua": 12.0
+},
+"rol": 2,
+"soles": 2,
+"titulo": "Reciclar agua de la base"
+}, {
+"exterior": false,
+"id": "recargar_oxigeno",
+"modulo": "comando",
+"radiacion": 0.0,
+"recompensa": {
+"oxigeno": 25.0
+},
+"rol": 2,
+"soles": 3,
+"titulo": "Recargar reservas de oxígeno"
+}, {
+"exterior": true,
+"id": "estudio_atmosfera",
+"radiacion": 7.0,
+"recompensa": {
+"investigacion": 25.0,
+"presupuesto": 150.0
+},
+"rol": 3,
+"soles": 3,
+"titulo": "Estudiar la atmósfera"
+}, {
+"exterior": false,
+"id": "informe_tierra",
+"modulo": "comando",
+"radiacion": 0.0,
+"recompensa": {
+"investigacion": 10.0,
+"presupuesto": 200.0
+},
+"rol": 3,
+"soles": 2,
+"titulo": "Enviar informe a la Tierra"
+}]
+fraccion_coste_demoler = 0.25
+catalogo = ["soporte_vital", "agricultura", "energia", "taller", "pasillo"]

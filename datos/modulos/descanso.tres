@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="DatosModulo" load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://escenas/modulos/modulo_descanso.tscn" id="1_kaorp"]
+[ext_resource type="Script" path="res://scripts/datos_modulo.gd" id="2_wwuch"]
+
+[resource]
+script = ExtResource("2_wwuch")
+id = "descanso"
+nombre = "Módulo de descanso"
+tam = Vector2i(3, 3)
+letra = "D"
+color = Color(0.2901961, 0.5647059, 0.8509804, 1)
+escena = ExtResource("1_kaorp")
+es_base = true

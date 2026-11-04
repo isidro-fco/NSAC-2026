@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://divjaa6vfaef1"]
+
+[ext_resource type="Script" uid="uid://coxlpela2u6gw" path="res://escenas/modulos/modulo.gd" id="1_modulo"]
+
+[node name="Modulo" type="Node2D"]
+script = ExtResource("1_modulo")

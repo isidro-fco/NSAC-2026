@@ -1,0 +1,82 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[sub_resource type="GDScript" id="GDScript_f48pw"]
+script/source = "extends Resource
+## Tripulación inicial y perfiles que pueden aparecer como candidatos (HU-03).
+
+@export var max_candidatos: int
+@export var soles_renovar_candidatos: int
+@export var coste_contrato: Dictionary
+@export var colonos_iniciales: Array
+@export var pool_perfiles: Array
+"
+
+[resource]
+script = SubResource("GDScript_f48pw")
+max_candidatos = 5
+soles_renovar_candidatos = 5
+coste_contrato = {
+0: 220,
+1: 180,
+2: 200,
+3: 240
+}
+colonos_iniciales = [{
+"nombre": "Elena Vargas Ruiz",
+"rol": 0
+}, {
+"nombre": "Tomás Ibarra Soto",
+"rol": 1
+}, {
+"nombre": "Nadia Rahman Cruz",
+"rol": 2
+}]
+pool_perfiles = [{
+"nombre": "Lucía Mendoza Paz",
+"rol": 3
+}, {
+"nombre": "Marco Salas Vega",
+"rol": 0
+}, {
+"nombre": "Aiko Tanaka Mora",
+"rol": 1
+}, {
+"nombre": "Samuel Okoye Reyes",
+"rol": 2
+}, {
+"nombre": "Inés Duarte Luna",
+"rol": 3
+}, {
+"nombre": "Pablo Herrera Gil",
+"rol": 0
+}, {
+"nombre": "Sofía Castro Nieto",
+"rol": 1
+}, {
+"nombre": "Omar Haddad Ríos",
+"rol": 2
+}, {
+"nombre": "Valeria Campos Ortiz",
+"rol": 3
+}, {
+"nombre": "Diego Fuentes Lara",
+"rol": 0
+}, {
+"nombre": "Mei Lin Rojas",
+"rol": 1
+}, {
+"nombre": "Andrés Molina Cano",
+"rol": 2
+}, {
+"nombre": "Clara Navarro Peña",
+"rol": 3
+}, {
+"nombre": "Iván Paredes Mejía",
+"rol": 0
+}, {
+"nombre": "Rosa Quispe Flores",
+"rol": 1
+}, {
+"nombre": "Hugo Delgado Sanz",
+"rol": 2
+}]

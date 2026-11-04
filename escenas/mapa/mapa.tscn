@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://bi75xj6uyt8ef"]
+
+[ext_resource type="Script" uid="uid://2jpmn885b063" path="res://escenas/mapa/mapa.gd" id="1_mapa"]
+
+[node name="Mapa" type="Node2D"]
+texture_filter = 1
+script = ExtResource("1_mapa")
+
+[node name="Obstaculos" type="Node2D" parent="."]
+
+[node name="Modulos" type="Node2D" parent="."]
+
+[node name="Capa" type="Node2D" parent="."]
+z_index = 1
+
+[node name="Colonos" type="Node2D" parent="."]
+z_index = 2

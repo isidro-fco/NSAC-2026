@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6lky00q1rlog"]
+
+[ext_resource type="Script" uid="uid://dyrl6ogjdjwpm" path="res://escenas/colonos/colono.gd" id="1_colono"]
+
+[node name="Colono" type="Node2D"]
+script = ExtResource("1_colono")

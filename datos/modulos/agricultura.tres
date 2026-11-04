@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="DatosModulo" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/datos_modulo.gd" id="1_6e60y"]
+
+[resource]
+script = ExtResource("1_6e60y")
+id = "agricultura"
+nombre = "Agricultura"
+tam = Vector2i(3, 3)
+letra = "AG"
+color = Color(0.49803922, 0.65882355, 0.23529412, 1)
+dinero = 250
+materiales = 25
+produce = {
+"comida": 5.0
+}
