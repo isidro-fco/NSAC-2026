@@ -1,51 +1,10 @@
-[gd_resource type="Resource" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="DatosBalance" load_steps=2 format=3]
 
-[sub_resource type="GDScript" id="GDScript_6jp21"]
-script/source = "extends Resource
-## Valores de balance del juego (HU-01..07). Ajustables desde el inspector.
-
-@export var recursos_hud: Array
-@export var recursos_comando: Array
-@export var segundos_por_sol: float
-@export var soles_historial: int
-@export var inicial: Dictionary
-@export var cap_tanques: float
-@export var cap_almacen_base: float
-@export var cap_almacen_por_nivel: float
-@export var nivel_almacen_max: int
-@export var fraccion_critica: float
-@export var presupuesto_critico: float
-@export var produccion_base: Dictionary
-@export var energia_por_modulo: float
-@export var consumo_por_colono: float
-@export var factor_racion: Dictionary
-@export var soles_estricta_para_riesgo: int
-@export var prob_enfermar_estricta: float
-@export var prob_enfermar_sin_vitales: float
-@export var soles_sin_vitales_derrota: int
-@export var productividad_abundante: float
-@export var productividad_debil: float
-@export var soles_recuperacion: int
-@export var radiacion_enfermedad: float
-@export var radiacion_max: float
-@export var radiacion_intemperie_por_sol: float
-@export var cuartos_base: int
-@export var cuartos_max: int
-@export var expandir_descanso_dinero: int
-@export var expandir_descanso_materiales: int
-@export var expandir_almacen_dinero: int
-@export var expandir_almacen_materiales: int
-@export var demoler_obstaculo_dinero: int
-@export var demoler_obstaculo_materiales: int
-@export var recetas: Array
-@export var tareas: Array
-@export var fraccion_coste_demoler: float
-@export var catalogo: Array
-"
+[ext_resource type="Script" path="res://datos/clases/datos_balance.gd" id="1_script"]
 
 [resource]
-script = SubResource("GDScript_6jp21")
-recursos_hud = ["oxigeno", "energia", "agua", "comida", "presupuesto"]
+script = ExtResource("1_script")
+recursos_hud = ["oxigeno", "energia", "agua", "comida", "materiales", "presupuesto"]
 recursos_comando = ["oxigeno", "energia", "agua", "comida", "presupuesto", "materiales"]
 segundos_por_sol = 60.0
 soles_historial = 30
@@ -208,4 +167,189 @@ tareas = [{
 "titulo": "Enviar informe a la Tierra"
 }]
 fraccion_coste_demoler = 0.25
-catalogo = ["soporte_vital", "agricultura", "energia", "taller", "pasillo"]
+catalogo = ["soporte_vital", "agricultura", "energia", "taller", "refugio", "pasillo"]
+multiplicador_comando = [1.0, 1.2, 1.4, 1.6, 2.0]
+mejoras_comando = [{
+"dinero": 400,
+"materiales": 40,
+"soles": 3
+}, {
+"dinero": 700,
+"materiales": 60,
+"soles": 4
+}, {
+"dinero": 1000,
+"materiales": 80,
+"soles": 5
+}, {
+"dinero": 1500,
+"materiales": 100,
+"soles": 6
+}]
+soles_evento_min = 5
+soles_evento_max = 20
+eventos = [{
+"id": "fuga_agua",
+"titulo": "Fuga en el reciclador de agua",
+"descripcion": "Una junta del soporte vital se ha agrietado y el reciclador pierde agua sin parar.",
+"opciones": [{
+"texto": "Pagar una reparación urgente",
+"recursos": {
+"presupuesto": -150
+}
+}, {
+"texto": "Vaciar el depósito hasta poder repararlo",
+"recursos": {
+"agua": -15
+}
+}]
+}, {
+"id": "paneles_polvo",
+"titulo": "Polvo sobre los paneles solares",
+"descripcion": "Una capa de polvo fino cubre los paneles solares y la producción eléctrica cae en picado.",
+"opciones": [{
+"texto": "Enviar a la tripulación a limpiarlos",
+"radiacion": 6.0
+}, {
+"texto": "Forzar las baterías hasta que el viento los limpie",
+"recursos": {
+"energia": -35
+}
+}]
+}, {
+"id": "tormenta_polvo",
+"titulo": "Tormenta de polvo regional",
+"descripcion": "Una tormenta de polvo envuelve la base y el regolito en suspensión se cuela por las juntas de los módulos.",
+"opciones": [{
+"texto": "Sellar los módulos con materiales de reserva",
+"recursos": {
+"materiales": -25
+}
+}, {
+"texto": "Filtrar el aire a costa de energía",
+"recursos": {
+"energia": -30,
+"oxigeno": -10
+}
+}]
+}, {
+"id": "plaga",
+"titulo": "Plaga en los cultivos",
+"descripcion": "Un hongo se extiende por las bandejas de astroagronomía.",
+"opciones": [{
+"texto": "Fumigar y desinfectar las bandejas",
+"recursos": {
+"presupuesto": -120,
+"agua": -8
+}
+}, {
+"texto": "Desechar la cosecha afectada",
+"recursos": {
+"comida": -15
+}
+}]
+}, {
+"id": "virus",
+"titulo": "Brote vírico en la tripulación",
+"descripcion": "Varios colonos tienen fiebre. El equipo médico propone aislar a toda la tripulación.",
+"opciones": [{
+"texto": "Cuarentena con medicamentos urgentes",
+"recursos": {
+"presupuesto": -200
+}
+}, {
+"texto": "Seguir trabajando con normalidad",
+"enfermar": 0.4
+}]
+}, {
+"id": "perclorato",
+"titulo": "Percloratos en el agua",
+"descripcion": "Los análisis detectan percloratos del regolito en el depósito de agua potable.",
+"opciones": [{
+"texto": "Tratar el agua con filtros especiales",
+"recursos": {
+"presupuesto": -100,
+"energia": -15
+}
+}, {
+"texto": "Desechar el agua contaminada",
+"recursos": {
+"agua": -12
+}
+}]
+}, {
+"id": "moxie",
+"titulo": "Fallo del generador MOXIE",
+"descripcion": "El generador de oxígeno MOXIE se ha sobrecalentado y está fuera de servicio.",
+"opciones": [{
+"texto": "Repararlo con piezas del taller",
+"recursos": {
+"materiales": -20,
+"presupuesto": -80
+}
+}, {
+"texto": "Racionar el oxígeno hasta que se enfríe",
+"recursos": {
+"oxigeno": -25
+}
+}]
+}, {
+"id": "meteorito",
+"titulo": "Impacto de meteorito cercano",
+"descripcion": "Un pequeño meteorito ha caído a pocos kilómetros y ha dejado fragmentos metálicos aprovechables.",
+"opciones": [{
+"texto": "Salir a recoger los fragmentos",
+"recursos": {
+"materiales": 30
+},
+"radiacion": 8.0
+}, {
+"texto": "Ignorarlo y seguir con el plan"
+}]
+}, {
+"id": "tormenta_solar",
+"titulo": "Tormenta solar",
+"descripcion": "El Sol ha lanzado una eyección de partículas. Durante 2 soles la radiación exterior será extrema y penetrará en los módulos; quien esté en un refugio blindado no recibirá dosis.",
+"opciones": [{
+"texto": "Reforzar el blindaje de los módulos",
+"recursos": {
+"energia": -40
+},
+"tormenta": 2,
+"blindaje": 0.5
+}, {
+"texto": "Mantener la operación normal",
+"tormenta": 2
+}]
+}]
+radiacion_tormenta_exterior = 30.0
+radiacion_tormenta_interior = 8.0
+capacidad_refugio = 5
+soles_viaje_colono = 4
+latencia_fondos = 2
+transferencia_cada = 10
+transferencia_dinero = 300
+transferencia_soles = 3
+pedidos = [{
+"nombre": "Víveres",
+"contenido": {
+"comida": 40,
+"agua": 20
+},
+"dinero": 300,
+"soles": 4
+}, {
+"nombre": "Materiales de construcción",
+"contenido": {
+"materiales": 50
+},
+"dinero": 350,
+"soles": 5
+}, {
+"nombre": "Tanques de oxígeno",
+"contenido": {
+"oxigeno": 60
+},
+"dinero": 250,
+"soles": 3
+}]

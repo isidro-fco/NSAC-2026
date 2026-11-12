@@ -1,13 +1,13 @@
 [gd_resource type="Resource" script_class="DatosModulo" load_steps=3 format=3]
 
-[ext_resource type="PackedScene" path="res://escenas/modulos/pasillo.tscn" id="1_lje6c"]
-[ext_resource type="Script" path="res://scripts/datos_modulo.gd" id="2_vti37"]
+[ext_resource type="Texture2D" uid="uid://efmlc7bf0b4b" path="res://recursos/sprites/modulos/pasillo.png" id="1_textura"]
+[ext_resource type="Script" path="res://datos/clases/datos_modulo.gd" id="2_vti37"]
 
 [resource]
 script = ExtResource("2_vti37")
 id = "pasillo"
 nombre = "Pasillo"
-color = Color(0.5529412, 0.5921569, 0.6392157, 1)
-escena = ExtResource("1_lje6c")
+color = Color(0.6392, 0.6667, 0.6902, 1)
+textura = ExtResource("1_textura")
 dinero = 10
 materiales = 1

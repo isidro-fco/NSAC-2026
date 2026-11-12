@@ -1,23 +1,36 @@
 class_name MenuConstruccion
 extends PanelContainer
-## HU-05: panel lateral del modo construcción y selector de demolición.
+## HU-05: panel lateral del modo construcción, según docs/diseno/Construir.pdf y Demoler.pdf:
+##   ╭──────────────────────╮
+##   │ Construcción         │
+##   │ (Construir)(Demoler) │   pestañas: la activa en naranja
+##   │ Disponible: $1250  60 mat.
+##   │ ▦ Soporte Vital      │   tarjetas de módulos  o  instrucciones para demoler
+##   │   $300   30 mat.     │
+##   │ ...                  │
+##   │ (      Cerrar      ) │
+##   ╰──────────────────────╯
+
+const ANCHO := 240
 
 var mapa: Mapa
-var contenido: VBoxContainer
+var contenido := UI.columna(12)
 
 
-func iniciar(mapa_base: Mapa) -> void:
+func _init(mapa_base: Mapa) -> void:
 	mapa = mapa_base
+	visible = false
 	set_anchors_and_offsets_preset(Control.PRESET_LEFT_WIDE)
-	offset_top = 64
-	offset_bottom = -12
-	offset_left = 12
-	offset_right = 312
-	add_theme_stylebox_override("panel", Hud.estilo_elevado(Color(Hud.FONDO, 0.97), Hud.BORDE, Hud.RADIO + 2, 14))
-	contenido = Hud.columna(6)
+	offset_top = Hud.ALTO_BARRA + 6
+	offset_bottom = -Hud.MARGEN
+	offset_left = Hud.MARGEN
+	offset_right = Hud.MARGEN + ANCHO
+	add_theme_stylebox_override("panel", UI.estilo(UI.FONDO_CLARO, UI.BORDE, UI.RADIO_PILDORA, 10, 2))
 	add_child(contenido)
 	EstadoJuego.estado_cambiado.connect(actualizar)
-	actualizar()
+	mapa.modo_cambiado.connect(func(modo: Enums.ModoMapa) -> void:
+		visible = modo in [Enums.ModoMapa.CATALOGO, Enums.ModoMapa.DEMOLICION]
+		actualizar())
 
 
 func actualizar() -> void:
@@ -27,22 +40,41 @@ func actualizar() -> void:
 		contenido.remove_child(hijo)
 		hijo.queue_free()
 	var demoliendo := mapa.modo == Enums.ModoMapa.DEMOLICION
-	contenido.add_child(Hud.etiqueta("Construcción", 18))
-	contenido.add_child(Hud.separador())
-	contenido.add_child(Hud.etiqueta("Dinero: $%s    Materiales: %s" % [
-		Hud.num(EstadoJuego.recursos["presupuesto"]), Hud.num(EstadoJuego.recursos["materiales"])],
-		13, Hud.TEXTO_SUAVE))
-	var texto_modo := "Volver a construir" if demoliendo else "Modo demolición"
-	contenido.add_child(Hud.boton(texto_modo, mapa.alternar_demolicion, true, "" if demoliendo else Hud.PELIGRO))
+
+	var titulo := UI.seccion("Construcción")
+	titulo.custom_minimum_size = Vector2(0, 30)
+	titulo.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	contenido.add_child(titulo)
+	var pestanas := UI.fila(6)
+	for pestana: Array in [["Construir", Enums.ModoMapa.CATALOGO], ["Demoler", Enums.ModoMapa.DEMOLICION]]:
+		var b := UI.boton_pixel(pestana[0], mapa.cambiar_modo.bind(pestana[1]), false, UI.T_TEXTO)
+		UI.pintar_boton_pixel(b, mapa.modo == pestana[1], UI.ACENTO, UI.TARJETA)
+		b.custom_minimum_size = Vector2(0, 32)
+		pestanas.add_child(UI.expandir(b))
+	contenido.add_child(pestanas)
+	var recursos: Dictionary = EstadoJuego.economia.recursos
+	contenido.add_child(UI.etiqueta_pixel("Disponible: $%s   %s mat." % [
+		UI.num(recursos["presupuesto"]), UI.num(recursos["materiales"])], UI.T_DETALLE))
+
 	if demoliendo:
-		contenido.add_child(Hud.parrafo(
-			"Señala un módulo construido o un obstáculo y haz clic para demolerlo. Los módulos iniciales no se pueden demoler."))
-		var hueco := Control.new()
-		hueco.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		contenido.add_child(hueco)
+		var ayuda := UI.etiqueta_pixel(
+			"Señala un módulo construido o un obstáculo y haz clic para demolerlo.\n\nLos módulos iniciales no se pueden demoler.",
+			UI.T_DETALLE)
+		ayuda.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		ayuda.add_theme_constant_override("line_spacing", 4)
+		ayuda.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		var margen := MarginContainer.new()
+		margen.add_theme_constant_override("margin_top", 10)
+		margen.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		margen.add_child(ayuda)
+		contenido.add_child(margen)
 	else:
-		var lista := Hud.columna(6)
-		for datos: DatosModulo in DatosModulo.construibles():
-			lista.add_child(TarjetaModulo.crear(datos, mapa.elegir_modulo))
-		contenido.add_child(Hud.desplazable(lista))
-	contenido.add_child(Hud.boton("Salir (Esc)", mapa.salir_construccion, true, Hud.FANTASMA))
+		var lista := UI.columna(8)
+		for id: String in EstadoJuego.datos_balance.catalogo:
+			lista.add_child(TarjetaModulo.new(DatosModulo.obtener(id), mapa.elegir_modulo))
+		contenido.add_child(UI.desplazable(lista))
+
+	var cerrar := UI.boton("Cerrar", mapa.cambiar_modo.bind(Enums.ModoMapa.NORMAL))
+	cerrar.custom_minimum_size = Vector2(0, 34)
+	cerrar.tooltip_text = "Salir del modo construcción (Esc)"
+	contenido.add_child(cerrar)

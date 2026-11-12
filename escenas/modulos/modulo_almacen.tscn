@@ -1,5 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://dwgsbbkyaq3nd"]
-
-[ext_resource type="PackedScene" uid="uid://divjaa6vfaef1" path="res://escenas/modulos/modulo.tscn" id="1_base"]
-
-[node name="ModuloAlmacen" instance=ExtResource("1_base")]

@@ -1,96 +1,81 @@
 class_name TarjetaColono
 extends PanelContainer
-## Tarjeta de un colono: avatar, nombre, rol, estado y radiación.
+## Tarjeta de un colono (docs/diseno/Modulo Comando.pdf):
+##   ╭──────────────────────────────╮
+##   │ (foto) Elena Vargas Ruiz     │   foto de perfil en un círculo
+##   │        Ingeniería · Disponible
+##   │        Radiación: 14.3 / 120 │
+##   │        ▬▬▬▬▬───────────────  │
+##   ╰──────────────────────────────╯
 ## - En los menús de comando (HU-02) y descanso (HU-03) es una ficha estática.
-## - Como inspector (HU-06) flota abajo a la derecha y se actualiza cada frame.
+## - Como inspector (HU-06) flota abajo a la derecha, añade la ubicación y se
+##   actualiza cada frame.
 
 signal cerrado
-signal regreso_pedido(colono: DatosColono)
-
-const ESCENA := "res://escenas/interfaz/componentes/tarjeta_colono.tscn"
 
 var colono: DatosColono
 var es_inspector := false
-var estado_label: Label
-var ubicacion_label: Label
-var radiacion_label: Label
+var con_mision := false
+var estado_label: RichTextLabel
+var radiacion_label: RichTextLabel
 var barra: ProgressBar
 
 
-## Ficha para listas. Con `al_enviar_a_tierra` añade el botón de regreso.
-static func crear(c: DatosColono, con_mision := false, al_enviar_a_tierra := Callable()) -> TarjetaColono:
-	var tarjeta: TarjetaColono = load(ESCENA).instantiate()
-	tarjeta.configurar(c, con_mision, al_enviar_a_tierra)
-	return tarjeta
-
-
-## Inspector flotante del colono seleccionado en el mapa.
-static func crear_inspector(c: DatosColono) -> TarjetaColono:
-	var tarjeta: TarjetaColono = load(ESCENA).instantiate()
-	tarjeta.configurar_inspector(c)
-	return tarjeta
-
-
-func configurar(c: DatosColono, con_mision := false, al_enviar_a_tierra := Callable()) -> void:
+## Con `al_enviar_a_tierra` añade el botón de regreso; con `inspector`, además el de cerrar.
+func _init(c: DatosColono, al_enviar_a_tierra := Callable(), inspector := false, mision := false) -> void:
 	colono = c
-	add_theme_stylebox_override("panel", Hud.estilo(Hud.FONDO_CLARO, Hud.BORDE, Hud.RADIO, 12))
-	var f := Hud.fila(10)
+	es_inspector = inspector
+	con_mision = mision
+	var caja := UI.estilo(UI.FONDO_CLARO if inspector else UI.TARJETA, UI.BORDE, UI.RADIO, 10, 2)
+	caja.content_margin_top = 8
+	caja.content_margin_bottom = 8
+	add_theme_stylebox_override("panel", caja)
+	var f := UI.fila(10)
 	add_child(f)
-	f.add_child(Hud.avatar(c))
-	var datos := Hud.columna(2)
-	f.add_child(Hud.expandir(datos))
-	datos.add_child(Hud.etiqueta(c.nombre))
-	var estado := c.nombre_estado()
-	if con_mision and c.estado == Enums.EstadoColono.EN_MISION:
-		estado += " (%d soles)" % c.soles_restantes
-	datos.add_child(Hud.etiqueta("%s · %s" % [c.nombre_rol(), estado], 12, Hud.TEXTO_SUAVE))
-	datos.add_child(Hud.etiqueta(Hud.texto_radiacion(c.radiacion), 12, Hud.TEXTO_SUAVE))
-	datos.add_child(Hud.barra_radiacion(c.radiacion))
+	f.add_child(UI.avatar(c, 40 if inspector else 34))
+	var datos := UI.columna(3)
+	f.add_child(UI.expandir(datos))
+	datos.add_child(UI.etiqueta_pixel(c.nombre, UI.T_TEXTO))
+	estado_label = UI.texto_glosario("", 11, UI.TEXTO)
+	radiacion_label = UI.texto_glosario("", 11, UI.ADVERTENCIA)
+	barra = UI.barra_radiacion(c.radiacion)
+	barra.custom_minimum_size = Vector2(0, 4)
+	for control: Control in [estado_label, radiacion_label, barra]:
+		datos.add_child(control)
 	if al_enviar_a_tierra.is_valid():
-		f.add_child(Hud.boton("Enviar a la Tierra", al_enviar_a_tierra.bind(c), true, Hud.PELIGRO))
-
-
-func configurar_inspector(c: DatosColono) -> void:
-	colono = c
-	es_inspector = true
-	set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	grow_vertical = Control.GROW_DIRECTION_BEGIN
-	offset_left = -12
-	offset_right = -12
-	offset_top = -12
-	offset_bottom = -12
-	custom_minimum_size = Vector2(300, 0)
-
-	var col := Hud.columna(5)
-	add_child(col)
-	var cabecera := Hud.fila()
-	col.add_child(cabecera)
-	cabecera.add_child(Hud.avatar(c))
-	var nombre := Hud.columna(1)
-	cabecera.add_child(Hud.expandir(nombre))
-	nombre.add_child(Hud.etiqueta(c.nombre, 15))
-	nombre.add_child(Hud.insignia(c.nombre_rol(), c.color_rol()))
-	cabecera.add_child(Hud.boton("X", cerrado.emit, true, Hud.FANTASMA))
-
-	estado_label = Hud.etiqueta("", 13, Hud.TEXTO_SUAVE)
-	ubicacion_label = Hud.etiqueta("", 13, Hud.TEXTO_SUAVE)
-	radiacion_label = Hud.etiqueta("", 13, Hud.TEXTO_SUAVE)
-	barra = Hud.barra_radiacion(c.radiacion)
-	for control: Control in [estado_label, ubicacion_label, radiacion_label, barra]:
-		col.add_child(control)
-	col.add_child(Hud.boton("Enviar a la Tierra", func() -> void: regreso_pedido.emit(colono), true, Hud.PELIGRO))
-	_actualizar_inspector()
+		var enviar := UI.boton("Enviar a la Tierra", al_enviar_a_tierra.bind(c), true, UI.PELIGRO)
+		enviar.add_theme_font_size_override("font_size", UI.T_DETALLE)
+		enviar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		f.add_child(enviar)
+	if inspector:
+		var x := UI.boton_pixel("X", cerrado.emit, false, UI.T_TEXTO)
+		x.custom_minimum_size = Vector2(28, 28)
+		x.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+		f.add_child(x)
+		custom_minimum_size = Vector2(320, 0)
+		set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 12)
+		grow_horizontal = Control.GROW_DIRECTION_BEGIN
+		grow_vertical = Control.GROW_DIRECTION_BEGIN
+		offset_top -= 60          # por encima de los botones inferiores del HUD
+		offset_bottom -= 60
+	_actualizar()
 
 
 func _process(_delta: float) -> void:
 	if es_inspector:
-		_actualizar_inspector()
+		_actualizar()
 
 
-func _actualizar_inspector() -> void:
-	estado_label.text = "Estado: %s · %s" % [colono.nombre_estado(), colono.actividad]
-	ubicacion_label.text = "Ubicación: %s" % (
-		"A la intemperie" if colono.a_la_intemperie else "Dentro de la base")
-	radiacion_label.text = Hud.texto_radiacion(colono.radiacion)
+func _actualizar() -> void:
+	var estado := "%s · %s" % [Enums.NOMBRE_ROL[colono.rol], Enums.NOMBRE_ESTADO_COLONO[colono.estado]]
+	if colono.estado == Enums.EstadoColono.EN_VIAJE:
+		estado += " (llega en %s)" % UI.soles(colono.soles_restantes)
+	elif con_mision and colono.estado == Enums.EstadoColono.EN_MISION:
+		estado += " (%s)" % UI.soles(colono.soles_restantes)
+	if es_inspector:
+		var lugar: String = {"exterior": "A la intemperie", "interior": "Dentro de la base",
+			"refugio": "En el refugio blindado"}[colono.ubicacion]
+		estado += " · %s\n%s" % [colono.actividad, lugar]
+	UI.fijar_texto(estado_label, estado)
+	UI.fijar_texto(radiacion_label, "Radiación: %s / %d" % [UI.num(colono.radiacion), int(EstadoJuego.datos_balance.radiacion_max)])
 	barra.value = colono.radiacion

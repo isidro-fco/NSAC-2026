@@ -1,54 +1,76 @@
 class_name TarjetaModulo
 extends Button
-## Entrada del catálogo de construcción (HU-05): color, nombre, tamaño y coste.
+## Entrada del catálogo de construcción (HU-05), según docs/diseno/Construir.pdf:
+##   ╭────┬──────────────────╮
+##   │ ▦▦ │ Soporte Vital    │   El icono dibuja las casillas que ocupa el módulo.
+##   │ ▦▦ │ $300   30 mat.   │   El coste se pinta en rojo si no alcanza.
+##   ╰────┴──────────────────╯
 ## Queda deshabilitada y atenuada si no alcanza el dinero o los materiales.
 
-const ESCENA := "res://escenas/interfaz/componentes/tarjeta_modulo.tscn"
+const LADO_ICONO := 26
 
 var datos: DatosModulo
 
 
-
-static func crear(datos_modulo: DatosModulo, al_elegir: Callable) -> TarjetaModulo:
-	var tarjeta: TarjetaModulo = load(ESCENA).instantiate()
-	tarjeta.configurar(datos_modulo, al_elegir)
-	return tarjeta
-
-
-func configurar(datos_modulo: DatosModulo, al_elegir: Callable) -> void:
+func _init(datos_modulo: DatosModulo, al_elegir: Callable) -> void:
 	datos = datos_modulo
 	focus_mode = Control.FOCUS_NONE
-	custom_minimum_size = Vector2(0, 74)
-	var alcanza := EstadoJuego.puede_pagar(datos.dinero, datos.materiales)
-	disabled = not alcanza
-	if not alcanza:
-		modulate = Color(1, 1, 1, 0.5)
+	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	custom_minimum_size = Vector2(0, LADO_ICONO + 14)
+	tooltip_text = "Ocupa %dx%d casillas" % [datos.tam.x, datos.tam.y]
+	var economia := EstadoJuego.economia
+	disabled = not economia.puede_pagar(datos.dinero, datos.materiales)
+	if disabled:
+		modulate = Color(1, 1, 1, 0.55)
 	pressed.connect(al_elegir.bind(datos.id))
+	for estado: String in ["normal", "hover", "pressed", "hover_pressed", "disabled"]:
+		var borde := UI.ACENTO if estado.begins_with("hover") or estado == "pressed" else UI.BORDE
+		add_theme_stylebox_override(estado, UI.estilo(UI.TARJETA, borde, 4, 0, 2))
 
-	var margen := MarginContainer.new()
-	margen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	margen.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	for lado: String in ["left", "right", "top", "bottom"]:
-		margen.add_theme_constant_override("margin_" + lado, 8)
-	add_child(margen)
+	var f := UI.fila(10)
+	f.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	f.offset_left = 7
+	f.offset_right = -7
+	add_child(f)
+	f.add_child(_icono())
 
-	var f := Hud.fila(10)
-	f.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	margen.add_child(f)
-	var icono := Panel.new()
-	icono.add_theme_stylebox_override("panel", Hud.estilo(datos.color, datos.color.darkened(0.3), Hud.RADIO - 2, 0))
-	icono.custom_minimum_size = Vector2(36, 36)
-	icono.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	icono.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	f.add_child(icono)
-
-	var c := Hud.columna(0)
-	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	f.add_child(Hud.expandir(c))
-	c.add_child(Hud.etiqueta(datos.nombre))
-	c.add_child(Hud.etiqueta("%dx%d casillas" % [datos.tam.x, datos.tam.y], 12, Hud.TEXTO_SUAVE))
-	var coste := Hud.etiqueta("$%d · %d mat." % [datos.dinero, datos.materiales], 13, Hud.ACENTO)
-	coste.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	var c := UI.columna(5)
+	c.alignment = BoxContainer.ALIGNMENT_CENTER
+	f.add_child(UI.expandir(c))
+	c.add_child(UI.etiqueta_pixel(datos.nombre, UI.T_TEXTO, UI.TEXTO))
+	var coste := UI.fila(16)
+	var alcanza_dinero: bool = economia.recursos["presupuesto"] >= datos.dinero
+	var alcanzan_materiales: bool = economia.recursos["materiales"] >= datos.materiales
+	coste.add_child(UI.etiqueta_pixel("$%d" % datos.dinero, 8, UI.BIEN if alcanza_dinero else UI.CRITICO))
+	coste.add_child(UI.etiqueta_pixel("%d mat." % datos.materiales, 8, UI.ACENTO if alcanzan_materiales else UI.CRITICO))
 	c.add_child(coste)
-	for etiqueta: Control in c.get_children():
-		etiqueta.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for hijo: Control in find_children("*", "Control", true, false):
+		hijo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+
+## Cuadro oscuro con la forma del módulo: una casilla por cada casilla del mapa, rellena con
+## el trozo correspondiente del sprite (o amarilla si el módulo no tiene sprite).
+func _icono() -> Control:
+	var icono := Control.new()
+	icono.custom_minimum_size = Vector2(LADO_ICONO, LADO_ICONO)
+	icono.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	icono.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	var tam := datos.tam
+	var textura := datos.textura
+	icono.draw.connect(func() -> void:
+		icono.draw_rect(Rect2(Vector2.ZERO, icono.size), UI.FONDO)
+		var hueco := 1.0
+		var lado := minf(6.0, (LADO_ICONO - 6.0 - hueco * (maxi(tam.x, tam.y) - 1)) / maxi(tam.x, tam.y))
+		var total := Vector2(tam) * lado + Vector2(tam - Vector2i.ONE) * hueco
+		var inicio := ((icono.size - total) / 2.0).floor()
+		for y in tam.y:
+			for x in tam.x:
+				var celda := Rect2(inicio + Vector2(x, y) * (lado + hueco), Vector2(lado, lado))
+				if textura:
+					var lado_fuente := textura.get_size() / Vector2(tam)
+					var fuente := Rect2(Vector2(x, y) * lado_fuente, lado_fuente)
+					icono.draw_texture_rect_region(textura, celda, fuente)
+				else:
+					icono.draw_rect(celda, UI.ADVERTENCIA))
+	return icono

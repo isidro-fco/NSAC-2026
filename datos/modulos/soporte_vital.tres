@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="DatosModulo" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="DatosModulo" load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://scripts/datos_modulo.gd" id="1_d1286"]
+[ext_resource type="Texture2D" uid="uid://dmj3nud3pswja" path="res://recursos/sprites/modulos/soporte_vital.png" id="1_textura"]
+[ext_resource type="Script" path="res://datos/clases/datos_modulo.gd" id="1_d1286"]
 
 [resource]
 script = ExtResource("1_d1286")
@@ -8,7 +9,8 @@ id = "soporte_vital"
 nombre = "Soporte vital"
 tam = Vector2i(3, 2)
 letra = "SV"
-color = Color(0.27450982, 0.7019608, 0.7019608, 1)
+color = Color(0.2118, 0.7608, 0.7059, 1)
+textura = ExtResource("1_textura")
 dinero = 300
 materiales = 30
 produce = {

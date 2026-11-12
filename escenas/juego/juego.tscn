@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://diepptv83k4ob"]
+
+[ext_resource type="Script" uid="uid://555wnah6tmxl" path="res://escenas/juego/juego.gd" id="1_juego"]
+[ext_resource type="PackedScene" uid="uid://bi75xj6uyt8ef" path="res://escenas/mapa/mapa.tscn" id="2_mapa"]
+[ext_resource type="Script" path="res://escenas/juego/camara.gd" id="5_camara"]
+
+[node name="Juego" type="Node2D"]
+script = ExtResource("1_juego")
+
+[node name="Mapa" parent="." instance=ExtResource("2_mapa")]
+
+[node name="Camara" type="Camera2D" parent="."]
+script = ExtResource("5_camara")
+
+[node name="Interfaz" type="CanvasLayer" parent="."]
+
+[node name="Raiz" type="Control" parent="Interfaz"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

@@ -1,0 +1,79 @@
+[gd_resource type="Resource" script_class="DatosGlosario" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://datos/clases/datos_glosario.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+terminos = [{
+"corto": "Partículas de alta energía que dañan las células. Marte no tiene un campo magnético global ni una atmósfera densa que la frene.",
+"detalle": "En la superficie de Marte llegan dos tipos de radiación: los rayos cósmicos galácticos, partículas muy energéticas que vienen de fuera del sistema solar, y las partículas solares, que el Sol lanza en ráfagas.\n\nEl instrumento RAD del rover Curiosity midió en la superficie una dosis media de unos 0,7 milisieverts al día: en un año, varias veces el límite anual para trabajadores expuestos en la Tierra. La dosis acumulada aumenta el riesgo de cáncer y de daños en el sistema nervioso.\n\nEn el juego, cada colono acumula radiación al trabajar en el exterior; a partir de 100 enferma.",
+"id": "radiacion",
+"nombre": "Radiación espacial",
+"palabras": ["radiación"]
+}, {
+"corto": "Ráfaga de partículas cargadas que el Sol lanza al espacio. En Marte puede multiplicar la dosis de radiación en pocas horas.",
+"detalle": "Las tormentas solares (eventos de partículas solares y eyecciones de masa coronal) lanzan protones y otras partículas a gran velocidad. La Tierra está protegida por su magnetosfera; Marte no.\n\nEn septiembre de 2017 una tormenta solar alcanzó Marte: el rover Curiosity registró en la superficie el doble de radiación de lo normal, y la sonda MAVEN vio auroras en todo el planeta.\n\nLa protección principal es refugiarse tras una capa gruesa de material: agua, regolito o plástico rico en hidrógeno.",
+"id": "tormenta_solar",
+"nombre": "Tormenta solar",
+"palabras": ["tormenta solar", "tormentas solares"]
+}, {
+"corto": "Zona de la base con paredes muy gruesas donde la tripulación se protege durante una tormenta solar.",
+"detalle": "Los diseños de bases y naves tripuladas incluyen un refugio contra tormentas: un espacio pequeño rodeado de la mayor masa posible. Los materiales ricos en hidrógeno, como el agua o el polietileno, frenan especialmente bien las partículas solares.\n\nLa nave Orion de la NASA, por ejemplo, prevé que la tripulación se refugie en su zona central rodeada de bolsas y suministros durante una tormenta solar.\n\nEn el juego, cada refugio protege por completo a 5 colonos.",
+"id": "refugio",
+"nombre": "Refugio blindado",
+"palabras": ["refugio blindado", "refugios blindados"]
+}, {
+"corto": "Capa de polvo, arena y roca suelta que cubre la superficie de Marte.",
+"detalle": "El regolito marciano se formó por impactos de meteoritos y erosión durante miles de millones de años. Su color rojizo se debe a óxidos de hierro.\n\nEs un recurso valioso: puede usarse para construir (ladrillos, impresión 3D) o apilarse sobre los módulos como blindaje contra la radiación. Pero también es un problema: es muy fino, abrasivo y contiene percloratos tóxicos.",
+"id": "regolito",
+"nombre": "Regolito",
+"palabras": ["regolito"]
+}, {
+"corto": "Sales tóxicas presentes en el suelo marciano que afectan a la tiroides.",
+"detalle": "La sonda Phoenix descubrió en 2008 percloratos en el suelo de Marte, en una concentración de alrededor del 0,5 %. Otras misiones confirmaron que están repartidos por todo el planeta.\n\nSon tóxicos para las personas porque interfieren con la tiroides, así que el agua y el suelo de Marte tendrían que tratarse antes de usarlos para beber o cultivar. Curiosamente, algunas bacterias pueden descomponerlos y liberar oxígeno.",
+"id": "perclorato",
+"nombre": "Percloratos",
+"palabras": ["perclorato", "percloratos"]
+}, {
+"corto": "Sistemas que mantienen el aire, el agua y la temperatura necesarios para vivir.",
+"detalle": "Un sistema de soporte vital controla la presión, retira el dióxido de carbono, produce oxígeno y recicla el agua.\n\nEn la Estación Espacial Internacional, el sistema de recuperación de agua alcanzó en 2023 un reciclaje del 98 %: recupera agua del sudor, la humedad del aire y la orina. Una base en Marte necesitará sistemas así de eficaces, porque cada litro enviado desde la Tierra cuesta muchísimo.",
+"id": "soporte_vital",
+"nombre": "Soporte vital",
+"palabras": ["soporte vital"]
+}, {
+"corto": "Experimento del rover Perseverance que fabricó oxígeno a partir del dióxido de carbono de Marte.",
+"detalle": "MOXIE (Mars Oxygen In-Situ Resource Utilization Experiment) viajó en el rover Perseverance. Entre 2021 y 2023 funcionó 16 veces y produjo en total unos 122 gramos de oxígeno, separando el dióxido de carbono de la atmósfera marciana.\n\nDemostró que se puede producir oxígeno en Marte, tanto para respirar como para fabricar combustible de cohetes para el viaje de vuelta.",
+"id": "moxie",
+"nombre": "MOXIE",
+"palabras": ["moxie"]
+}, {
+"corto": "Cultivo de plantas fuera de la Tierra: en naves, estaciones o bases en otros mundos.",
+"detalle": "Cultivar en Marte exige luz artificial o filtrada, agua reciclada y un suelo sin percloratos. Por eso se usan técnicas como la hidroponía, que cultiva las plantas en agua con nutrientes, sin tierra.\n\nEn la Estación Espacial Internacional, los experimentos Veggie y APH han cultivado lechugas, rábanos y chiles que los astronautas han llegado a comer.",
+"id": "astroagronomia",
+"nombre": "Astroagronomía",
+"palabras": ["astroagronomía"]
+}, {
+"corto": "Fuente de energía de muchas misiones marcianas. Marte recibe menos luz que la Tierra y el polvo los cubre.",
+"detalle": "Marte está más lejos del Sol y recibe alrededor del 43 % de la luz que llega a la Tierra. Además, el polvo se deposita sobre los paneles y reduce la producción.\n\nEl rover Opportunity funcionó con paneles solares casi 15 años, a veces gracias a ráfagas de viento que los limpiaban, hasta que una tormenta de polvo global en 2018 lo dejó sin energía.",
+"id": "paneles_solares",
+"nombre": "Paneles solares en Marte",
+"palabras": ["paneles solares", "panel solar"]
+}, {
+"corto": "Tormentas que levantan polvo fino durante semanas; algunas cubren todo el planeta.",
+"detalle": "Las tormentas de polvo son frecuentes en Marte. La mayoría son locales, pero cada varios años alguna crece hasta envolver todo el planeta durante semanas o meses.\n\nNo son tan violentas como en las películas, porque la atmósfera es muy fina, pero oscurecen el cielo, reducen la energía solar y meten polvo en los equipos. La tormenta global de 2018 terminó con la misión Opportunity.",
+"id": "tormenta_polvo",
+"nombre": "Tormenta de polvo",
+"palabras": ["tormenta de polvo", "tormentas de polvo"]
+}, {
+"corto": "Retraso de las señales entre la Tierra y Marte por la distancia: de unos 3 a 22 minutos en cada sentido.",
+"detalle": "Las señales de radio viajan a la velocidad de la luz, pero la distancia entre la Tierra y Marte varía mucho según la posición de los planetas. Un mensaje tarda entre unos 3 y 22 minutos en llegar, y otro tanto en volver la respuesta.\n\nPor eso una base marciana no podría pedir ayuda inmediata: tendría que tomar decisiones por su cuenta. Y los envíos de personas o suministros solo pueden salir cada unos 26 meses, cuando los planetas están bien alineados.",
+"id": "latencia",
+"nombre": "Latencia de comunicaciones",
+"palabras": ["latencia"]
+}, {
+"corto": "Un día solar en Marte: 24 horas y unos 40 minutos.",
+"detalle": "Las misiones a Marte cuentan el tiempo en soles. Un sol dura unas 24 horas y 40 minutos, solo un poco más que un día terrestre, y un año marciano tiene unos 668 soles.\n\nLos equipos de las misiones en la Tierra a veces trabajan en hora de Marte, desplazando su horario 40 minutos cada día.",
+"id": "sol_marciano",
+"nombre": "Sol (día marciano)",
+"palabras": ["día marciano"]
+}]
