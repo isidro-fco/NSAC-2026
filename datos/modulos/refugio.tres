@@ -11,3 +11,4 @@ letra = "R"
 color = Color(0.3569, 0.4353, 0.5098, 1)
 dinero = 350
 materiales = 50
+consumo_kw = 5.0

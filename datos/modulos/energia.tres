@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_x7ixu")
 id = "energia"
-nombre = "Energía"
+nombre = "Panel solar"
 tam = Vector2i(2, 2)
 letra = "E"
 color = Color(0.9490, 0.7765, 0.4275, 1)
@@ -14,5 +14,5 @@ textura = ExtResource("1_textura")
 dinero = 200
 materiales = 20
 produce = {
-"energia": 7.0
+"energia": 20.0
 }

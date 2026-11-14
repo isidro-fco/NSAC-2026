@@ -16,7 +16,7 @@ var en_pausa := false:
 	set(valor):
 		en_pausa = valor
 		cambiado.emit()
-var velocidad := 1:           # 1 o 2
+var velocidad := 1:           # 1, 2 o 4
 	set(valor):
 		velocidad = valor
 		cambiado.emit()

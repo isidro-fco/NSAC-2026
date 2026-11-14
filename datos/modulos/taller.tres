@@ -11,8 +11,10 @@ tam = Vector2i(2, 3)
 letra = "T"
 color = Color(0.5608, 0.2549, 0.1765, 1)
 textura = ExtResource("1_textura")
+region_icono = Rect2(26, 12, 12, 12)
 dinero = 350
 materiales = 40
 produce = {
 "materiales": 3.0
 }
+consumo_kw = 20.0

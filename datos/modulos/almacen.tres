@@ -12,3 +12,4 @@ letra = "A"
 color = Color(0.8510, 0.5451, 0.3725, 1)
 textura = ExtResource("1_textura")
 es_base = true
+consumo_kw = 20.0

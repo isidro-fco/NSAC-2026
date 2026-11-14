@@ -7,14 +7,15 @@ extends PanelContainer
 ##   ╭──────────────────────╮
 ##   │ Construcción         │
 ##   │ (Construir)(Demoler) │   pestañas: la activa en naranja
-##   │ Disponible: $1250  60 mat.
+##   │ Disponible: $1,250 M  60 mat.
+##   │ Energía: produce 100 kW, gasta 80 kW
 ##   │ ▦ Soporte Vital      │   tarjetas de módulos  o  instrucciones para demoler
 ##   │   $300   30 mat.     │
 ##   │ ...                  │
 ##   │ (      Cerrar      ) │
 ##   ╰──────────────────────╯
 
-const ANCHO := 240
+const ANCHO := 264
 
 var mapa: Mapa
 var contenido := UI.columna(12)
@@ -56,8 +57,12 @@ func actualizar() -> void:
 		pestanas.add_child(UI.expandir(b))
 	contenido.add_child(pestanas)
 	var recursos: Dictionary = EstadoJuego.economia.recursos
-	contenido.add_child(UI.etiqueta_pixel("Disponible: $%s   %s mat." % [
-		UI.num(recursos["presupuesto"]), UI.num(recursos["materiales"])], UI.T_DETALLE))
+	contenido.add_child(UI.etiqueta_pixel("Disponible: %s   %s mat." % [
+		UI.dinero(recursos["presupuesto"]), UI.num(recursos["materiales"])], UI.T_DETALLE))
+	var economia := EstadoJuego.economia
+	contenido.add_child(UI.etiqueta_pixel("Energía: produce %s, gasta %s" % [
+		UI.kw(economia.produccion("energia")), UI.kw(economia.consumo("energia"))], UI.T_DETALLE,
+		UI.CRITICO if economia.balance("energia") < 0.0 else UI.TEXTO_SUAVE))
 
 	if demoliendo:
 		var ayuda := UI.etiqueta_pixel(

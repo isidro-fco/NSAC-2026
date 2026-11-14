@@ -45,6 +45,7 @@ var tareas := SistemaTareas.new()
 var comando := SistemaComando.new()
 var eventos := SistemaEventos.new()
 var tierra := SistemaTierra.new()
+var clima := SistemaClimaEspacial.new()       # eventos solares reales (NASA DONKI)
 var glosario := SistemaGlosario.new()
 
 var rng := RandomNumberGenerator.new()          # azar de la partida
@@ -55,7 +56,7 @@ var modulos_construidos := 0                    # por el jugador (resumen de vic
 var bitacora: Array[Dictionary] = []
 
 ## Sistemas que se reinician con cada partida, en este orden.
-var _sistemas: Array[Sistema] = [comando, economia, almacen, tripulacion, eventos, tierra, glosario]
+var _sistemas: Array[Sistema] = [comando, economia, almacen, tripulacion, eventos, tierra, glosario, clima]
 
 
 func _ready() -> void:
@@ -98,6 +99,7 @@ func terminar_sol(sol: int) -> void:
 	tripulacion.renovar_candidatos()
 	tierra.avanzar()
 	eventos.avanzar_tormenta()
+	clima.avanzar()
 	var nivel_antes := comando.nivel
 	comando.avanzar_mejora()
 

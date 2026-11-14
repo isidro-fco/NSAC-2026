@@ -17,8 +17,13 @@ func reiniciar() -> void:
 	soles_estricta = 0
 
 
+## Víveres: agua + comida + raciones, en kg (1 L de agua pesa 1 kg).
 func capacidad() -> float:
 	return datos.cap_almacen_base + (nivel - 1) * datos.cap_almacen_por_nivel
+
+
+func capacidad_materiales() -> float:
+	return datos.cap_materiales_base + (nivel - 1) * datos.cap_materiales_por_nivel
 
 
 # --- Racionamiento --------------------------------------------------------

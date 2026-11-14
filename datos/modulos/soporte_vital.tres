@@ -11,9 +11,11 @@ tam = Vector2i(3, 2)
 letra = "SV"
 color = Color(0.2118, 0.7608, 0.7059, 1)
 textura = ExtResource("1_textura")
+region_icono = Rect2(42, 26, 12, 12)
 dinero = 300
 materiales = 30
 produce = {
-"agua": 4.0,
-"oxigeno": 6.0
+"oxigeno": 5.2
 }
+nota_produccion = "Recicla el 80 % del agua"
+consumo_kw = 10.0

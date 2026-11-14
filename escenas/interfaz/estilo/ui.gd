@@ -64,17 +64,18 @@ static func estilo(fondo: Color, borde := BORDE, radio := RADIO, margen := 10, g
 	return caja
 
 
-## Marco con cinta de peligro y piso granulado, como la base de la sala de
-## comandos. Lo usan la barra del HUD y
+## Marco de panel de cabina (bisel azul con teclas de función y pantalla oscura),
+## inspirado en los paneles de vuelo de Orion. Lo usan la barra del HUD y
 ## todas las ventanas. El control que lo lleve debe usar TEXTURE_FILTER_NEAREST
-## (ver aplicar_marco).
-const MARCO := preload("res://recursos/sprites/interfaz/marco_hud.png")
-const MARGEN_MARCO := 8                       # = MARGEN en generar_marco_hud.py
+## (ver aplicar_marco). El anterior, de cinta de peligro, sigue en marco_hud.png.
+const MARCO := preload("res://recursos/sprites/interfaz/marco_cabina.png")
+const MARCO_ACENTO := preload("res://recursos/sprites/interfaz/marco_cabina_acento.png")  # pantalla encendida
+const MARGEN_MARCO := 8                       # = MARGEN en herramientas/generar_marco_cabina.py
 
 
-static func estilo_marco(margen := 12) -> StyleBoxTexture:
+static func estilo_marco(margen := 12, textura: Texture2D = MARCO) -> StyleBoxTexture:
 	var caja := StyleBoxTexture.new()
-	caja.texture = MARCO
+	caja.texture = textura
 	caja.set_texture_margin_all(MARGEN_MARCO)
 	# En mosaico (no estirados) para que las franjas y el grano no se deformen.
 	caja.axis_stretch_horizontal = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
@@ -87,6 +88,27 @@ static func estilo_marco(margen := 12) -> StyleBoxTexture:
 static func aplicar_marco(panel: PanelContainer, margen := 12) -> void:
 	panel.add_theme_stylebox_override("panel", estilo_marco(margen))
 	panel.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+
+
+## Marco grande de las ventanas de módulo: panel de vuelo con perillas,
+## interruptores, teclas y luces (ver MarcoVentana).
+const MARGEN_VENTANA := MarcoVentana.MARGEN
+
+
+static func aplicar_marco_ventana(panel: PanelContainer, margen := 10) -> void:
+	MarcoVentana.aplicar(panel, margen)
+
+
+## Viste un botón con el marco de cabina: `activo` usa la pantalla encendida
+## (MARCO_ACENTO). Al pasar el ratón se aclara y al pulsar se oscurece.
+static func aplicar_marco_boton(b: Button, activo := false) -> void:
+	var tonos := {"normal": Color.WHITE, "hover": Color(1.25, 1.25, 1.25), "hover_pressed": Color(1.25, 1.25, 1.25),
+		"pressed": Color(0.8, 0.8, 0.8), "disabled": Color(1, 1, 1, 0.5)}
+	for estado: String in tonos:
+		var caja := estilo_marco(MARGEN_MARCO + 2, MARCO_ACENTO if activo else MARCO)
+		caja.modulate_color = tonos[estado]
+		b.add_theme_stylebox_override(estado, caja)
+	b.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 
 ## Superficie elevada (panel, diálogo, aviso): borde fino y sombra suave.
@@ -413,7 +435,24 @@ static func num(valor: float) -> String:
 	return String.num(redondeado, 1)
 
 
-## Dinero con separador de miles: 1000 -> "$1,000", -40 -> "-$40".
+## Unidad de cada recurso (la energía guardada en kWh; su potencia, en kW).
+const UNIDAD := { "oxigeno": "kg", "energia": "kWh", "agua": "L", "comida": "kg", "raciones": "kg" }
+
+
+## Cantidad con su unidad: "100 kg", "140 L", "3000 kWh", "$1,000 M", "60".
+static func cantidad(recurso: String, valor: float) -> String:
+	if recurso == "presupuesto":
+		return dinero(valor)
+	return num(valor) + (" " + UNIDAD[recurso] if UNIDAD.has(recurso) else "")
+
+
+## Potencia eléctrica: "20 kW", "+20 kW".
+static func kw(valor: float, signo := false) -> String:
+	return (con_signo(valor) if signo else num(valor)) + " kW"
+
+
+## Dinero en millones de dólares con separador de miles:
+## 1000 -> "$1,000 M", -40 -> "-$40 M".
 static func dinero(valor: float) -> String:
 	var entero := str(absi(int(roundf(valor))))
 	var partes: PackedStringArray = []
@@ -421,7 +460,7 @@ static func dinero(valor: float) -> String:
 		partes.insert(0, entero.right(3))
 		entero = entero.left(-3)
 	partes.insert(0, entero)
-	return ("-" if valor < 0.0 else "") + "$" + ",".join(partes)
+	return ("-" if valor < 0.0 else "") + "$" + ",".join(partes) + " M"
 
 
 static func con_signo(valor: float) -> String:
@@ -435,12 +474,13 @@ static func fila_cambio(nombre: String, recurso: String, cambio: float) -> Array
 	var despues := maxf(antes + cambio, 0.0)
 	if recurso == "presupuesto":
 		return [nombre, ("+" if cambio >= 0.0 else "") + dinero(cambio), "%s a %s" % [dinero(antes), dinero(despues)]]
-	return [nombre, con_signo(cambio), "%s a %s" % [num(antes), num(despues)]]
+	var unidad: String = " " + UNIDAD[recurso] if UNIDAD.has(recurso) else ""
+	return [nombre, con_signo(cambio) + unidad, "%s a %s" % [num(antes), cantidad(recurso, despues)]]
 
 
 static func texto_recompensa(recompensa: Dictionary) -> String:
 	var partes: PackedStringArray = []
 	for clave: String in recompensa:
 		var nombre: String = Enums.NOMBRE_RECURSO.get(clave, "Investigación")
-		partes.append("+%s %s" % [num(recompensa[clave]), nombre])
+		partes.append("+%s %s" % [cantidad(clave, recompensa[clave]), nombre])
 	return ", ".join(partes)

@@ -39,6 +39,8 @@ var suelo := []                   # suelo[y][x] -> textura
 var decorado := {}                # casilla fuera del mapa -> textura de suelo
 var rocas_decorado := {}          # casilla fuera del mapa -> textura de roca (encima del suelo)
 var contenedor_naves := Node2D.new()
+var resaltado := ResaltadoColono.new()
+var viento := Viento.new()
 var _nave_activa: NaveAterrizaje
 var _naves_en_cola: Array[NaveAterrizaje] = []    # esperan a que la plataforma quede libre
 
@@ -75,8 +77,14 @@ func _ready() -> void:
 	GeneradorMapa.generar(self, rng)
 	_generar_decorado()
 	rutas.actualizar(cuadricula)
+	resaltado.mapa = self
+	resaltado.z_index = 2                          # como los colonos, pero dibujado antes:
+	add_child(resaltado)                           # el halo queda detrás del sprite
+	move_child(resaltado, contenedor_colonos.get_index())
 	contenedor_naves.z_index = 3                   # por encima de los colonos
 	add_child(contenedor_naves)
+	viento.z_index = 4                             # el polvo pasa por encima de todo el mapa
+	add_child(viento)
 	for c: DatosColono in EstadoJuego.tripulacion.colonos:
 		_crear_colono(c, punto_en_modulo("descanso"))
 	EstadoJuego.colono_agregado.connect(_recibir_colono)
@@ -166,6 +174,30 @@ func ubicacion(c: Vector2i) -> String:
 	return "refugio" if cuadricula.celdas_modulo[c].datos.id == "refugio" else "interior"
 
 
+## Nodo en el mapa del colono `datos`, o null si todavía viene en la nave.
+func colono_de(datos: DatosColono) -> Colono:
+	for colono: Colono in contenedor_colonos.get_children():
+		if colono.datos == datos:
+			return colono
+	return null
+
+
+## Módulo del colono para el panel de tripulación: en el que está, o al que va
+## si está caminando; la plataforma si todavía viene en la nave; null si está en
+## el exterior.
+func modulo_de(datos: DatosColono) -> Modulo:
+	var colono := colono_de(datos)
+	if colono == null:
+		var plataformas := modulos_de("plataforma")
+		return null if plataformas.is_empty() else plataformas[0] as Modulo
+	return cuadricula.celdas_modulo.get(colono.destino if colono.en_camino() else colono.celda)
+
+
+## Resalta en amarillo al colono (o a su módulo si está dentro); null lo quita.
+func resaltar(datos: DatosColono) -> void:
+	resaltado.resaltar(datos)
+
+
 func _crear_colono(datos: DatosColono, punto: Vector2) -> void:
 	var colono := Colono.new()
 	contenedor_colonos.add_child(colono)
@@ -195,7 +227,7 @@ func _recibir_suministros(_nombre: String, contenido: Dictionary) -> void:
 
 ## Una sola nave en la plataforma a la vez: las demás esperan su turno.
 func _encolar_nave(nave: NaveAterrizaje) -> void:
-	nave.compuerta_abierta.connect(_desembarcar)
+	nave.colono_desembarcado.connect(_desembarcar)
 	nave.terminada.connect(_siguiente_nave)
 	if is_instance_valid(_nave_activa):
 		_naves_en_cola.append(nave)
@@ -214,12 +246,11 @@ func _siguiente_nave() -> void:
 		_lanzar_nave(_naves_en_cola.pop_front())
 
 
-## Los colonos bajan por la rampa (salvo los que ya se fueron a la Tierra).
-func _desembarcar(nave: NaveAterrizaje) -> void:
-	for i in nave.colonos.size():
-		var datos := nave.colonos[i]
-		if EstadoJuego.tripulacion.colonos.has(datos):
-			_crear_colono(datos, nave.position + Vector2((i - (nave.colonos.size() - 1) / 2.0) * 9.0, 10.0))
+## Un colono bajó la rampa de la nave: desde ahí ya camina por su cuenta
+## (salvo que se haya vuelto a la Tierra mientras bajaba).
+func _desembarcar(datos: DatosColono, punto: Vector2) -> void:
+	if EstadoJuego.tripulacion.colonos.has(datos):
+		_crear_colono(datos, punto)
 
 
 ## Centro de la plataforma de aterrizaje.
@@ -280,6 +311,7 @@ func _se_puede_construir(d: DatosModulo, origen: Vector2i) -> bool:
 func _pedir_construccion(origen: Vector2i) -> void:
 	var d := modulo_elegido
 	if not _se_puede_construir(d, origen):
+		GestorAudio.reproducir("casilla_invalida")
 		return
 	origen_fijado = origen
 	capa.queue_redraw()
@@ -287,6 +319,12 @@ func _pedir_construccion(origen: Vector2i) -> void:
 		UI.fila_cambio("Presupuesto", "presupuesto", -d.dinero),
 		UI.fila_cambio("Materiales", "materiales", -d.materiales),
 	]
+	var economia := EstadoJuego.economia
+	var cambio_kw: float = d.produce.get("energia", 0.0) - d.consumo_kw
+	if cambio_kw != 0.0:
+		var antes := economia.balance("energia")
+		filas.append([("Energía producida" if cambio_kw > 0.0 else "Energía que gasta"), UI.kw(cambio_kw, true),
+			"balance %s a %s" % [UI.kw(antes, true), UI.kw(antes + cambio_kw, true)]])
 	confirmacion_pedida.emit("¿Construir %s?" % d.nombre, "Ocupa %dx%d casillas" % [d.tam.x, d.tam.y],
 		construir.bind(d, origen), filas, "Construir", false)
 
@@ -296,6 +334,7 @@ func construir(d: DatosModulo, origen: Vector2i) -> void:
 		return
 	EstadoJuego.economia.pagar(d.dinero, d.materiales)
 	agregar_modulo(d.id, origen)
+	GestorAudio.reproducir("poner_modulo")
 	EstadoJuego.modulos_construidos += 1
 	if not d.es_pasillo():
 		EstadoJuego.registrar(Enums.Categoria.ACCION, "Construido: %s" % d.nombre, false)
@@ -327,6 +366,7 @@ func demoler(objetivo: ElementoMapa) -> void:
 	if not is_instance_valid(objetivo) or not EstadoJuego.economia.puede_pagar(objetivo.coste_demoler(), 0):
 		return
 	EstadoJuego.economia.pagar(objetivo.coste_demoler(), 0)
+	GestorAudio.reproducir("quitar_modulo")
 	EstadoJuego.registrar(Enums.Categoria.ACCION, "Demolido: %s" % objetivo.nombre(), false)
 	cuadricula.liberar(objetivo.origen, objetivo.tam_celdas())
 	if objetivo is Modulo:
@@ -371,7 +411,8 @@ func _clic_izquierdo() -> void:
 				_pedir_demolicion(cuadricula.objetivo_en(c))
 		Enums.ModoMapa.NORMAL:
 			for colono: Colono in contenedor_colonos.get_children():
-				if colono.position.distance_to(punto) <= Colono.RADIO_CLIC:
+				# Los que están dentro de un módulo no se ven: el clic va al módulo.
+				if not colono.oculto() and colono.position.distance_to(punto) <= Colono.RADIO_CLIC:
 					colono_clicado.emit(colono)
 					return
 			if cuadricula.celdas_modulo.has(c) and cuadricula.celdas_modulo[c].datos.id in MODULOS_CON_MENU:
@@ -389,7 +430,7 @@ func _actualizar_objetivo_demoler() -> void:
 		var extra := ""
 		if objetivo.materiales_al_demoler() > 0:
 			extra = "  +%d mat." % objetivo.materiales_al_demoler()
-		etiqueta_demolicion.emit("Demoler: $%d%s" % [objetivo.coste_demoler(), extra])
+		etiqueta_demolicion.emit("Demoler: %s%s" % [UI.dinero(objetivo.coste_demoler()), extra])
 	if objetivo != objetivo_demoler:
 		objetivo_demoler = objetivo
 		capa.queue_redraw()

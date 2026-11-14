@@ -6,7 +6,9 @@ extends Button
 ## Entrada del catálogo de construcción (HU-05), según docs/diseno/Construir.pdf:
 ##   ╭────┬──────────────────╮
 ##   │ ▦▦ │ Soporte Vital    │   El icono dibuja las casillas que ocupa el módulo.
-##   │ ▦▦ │ $300   30 mat.   │   El coste se pinta en rojo si no alcanza.
+##   │ ▦▦ │ $300 M  30 mat.  │   El coste se pinta en rojo si no alcanza.
+##   │    │ Consume 10 kW    │   Energía: lo que gasta (o produce, el panel).
+##   │    │ +5.2 kg O2/sol   │   Lo que produce por sol.
 ##   ╰────┴──────────────────╯
 ## Queda deshabilitada y atenuada si no alcanza el dinero o los materiales.
 
@@ -44,12 +46,37 @@ func _init(datos_modulo: DatosModulo, al_elegir: Callable) -> void:
 	var coste := UI.fila(16)
 	var alcanza_dinero: bool = economia.recursos["presupuesto"] >= datos.dinero
 	var alcanzan_materiales: bool = economia.recursos["materiales"] >= datos.materiales
-	coste.add_child(UI.etiqueta_pixel("$%d" % datos.dinero, 8, UI.BIEN if alcanza_dinero else UI.CRITICO))
+	coste.add_child(UI.etiqueta_pixel(UI.dinero(datos.dinero), 8, UI.BIEN if alcanza_dinero else UI.CRITICO))
 	coste.add_child(UI.etiqueta_pixel("%d mat." % datos.materiales, 8, UI.ACENTO if alcanzan_materiales else UI.CRITICO))
 	c.add_child(coste)
+	var lineas := lineas_energia_y_produccion(datos)
+	for linea: Array in lineas:
+		c.add_child(UI.etiqueta_pixel(linea[0], 8, linea[1]))
+	# Alto según las líneas: nombre (10 px) + costo y cada línea (8 px), separadas 5 px.
+	custom_minimum_size.y = maxf(LADO_ICONO + 14, 26 + 13 * (lineas.size() + 1))
 	for hijo: Control in find_children("*", "Control", true, false):
 		hijo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
+
+
+## Lo que gasta o produce el módulo: [[texto, color], ...]. La energía primero
+## ("Consume 10 kW" o "Produce 20 kW"), después lo que produce por sol.
+static func lineas_energia_y_produccion(d: DatosModulo) -> Array:
+	var lineas := []
+	var produce_kw: float = d.produce.get("energia", 0.0)
+	if produce_kw > 0.0:
+		lineas.append(["Produce %s" % UI.kw(produce_kw), UI.BIEN])
+	elif d.consumo_kw > 0.0:
+		lineas.append(["Consume %s" % UI.kw(d.consumo_kw), UI.ADVERTENCIA])
+	const CORTO := { "oxigeno": "O2", "agua": "agua", "comida": "comida", "materiales": "mat." }
+	for recurso: String in d.produce:
+		if recurso != "energia":
+			var unidad: String = UI.UNIDAD.get(recurso, "")
+			lineas.append(["+%s%s %s/sol" % [UI.num(d.produce[recurso]), " " + unidad if unidad != "" else "",
+				CORTO.get(recurso, recurso)], UI.TEXTO_SUAVE])
+	if d.nota_produccion != "":
+		lineas.append([d.nota_produccion, UI.TEXTO_SUAVE])
+	return lineas
 
 
 ## Cuadro oscuro con la forma del módulo: una casilla por cada casilla del mapa, rellena con

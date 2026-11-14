@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="DatosModulo" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://recursos/sprites/modulos/perforadora.png" id="1_textura"]
+[ext_resource type="Script" path="res://datos/clases/datos_modulo.gd" id="1_perf"]
+
+[resource]
+script = ExtResource("1_perf")
+id = "perforadora"
+nombre = "Perforadora de hielo"
+tam = Vector2i(2, 2)
+letra = "PH"
+color = Color(0.1255, 0.5333, 0.7255, 1)
+textura = ExtResource("1_textura")
+region_icono = Rect2(20, 18, 24, 24)
+dinero = 250
+materiales = 25
+produce = {
+"agua": 5.0
+}
+consumo_kw = 10.0

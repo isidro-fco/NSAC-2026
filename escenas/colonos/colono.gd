@@ -10,6 +10,8 @@ extends Node2D
 ## el Módulo de Comando si no está construido) y, al llegar, se anima trabajando.
 ## Camina casilla a casilla y al final se acerca a un punto exacto dentro del
 ## edificio, para no quedarse en las esquinas de tierra del módulo.
+## Al quedarse quieto dentro de un módulo se desvanece (entró al edificio) y
+## reaparece al salir. En el panel de tripulación se ve en qué módulo está.
 
 const VELOCIDAD_PX := 48.0
 ## Multiplicador de velocidad al ir a la estación de su tarea.
@@ -25,6 +27,10 @@ const FOTOGRAMAS := 6
 const FPS_CAMINATA := 10.0
 const DESFASE_SPRITE := Vector2(-16, -20)   # pies del sprite sobre la sombra
 enum Direccion { ABAJO, IZQUIERDA, DERECHA, ARRIBA }
+## Módulos de paso: quedarse en ellos no cuenta como "entrar" (sigue visible).
+const MODULOS_DE_PASO := ["pasillo", "plataforma"]
+## Opacidad que gana o pierde por segundo al entrar o salir de un módulo.
+const VELOCIDAD_FUNDIDO := 4.0
 
 var datos: DatosColono
 var mapa: Mapa
@@ -63,6 +69,7 @@ func _process(delta: float) -> void:
 		return
 	tiempo += escala
 	queue_redraw()
+	modulate.a = move_toward(modulate.a, 0.0 if dentro_de_modulo() else 1.0, VELOCIDAD_FUNDIDO * escala)
 	datos.ubicacion = mapa.ubicacion(celda)
 	var tasa := EstadoJuego.eventos.tasa_radiacion(datos.ubicacion)
 	if tasa > 0.0:
@@ -77,6 +84,19 @@ func _process(delta: float) -> void:
 
 func en_camino() -> bool:
 	return not ruta.is_empty() or not position.is_equal_approx(punto_final)
+
+
+## true si está quieto dentro de un edificio (no en un pasillo ni en la plataforma).
+func dentro_de_modulo() -> bool:
+	if en_camino():
+		return false
+	var modulo: Modulo = mapa.cuadricula.celdas_modulo.get(celda)
+	return modulo != null and modulo.datos.id not in MODULOS_DE_PASO
+
+
+## true cuando ya casi no se ve (no se puede clicar en el mapa).
+func oculto() -> bool:
+	return modulate.a < 0.5
 
 
 ## Se mueve `paso` píxeles: primero por las casillas de la ruta y después hasta el punto final.

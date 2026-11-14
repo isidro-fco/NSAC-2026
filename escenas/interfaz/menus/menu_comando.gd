@@ -51,9 +51,13 @@ func _barra_metricas() -> Control:
 		c.alignment = BoxContainer.ALIGNMENT_CENTER
 		c.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		# La energía muestra su balance en kW (potencia); lo demás, cuánto cambia por sol.
+		var por_sol: String = UI.kw(saldo, true) if recurso == "energia" \
+			else ("+" if saldo >= 0.0 else "") + UI.dinero(saldo) + "/Sol" if recurso == "presupuesto" \
+			else "%s%s/Sol" % [UI.con_signo(saldo), " " + UI.UNIDAD[recurso] if UI.UNIDAD.has(recurso) else ""]
 		for linea: Array in [[Enums.NOMBRE_RECURSO[recurso], UI.TEXTO],
-				[UI.num(EstadoJuego.economia.valor(recurso)), UI.COLOR_RECURSO.get(recurso, UI.TEXTO)],
-				["%s/Sol" % UI.con_signo(saldo), UI.CRITICO if EstadoJuego.economia.es_critico(recurso) else UI.TEXTO]]:
+				[UI.cantidad(recurso, EstadoJuego.economia.valor(recurso)), UI.COLOR_RECURSO.get(recurso, UI.TEXTO)],
+				[por_sol, UI.CRITICO if EstadoJuego.economia.es_critico(recurso) else UI.TEXTO]]:
 			var etiqueta := UI.etiqueta_pixel(linea[0], UI.T_TEXTO, linea[1])
 			etiqueta.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			c.add_child(etiqueta)
@@ -75,8 +79,8 @@ func _panel_mejora() -> Control:
 	if comando.soles_mejora > 0:
 		texto = "Mejorando a nivel %d: faltan %s" % [comando.nivel + 1, UI.soles(comando.soles_mejora)]
 	elif not mejora.is_empty():
-		texto = "Mejorar Módulo de Comando ($%d + %d materiales %d soles)" % [
-			mejora["dinero"], mejora["materiales"], mejora["soles"]]
+		texto = "Mejorar Módulo de Comando (%s + %d materiales %d soles)" % [
+			UI.dinero(mejora["dinero"]), mejora["materiales"], mejora["soles"]]
 	f.add_child(UI.boton_accion(texto, _pedir_mejora, comando.puede_mejorar()))
 	return panel
 
@@ -84,8 +88,8 @@ func _panel_mejora() -> Control:
 func _pedir_mejora() -> void:
 	var comando := EstadoJuego.comando
 	var mejora := comando.siguiente_mejora()
-	var texto := "Subir al nivel %d por $%d y %d materiales.\nLa obra tarda %d soles; al terminar, la producción pasa a x%s." % [
-		comando.nivel + 1, mejora["dinero"], mejora["materiales"], mejora["soles"],
+	var texto := "Subir al nivel %d por %s y %d materiales.\nLa obra tarda %d soles; al terminar, la producción pasa a x%s (salvo la energía de los paneles)." % [
+		comando.nivel + 1, UI.dinero(mejora["dinero"]), mejora["materiales"], mejora["soles"],
 		UI.num(comando.multiplicador_siguiente())]
 	interfaz.confirmar("Mejorar Módulo de Comando", texto, comando.mejorar)
 

@@ -22,6 +22,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 GestorTiempo="*res://globales/gestor_tiempo.gd"
+GestorAudio="*res://globales/gestor_audio.gd"
+ServicioNasa="*res://globales/nasa/servicio_nasa.gd"
 EstadoJuego="*res://globales/estado_juego.gd"
 
 [display]

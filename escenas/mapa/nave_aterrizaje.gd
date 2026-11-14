@@ -6,12 +6,15 @@ extends Node2D
 ## Animación de llegada desde la Tierra (HU-09). Es solo visual: los colonos y
 ## los recursos ya cuentan para la colonia cuando EstadoJuego avisa de su llegada.
 ##   DESCENSO   baja frenando, con la llama del motor y el tren de aterrizaje fuera
-##   EN_TIERRA  levanta polvo, abre la compuerta y salen los colonos (o las cajas)
+##   EN_TIERRA  levanta polvo, abre la compuerta y los colonos salen de uno en uno
+##              por la escotilla y bajan la rampa (o salen las cajas); espera al último
 ##   DESPEGUE   sube acelerando hasta salir de la vista y desaparece
 ## El tiempo sigue a GestorTiempo: se congela en pausa y va al doble con x2.
+## Sonidos: aterrizaje al empezar a bajar, despegue al subir y, en la nave de
+## carga, las cajas al caer.
 
-## Avisa cuando la compuerta está abierta: es el momento de sacar a los colonos.
-signal compuerta_abierta(nave: NaveAterrizaje)
+## Un colono terminó de bajar la rampa: `punto` es dónde queda, en coordenadas del mapa.
+signal colono_desembarcado(datos: DatosColono, punto: Vector2)
 signal terminada
 
 enum Tipo { TRIPULACION, CARGA }
@@ -23,11 +26,17 @@ const DURACION := {
 	Fase.EN_TIERRA: 2.2,
 	Fase.DESPEGUE: 1.8,
 }
-const ABRIR_COMPUERTA := 0.5          # s en tierra antes de abrir
+const ABRIR_COMPUERTA := 0.5          # s en tierra hasta que la compuerta está abierta del todo
+const SALIDA_INTERVALO := 0.55        # s entre un colono y el siguiente
+const BAJADA := 0.9                   # s que tarda un colono de la escotilla al suelo
+const ESPERA_CIERRE := 0.6            # s con la compuerta abierta tras bajar el último
+const ESCOTILLA := Vector2(0, -11)    # pies del colono al asomar (con la nave en tierra)
+const PIE_RAMPA := Vector2(0, -3)
+const ESCALA_ESCOTILLA := 0.55        # el colono sale pequeño y crece al acercarse
 const ALTURA_TREN := 70.0             # por debajo de esta altura saca las patas
 
-const CASCO := Color("#e9e4da")
-const CASCO_SOMBRA := Color("#b9b3a8")
+const SPRITE_CAPSULA := preload("res://recursos/sprites/modulos/capsula_orion.png")
+const CAPSULA_ORIGEN := Vector2(-16, -39)    # esquina del sprite: el escudo térmico queda en base.y - 9
 const CARGA_CASCO := Color("#9aa3ab")
 const CARGA_SOMBRA := Color("#6f7882")
 const CONTORNO := Color(0, 0, 0, 0.55)
@@ -37,8 +46,9 @@ var tipo: Tipo = Tipo.TRIPULACION
 var fase: Fase = Fase.DESCENSO
 var t := 0.0                          # segundos de juego dentro de la fase
 var colonos: Array[DatosColono] = []  # tripulación: salen al abrir la compuerta
+var _desembarcados := 0               # cuántos colonos ya bajaron la rampa
 var carga := {}                       # carga: recurso -> cantidad (decide el color de las cajas)
-var _compuerta_avisada := false
+var _cajas_sonaron := false
 var _polvo: Array[Dictionary] = []    # { "pos", "vel", "vida" }
 var _reloj := 0.0                     # para el parpadeo de la luz y la llama
 
@@ -46,6 +56,10 @@ var _reloj := 0.0                     # para el parpadeo de la luz y la llama
 func _init(tipo_nave: Tipo, punto: Vector2) -> void:
 	tipo = tipo_nave
 	position = punto
+
+
+func _ready() -> void:
+	GestorAudio.reproducir("aterrizaje")
 
 
 ## true mientras todavía no toca el suelo (se le pueden añadir colonos).
@@ -60,10 +74,12 @@ func _process(delta: float) -> void:
 	t += dt
 	_reloj += dt
 	_mover_polvo(dt)
-	if fase == Fase.EN_TIERRA and not _compuerta_avisada and t >= ABRIR_COMPUERTA:
-		_compuerta_avisada = true
-		compuerta_abierta.emit(self)
-	if t >= DURACION[fase]:
+	if fase == Fase.EN_TIERRA:
+		_avisar_desembarcos()
+	if tipo == Tipo.CARGA and fase == Fase.EN_TIERRA and not _cajas_sonaron and t >= ABRIR_COMPUERTA + 0.4:
+		_cajas_sonaron = true
+		GestorAudio.reproducir("caja_cayendo")
+	if t >= duracion():
 		_siguiente_fase()
 	queue_redraw()
 
@@ -74,9 +90,13 @@ func _siguiente_fase() -> void:
 		Fase.DESCENSO:
 			fase = Fase.EN_TIERRA
 			_levantar_polvo(14)
+			# Los que se volvieron a la Tierra durante el viaje no bajan.
+			colonos = colonos.filter(func(c: DatosColono) -> bool:
+				return EstadoJuego.tripulacion.colonos.has(c))
 		Fase.EN_TIERRA:
 			fase = Fase.DESPEGUE
 			_levantar_polvo(8)
+			GestorAudio.reproducir("despegue")
 		Fase.DESPEGUE:
 			terminada.emit()
 			queue_free()
@@ -84,7 +104,7 @@ func _siguiente_fase() -> void:
 
 ## Altura sobre la plataforma: frena al bajar y acelera al subir.
 func altura() -> float:
-	var p := clampf(t / DURACION[fase], 0.0, 1.0)
+	var p := clampf(t / duracion(), 0.0, 1.0)
 	match fase:
 		Fase.DESCENSO:
 			return ALTURA * pow(1.0 - p, 2.0)
@@ -97,12 +117,66 @@ func altura() -> float:
 func apertura() -> float:
 	if fase != Fase.EN_TIERRA:
 		return 0.0
-	var cerrar_en: float = DURACION[Fase.EN_TIERRA] - 0.4
+	var cerrar_en: float = duracion() - 0.4
 	if t < ABRIR_COMPUERTA - 0.3:
 		return 0.0
 	if t > cerrar_en:
 		return clampf(1.0 - (t - cerrar_en) / 0.3, 0.0, 1.0)
 	return clampf((t - (ABRIR_COMPUERTA - 0.3)) / 0.3, 0.0, 1.0)
+
+
+## Segundos de la fase actual; en tierra, la tripulación alarga la espera hasta que baja el último.
+func duracion() -> float:
+	if fase != Fase.EN_TIERRA or colonos.is_empty():
+		return DURACION[fase]
+	var ultimo := _salida(colonos.size() - 1) + BAJADA + ESPERA_CIERRE
+	return maxf(DURACION[Fase.EN_TIERRA], ultimo)
+
+
+# --- Desembarco -----------------------------------------------------------
+
+## Momento (s en tierra) en que el colono `i` asoma por la escotilla.
+func _salida(i: int) -> float:
+	return ABRIR_COMPUERTA + i * SALIDA_INTERVALO
+
+
+## 0..1: cuánto ha bajado el colono `i` (fuera de rango si no ha salido o ya bajó).
+func _progreso_bajada(i: int) -> float:
+	return (t - _salida(i)) / BAJADA
+
+
+## Dónde se queda el colono `i` al pie de la nave, repartidos en fila.
+func _punto_final(i: int) -> Vector2:
+	return Vector2((i - (colonos.size() - 1) / 2.0) * 9.0, 10.0)
+
+
+func _avisar_desembarcos() -> void:
+	while _desembarcados < colonos.size() and _progreso_bajada(_desembarcados) >= 1.0:
+		colono_desembarcado.emit(colonos[_desembarcados], position + _punto_final(_desembarcados))
+		_desembarcados += 1
+
+
+## Colonos que están bajando: salen por la escotilla, bajan la rampa y caminan
+## hasta su sitio. Al terminar, el mapa crea el Colono de verdad en ese punto.
+func _dibujar_colonos_bajando() -> void:
+	for i in range(_desembarcados, colonos.size()):
+		var p := _progreso_bajada(i)
+		if p < 0.0 or p >= 1.0:
+			continue
+		var pos: Vector2
+		if p < 0.55:
+			pos = ESCOTILLA.lerp(PIE_RAMPA, p / 0.55)
+		else:
+			pos = PIE_RAMPA.lerp(_punto_final(i), (p - 0.55) / 0.45)
+		var escala := lerpf(ESCALA_ESCOTILLA, 1.0, smoothstep(0.0, 0.7, p))
+		var fotograma := int((t - _salida(i)) * Colono.FPS_CAMINATA) % Colono.FOTOGRAMAS
+		var region := Rect2(fotograma * Colono.TAM_FOTOGRAMA, Colono.Direccion.ABAJO * Colono.TAM_FOTOGRAMA,
+			Colono.TAM_FOTOGRAMA, Colono.TAM_FOTOGRAMA)
+		var rect := Rect2(Colono.DESFASE_SPRITE, Vector2(Colono.TAM_FOTOGRAMA, Colono.TAM_FOTOGRAMA))
+		draw_set_transform(pos, 0.0, Vector2(escala, escala))
+		draw_texture_rect_region(Colono.HOJA, rect, region)
+		draw_texture_rect_region(Colono.HOJA_ACENTO, rect, region, colonos[i].color_rol())
+	draw_set_transform(Vector2.ZERO)
 
 
 # --- Polvo ----------------------------------------------------------------
@@ -142,6 +216,7 @@ func _draw() -> void:
 	_dibujar_patas(base, h)
 	if tipo == Tipo.TRIPULACION:
 		_dibujar_capsula(base)
+		_dibujar_colonos_bajando()
 	else:
 		_dibujar_carguero(base)
 
@@ -169,30 +244,19 @@ func _dibujar_patas(base: Vector2, h: float) -> void:
 		draw_rect(Rect2(pie + Vector2(-2.5, -1.0), Vector2(5, 2)), CARGA_SOMBRA)
 
 
-## Cápsula de tripulación: casco claro, franja naranja, ventanilla y compuerta.
+## Cápsula de tripulación inspirada en la Orion: sprite de 32x32 con la escotilla
+## lateral; la compuerta abierta y la luz se pintan encima.
 func _dibujar_capsula(base: Vector2) -> void:
-	var cuerpo := PackedVector2Array([base + Vector2(-11, -26), base + Vector2(11, -26),
-		base + Vector2(15, -9), base + Vector2(-15, -9)])
-	draw_colored_polygon(cuerpo, CASCO)
-	draw_colored_polygon(PackedVector2Array([base + Vector2(4, -26), base + Vector2(11, -26),
-		base + Vector2(15, -9), base + Vector2(6, -9)]), CASCO_SOMBRA)
-	draw_rect(Rect2(base + Vector2(-14, -14), Vector2(28, 3)), UI.ACENTO)
-	_contorno(cuerpo)
-	# Cúpula, antena y luz roja como la de los módulos.
-	draw_circle(base + Vector2(0, -27), 9.0, CASCO)
-	draw_arc(base + Vector2(0, -27), 9.0, PI, TAU, 16, CONTORNO, 1.0)
-	draw_line(base + Vector2(6, -34), base + Vector2(9, -42), CARGA_SOMBRA, 1.0)
+	draw_texture(SPRITE_CAPSULA, base + CAPSULA_ORIGEN)
 	var luz := UI.CRITICO if fmod(_reloj, 0.8) < 0.4 else UI.CRITICO.darkened(0.5)
-	draw_circle(base + Vector2(9, -43), 1.8, luz)
-	draw_circle(base + Vector2(0, -27), 4.5, UI.FONDO_CLARO)
-	draw_circle(base + Vector2(-1.5, -28.5), 1.5, UI.BIEN)
-	# Compuerta: se abre hacia abajo como una rampa.
+	draw_circle(base + Vector2(0, -39), 1.2, luz)
+	# Compuerta: el hueco se oscurece y cae una rampa hacia abajo.
 	var abre := apertura()
-	var puerta := Rect2(base + Vector2(-5, -22), Vector2(10, 11))
-	draw_rect(puerta, UI.FONDO.lerp(Color("#3a4f62"), 1.0 - abre) if abre > 0.0 else CASCO_SOMBRA)
 	if abre > 0.0:
-		draw_rect(Rect2(base + Vector2(-5, -11), Vector2(10, 9.0 * abre)), CARGA_SOMBRA)
-	draw_rect(puerta, CONTORNO, false, 1.0)
+		var hueco := Rect2(base + Vector2(-3, -24), Vector2(6, 7))
+		draw_rect(hueco, UI.FONDO.lerp(Color("#3a4f62"), 1.0 - abre))
+		draw_rect(Rect2(base + Vector2(-4, -17), Vector2(8, 8.0 * abre)), CARGA_SOMBRA)
+		draw_rect(Rect2(base + Vector2(-4, -17), Vector2(8, 8.0 * abre)), CONTORNO, false, 1.0)
 
 
 ## Carguero: más ancho y gris, con franjas amarillas y una bodega.
@@ -228,7 +292,7 @@ func _dibujar_cajas() -> void:
 		colores.append(UI.ACENTO)
 	var huecos := [Vector2(-22, 12), Vector2(22, 12), Vector2(-10, 20), Vector2(10, 20)]
 	var salida := clampf((t - ABRIR_COMPUERTA) / 0.5, 0.0, 1.0)
-	var fin: float = DURACION[Fase.EN_TIERRA]
+	var fin := duracion()
 	var alfa := clampf((fin - t) / 0.5, 0.0, 1.0)
 	for i in huecos.size():
 		var pos: Vector2 = Vector2(0, 2).lerp(huecos[i], salida)

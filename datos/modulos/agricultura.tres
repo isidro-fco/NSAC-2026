@@ -14,5 +14,6 @@ textura = ExtResource("1_textura")
 dinero = 250
 materiales = 25
 produce = {
-"comida": 5.0
+"comida": 6.5
 }
+consumo_kw = 30.0

@@ -98,8 +98,8 @@ func _montar_marco(titulo: String) -> VBoxContainer:
 	add_child(centro)
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = TAM_MENU
-	UI.aplicar_marco(panel, 24)
-	panel.get_theme_stylebox("panel").content_margin_top = 18
+	UI.aplicar_marco_ventana(panel, 10)
+	panel.get_theme_stylebox("panel").content_margin_top = UI.MARGEN_VENTANA + 6
 	centro.add_child(panel)
 	var marco := UI.columna(10)
 	panel.add_child(marco)

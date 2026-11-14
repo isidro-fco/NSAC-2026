@@ -29,6 +29,16 @@ func pedir(pedido: Dictionary) -> void:
 		EstadoJuego.registrar(Enums.Categoria.ACCION, "Pedido a la Tierra: %s (llega en %d soles)" % [pedido["nombre"], pedido["soles"]])
 
 
+## El clima espacial interrumpe las comunicaciones: todo lo que viene en camino tarda más.
+func retrasar(soles: int) -> void:
+	for envio: Dictionary in envios:
+		envio["soles"] += soles
+		if envio["colono"] != null:
+			envio["colono"].soles_restantes = envio["soles"]
+	if not envios.is_empty():
+		EstadoJuego.registrar(Enums.Categoria.EVENTO, "Los envíos de la Tierra se retrasan %s" % UI.soles(soles), false)
+
+
 ## Se llama una vez por sol: acerca los envíos, entrega los que llegan y
 ## cada cierto tiempo la Tierra aprueba una transferencia de fondos.
 func avanzar() -> void:
@@ -43,8 +53,8 @@ func avanzar() -> void:
 	if soles_para_transferencia <= 0:
 		soles_para_transferencia = datos.transferencia_cada
 		enviar("Transferencia de fondos", datos.transferencia_soles, { "presupuesto": datos.transferencia_dinero })
-		EstadoJuego.registrar(Enums.Categoria.EVENTO, "La Tierra aprobó una transferencia de $%d (llegará en %d soles)" % [
-			datos.transferencia_dinero, datos.transferencia_soles])
+		EstadoJuego.registrar(Enums.Categoria.EVENTO, "La Tierra aprobó una transferencia de %s (llegará en %d soles)" % [
+			UI.dinero(datos.transferencia_dinero), datos.transferencia_soles])
 
 
 func _entregar(envio: Dictionary) -> void:
@@ -55,9 +65,9 @@ func _entregar(envio: Dictionary) -> void:
 	for recurso: String in envio["contenido"]:
 		var cantidad: float = envio["contenido"][recurso]
 		var entra := EstadoJuego.economia.sumar(recurso, cantidad)
-		var texto := "+%s %s" % [UI.num(entra), Enums.NOMBRE_RECURSO[recurso]]
+		var texto := "+%s %s" % [UI.cantidad(recurso, entra), Enums.NOMBRE_RECURSO[recurso]]
 		if entra < cantidad:
-			texto += " (%s no cupieron en el almacén)" % UI.num(cantidad - entra)
+			texto += " (%s no cupieron en el almacén)" % UI.cantidad(recurso, cantidad - entra)
 		partes.append(texto)
 	EstadoJuego.registrar(Enums.Categoria.EVENTO, "Llegó desde la Tierra: %s: %s" % [envio["nombre"], ", ".join(partes)])
 	# El dinero llega por transferencia; lo demás baja en una nave de carga.

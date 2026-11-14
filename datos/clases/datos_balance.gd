@@ -10,15 +10,27 @@ extends Resource
 @export var segundos_por_sol: float
 @export var soles_historial: int
 @export var inicial: Dictionary
+## Unidades: oxígeno y comida en kg, agua en L, energía guardada en kWh
+## (producción y consumo de energía en kW), presupuesto en millones de USD.
+## Tanques de oxígeno (kg).
 @export var cap_tanques: float
+## Baterías (kWh).
+@export var cap_bateria: float
+## Víveres del almacén: agua + comida + raciones (kg; 1 L de agua = 1 kg).
 @export var cap_almacen_base: float
 @export var cap_almacen_por_nivel: float
+@export var cap_materiales_base: float
+@export var cap_materiales_por_nivel: float
 @export var nivel_almacen_max: int
 @export var fraccion_critica: float
 @export var presupuesto_critico: float
+## Producción por sol de la base inicial (energía: kW; 100 kW = 2 reactores
+## de fisión de 40 kW + 1 panel solar de 20 kW).
 @export var produccion_base: Dictionary
-@export var energia_por_modulo: float
-@export var consumo_por_colono: float
+## Consumo de cada colono por sol: { "oxigeno": kg, "agua": L, "comida": kg }.
+@export var consumo_por_colono: Dictionary
+## El soporte vital recicla esta fracción del agua que se consume cada sol.
+@export var fraccion_reciclaje_agua: float
 @export var factor_racion: Dictionary
 @export var soles_estricta_para_riesgo: int
 @export var prob_enfermar_estricta: float

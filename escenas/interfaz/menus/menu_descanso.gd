@@ -11,9 +11,9 @@ var reclutando := false
 func construir() -> void:
 	var tripulacion := EstadoJuego.tripulacion
 	var recursos := EstadoJuego.economia.recursos
-	var resumen := "Cuartos ocupados: %d/%d    Presupuesto: $%s    Materiales: %s" % [
+	var resumen := "Cuartos ocupados: %d/%d    Presupuesto: %s    Materiales: %s" % [
 		tripulacion.cuartos - tripulacion.cuartos_libres(), tripulacion.cuartos,
-		UI.num(recursos["presupuesto"]), UI.num(recursos["materiales"])]
+		UI.dinero(recursos["presupuesto"]), UI.num(recursos["materiales"])]
 	contenido.add_child(UI.etiqueta_pixel(resumen, UI.T_DETALLE))
 	if reclutando and tripulacion.cuartos_libres() <= 0:
 		reclutando = false
@@ -56,7 +56,7 @@ func _panel_acciones() -> Control:
 	f.add_child(UI.expandir(UI.boton_primario(texto_reclutar, _ver_reclutamiento.bind(true), hay_cuartos)))
 
 	var datos := EstadoJuego.datos_balance
-	var texto_expandir := "Expandir Módulo ($%d + %d materiales)" % [datos.expandir_descanso_dinero, datos.expandir_descanso_materiales]
+	var texto_expandir := "Expandir Módulo (%s + %d materiales)" % [UI.dinero(datos.expandir_descanso_dinero), datos.expandir_descanso_materiales]
 	if EstadoJuego.tripulacion.cuartos >= datos.cuartos_max:
 		texto_expandir = "Capacidad máxima alcanzada (%d/%d)" % [EstadoJuego.tripulacion.cuartos, datos.cuartos_max]
 	f.add_child(UI.expandir(UI.boton(texto_expandir, _pedir_expansion, EstadoJuego.tripulacion.puede_ampliar_cuartos())))
@@ -65,7 +65,7 @@ func _panel_acciones() -> Control:
 
 func _pedir_expansion() -> void:
 	var datos := EstadoJuego.datos_balance
-	var texto := "Añadir 1 cuarto por $%d y %d materiales" % [datos.expandir_descanso_dinero, datos.expandir_descanso_materiales]
+	var texto := "Añadir 1 cuarto por %s y %d materiales" % [UI.dinero(datos.expandir_descanso_dinero), datos.expandir_descanso_materiales]
 	interfaz.confirmar("Expandir módulo", texto, EstadoJuego.tripulacion.ampliar_cuartos)
 
 
@@ -80,7 +80,7 @@ func _construir_reclutamiento() -> void:
 		f.add_child(UI.avatar(perfil))
 		f.add_child(UI.expandir(UI.cabecera_tarjeta(candidato["nombre"], Enums.NOMBRE_ROL[candidato["rol"]], UI.TEXTO)))
 		var alcanza := EstadoJuego.economia.puede_pagar(candidato["coste"], 0)
-		f.add_child(UI.boton_accion("Contratar ($%d)" % candidato["coste"], _pedir_contrato.bind(candidato), alcanza))
+		f.add_child(UI.boton_accion("Contratar (%s)" % UI.dinero(candidato["coste"]), _pedir_contrato.bind(candidato), alcanza))
 		lista.add_child(tarjeta)
 	if EstadoJuego.tripulacion.candidatos.is_empty():
 		lista.add_child(UI.parrafo("No quedan candidatos. Habrá nuevos en unos soles."))
@@ -88,8 +88,8 @@ func _construir_reclutamiento() -> void:
 
 
 func _pedir_contrato(candidato: Dictionary) -> void:
-	var texto := "Contratar a %s por $%d.\nViajará desde la Tierra y llegará a la plataforma de aterrizaje en %d soles; su cuarto queda reservado." % [
-		candidato["nombre"], candidato["coste"], EstadoJuego.datos_balance.soles_viaje_colono]
+	var texto := "Contratar a %s por %s.\nViajará desde la Tierra y llegará a la plataforma de aterrizaje en %d soles; su cuarto queda reservado." % [
+		candidato["nombre"], UI.dinero(candidato["coste"]), EstadoJuego.datos_balance.soles_viaje_colono]
 	interfaz.confirmar("Confirmar contratación", texto, func() -> void:
 		reclutando = false
 		EstadoJuego.tripulacion.contratar(candidato))
