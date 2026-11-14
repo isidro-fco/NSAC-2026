@@ -1,15 +1,17 @@
+# modulo.gd
+# Módulo construido en el mapa: posición, tamaño, costo de demolición y dibujo.
+
 class_name Modulo
-extends Node2D
+extends ElementoMapa
 ## Módulo colocado en el mapa. Sus datos vienen de datos/modulos/<id>.tres.
+## Demolerlo no devuelve materiales.
 
 var datos: DatosModulo
-var origen := Vector2i.ZERO
 
 
 func _init(origen_celda: Vector2i, datos_modulo: DatosModulo) -> void:
 	datos = datos_modulo
-	origen = origen_celda
-	position = Vector2(origen) * GestorCuadricula.TAM_CELDA
+	_colocar_en(origen_celda)
 	EstadoJuego.partida_terminada.connect(func(_motivo: String) -> void: queue_redraw())
 
 
@@ -19,10 +21,6 @@ func tam_celdas() -> Vector2i:
 
 func coste_demoler() -> int:
 	return datos.coste_demoler()
-
-
-func materiales_al_demoler() -> int:
-	return 0
 
 
 func nombre() -> String:
@@ -42,3 +40,4 @@ func _draw() -> void:
 	var ancho := fuente.get_string_size(datos.letra, HORIZONTAL_ALIGNMENT_LEFT, -1, 18).x
 	draw_string(fuente, rect.get_center() + Vector2(-ancho / 2.0, 6.3), datos.letra,
 		HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color(0, 0, 0, 0.7))
+

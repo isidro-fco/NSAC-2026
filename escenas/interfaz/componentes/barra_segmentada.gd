@@ -1,3 +1,6 @@
+# barra_segmentada.gd
+# Barra de nivel hecha de cuadritos que se llenan según una proporción de 0 a 1.
+
 class_name BarraSegmentada
 extends Control
 ## Barra de nivel hecha de cuadritos (docs/diseno/Principal.pdf).

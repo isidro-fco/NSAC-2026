@@ -1,3 +1,6 @@
+# ui.gd
+# Estilo común de la interfaz: paleta de colores, fuentes, tema y funciones para crear piezas básicas.
+
 class_name UI
 extends RefCounted
 ## Estilo común de toda la interfaz: paleta (docs/diseno/paleta_colores.png),
@@ -59,6 +62,31 @@ static func estilo(fondo: Color, borde := BORDE, radio := RADIO, margen := 10, g
 	caja.set_content_margin_all(margen)
 	caja.anti_aliasing = radio > 0
 	return caja
+
+
+## Marco con cinta de peligro y piso granulado, como la base de la sala de
+## comandos. Lo usan la barra del HUD y
+## todas las ventanas. El control que lo lleve debe usar TEXTURE_FILTER_NEAREST
+## (ver aplicar_marco).
+const MARCO := preload("res://recursos/sprites/interfaz/marco_hud.png")
+const MARGEN_MARCO := 8                       # = MARGEN en generar_marco_hud.py
+
+
+static func estilo_marco(margen := 12) -> StyleBoxTexture:
+	var caja := StyleBoxTexture.new()
+	caja.texture = MARCO
+	caja.set_texture_margin_all(MARGEN_MARCO)
+	# En mosaico (no estirados) para que las franjas y el grano no se deformen.
+	caja.axis_stretch_horizontal = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
+	caja.axis_stretch_vertical = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
+	caja.set_content_margin_all(maxi(margen, MARGEN_MARCO + 2))
+	return caja
+
+
+## Pone el marco de cinta de peligro como fondo de un PanelContainer.
+static func aplicar_marco(panel: PanelContainer, margen := 12) -> void:
+	panel.add_theme_stylebox_override("panel", estilo_marco(margen))
+	panel.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 
 ## Superficie elevada (panel, diálogo, aviso): borde fino y sombra suave.
@@ -398,6 +426,16 @@ static func dinero(valor: float) -> String:
 
 static func con_signo(valor: float) -> String:
 	return ("+" if valor >= 0.0 else "") + num(valor)
+
+
+## Fila [nombre, cambio, quedará] de las tablas de los avisos, p. ej.
+## "Costo del trabajo | -$40 | $1,000 a $960". Lo que quedará nunca baja de 0.
+static func fila_cambio(nombre: String, recurso: String, cambio: float) -> Array:
+	var antes := EstadoJuego.economia.valor(recurso)
+	var despues := maxf(antes + cambio, 0.0)
+	if recurso == "presupuesto":
+		return [nombre, ("+" if cambio >= 0.0 else "") + dinero(cambio), "%s a %s" % [dinero(antes), dinero(despues)]]
+	return [nombre, con_signo(cambio), "%s a %s" % [num(antes), num(despues)]]
 
 
 static func texto_recompensa(recompensa: Dictionary) -> String:

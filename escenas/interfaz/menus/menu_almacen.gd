@@ -1,3 +1,6 @@
+# menu_almacen.gd
+# Menú del almacén: reservas, racionamiento, cocina, pedidos a la Tierra y expansión del depósito.
+
 class_name MenuAlmacen
 extends MenuModulo
 ## HU-04: reservas, racionamiento, cocina y expansión del depósito.
@@ -19,10 +22,11 @@ const DESCRIPCION_RACION := {
 
 
 func construir() -> void:
+	var economia := EstadoJuego.economia
 	var cap := EstadoJuego.almacen.capacidad()
 	var resumen := "Víveres: %s / %s    Materiales: %s / %s    Presupuesto: $%s" % [
-		UI.num(EstadoJuego.economia.viveres()), UI.num(cap), UI.num(EstadoJuego.economia.recursos["materiales"]), UI.num(cap),
-		UI.num(EstadoJuego.economia.recursos["presupuesto"])]
+		UI.num(economia.viveres()), UI.num(cap), UI.num(economia.recursos["materiales"]), UI.num(cap),
+		UI.num(economia.recursos["presupuesto"])]
 	contenido.add_child(UI.etiqueta_pixel(resumen, UI.T_DETALLE))
 
 	var cuerpo := UI.fila(16)
@@ -56,13 +60,17 @@ func _tarjeta(titulo: String, detalle: String, accion: Control = null) -> Contro
 func _reservas() -> Control:
 	var c := UI.columna(6)
 	c.add_child(UI.seccion("Reservas"))
-	var hambre := EstadoJuego.economia.consumo("comida")
-	var de_raciones := minf(hambre, EstadoJuego.economia.recursos["raciones"])
+	var economia := EstadoJuego.economia
+	var recursos := economia.recursos
+	# Se comen primero las raciones preparadas y después la comida cruda.
+	var hambre := economia.consumo("comida")
+	var de_raciones := minf(hambre, recursos["raciones"])
+	var soles_raciones: float = INF if hambre <= 0.0 else recursos["raciones"] / hambre
 	var colonos := maxi(EstadoJuego.tripulacion.activos(), 1)
-	c.add_child(_linea("Comida cruda", EstadoJuego.economia.recursos["comida"], hambre - de_raciones, colonos, EstadoJuego.economia.soles_restantes("comida")))
-	c.add_child(_linea("Raciones preparadas", EstadoJuego.economia.recursos["raciones"], de_raciones, colonos, INF if hambre <= 0.0 else EstadoJuego.economia.recursos["raciones"] / hambre))
-	c.add_child(_linea("Agua potable", EstadoJuego.economia.recursos["agua"], EstadoJuego.economia.consumo("agua"), colonos, EstadoJuego.economia.soles_restantes("agua")))
-	c.add_child(_linea("Materiales", EstadoJuego.economia.recursos["materiales"], 0.0, colonos, INF))
+	c.add_child(_linea("Comida cruda", recursos["comida"], hambre - de_raciones, colonos, economia.soles_restantes("comida")))
+	c.add_child(_linea("Raciones preparadas", recursos["raciones"], de_raciones, colonos, soles_raciones))
+	c.add_child(_linea("Agua potable", recursos["agua"], economia.consumo("agua"), colonos, economia.soles_restantes("agua")))
+	c.add_child(_linea("Materiales", recursos["materiales"], 0.0, colonos, INF))
 	return c
 
 
@@ -124,11 +132,11 @@ func _pedidos() -> Control:
 # --- Expansión ------------------------------------------------------------
 
 func _expansion() -> Control:
+	var datos := EstadoJuego.datos_balance
 	var nivel := EstadoJuego.almacen.nivel
 	var texto := "Expandir Depósito: nivel %d -> %d (+%d capacidad) $%d + %d materiales" % [
-		nivel, nivel + 1, int(EstadoJuego.datos_balance.cap_almacen_por_nivel),
-		EstadoJuego.datos_balance.expandir_almacen_dinero, EstadoJuego.datos_balance.expandir_almacen_materiales]
-	if nivel >= EstadoJuego.datos_balance.nivel_almacen_max:
+		nivel, nivel + 1, int(datos.cap_almacen_por_nivel), datos.expandir_almacen_dinero, datos.expandir_almacen_materiales]
+	if nivel >= datos.nivel_almacen_max:
 		texto = "Límite alcanzado (nivel %d)" % nivel
 	var b := UI.boton(texto, _pedir_expansion, EstadoJuego.almacen.puede_expandir())
 	b.custom_minimum_size = Vector2(0, 34)
@@ -136,6 +144,6 @@ func _expansion() -> Control:
 
 
 func _pedir_expansion() -> void:
-	var texto := "Ampliar el depósito por $%d y %d materiales" % [
-		EstadoJuego.datos_balance.expandir_almacen_dinero, EstadoJuego.datos_balance.expandir_almacen_materiales]
+	var datos := EstadoJuego.datos_balance
+	var texto := "Ampliar el depósito por $%d y %d materiales" % [datos.expandir_almacen_dinero, datos.expandir_almacen_materiales]
 	interfaz.confirmar("Expandir depósito", texto, EstadoJuego.almacen.expandir)

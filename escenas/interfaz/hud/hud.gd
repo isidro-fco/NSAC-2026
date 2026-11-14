@@ -1,3 +1,6 @@
+# hud.gd
+# HUD siempre visible: barra superior de recursos y reloj, y botones inferiores (glosario, construir, bitácora).
+
 class_name Hud
 extends Control
 ## HU-07: barra superior y botones inferiores, siempre visibles.
@@ -16,6 +19,12 @@ const ALTO_PANEL := 44.0
 const SEPARACION := 8
 ## Espacio que ocupa la barra arriba (la cámara y los paneles lo dejan libre).
 const ALTO_BARRA := MARGEN + ALTO_PANEL + MARGEN
+## [acción, texto, tecla, principal] de cada botón inferior (las teclas las atiende Juego).
+const BOTONES_INFERIORES := [
+	["glosario", "Glosario", "G", false],
+	["construir", "Construir", "B", true],
+	["bitacora", "Bitácora", "L", false],
+]
 
 var indicadores: Array[IndicadorRecurso] = []
 var sol_label: Label
@@ -24,6 +33,7 @@ var boton_pausa: Button
 var boton_reanudar: Button
 var boton_velocidad: Button
 var botones_inferiores: HBoxContainer
+var botones := {}                             # acción -> Button de la fila inferior
 var panel_tierra := UI.columna(6)
 
 
@@ -33,7 +43,7 @@ func _ready() -> void:
 	_crear_barra()
 	_crear_botones_inferiores()
 	var caja := PanelContainer.new()
-	caja.add_theme_stylebox_override("panel", UI.estilo(Color(UI.FONDO_CLARO, 0.95), UI.BORDE, UI.RADIO_PILDORA, 10, 2))
+	UI.aplicar_marco(caja, 12)
 	caja.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, MARGEN)
 	caja.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	caja.offset_top = ALTO_BARRA
@@ -61,13 +71,13 @@ func _crear_barra() -> void:
 	fila.add_child(_pildora(_controles_tiempo(), 6))
 
 
-## Fondo redondeado de cada dato de la barra superior.
+## Fondo de cada dato de la barra superior: el marco de cinta de peligro (UI.estilo_marco).
 static func _pildora(contenido: Control, margen := 12) -> PanelContainer:
 	var pildora := PanelContainer.new()
-	var caja := UI.estilo(UI.FONDO_CLARO, UI.BORDE, UI.RADIO_PILDORA, margen, 2)
-	caja.content_margin_top = 4
-	caja.content_margin_bottom = 4
-	pildora.add_theme_stylebox_override("panel", caja)
+	UI.aplicar_marco(pildora, margen)
+	var caja: StyleBoxTexture = pildora.get_theme_stylebox("panel")
+	caja.content_margin_top = UI.MARGEN_MARCO
+	caja.content_margin_bottom = UI.MARGEN_MARCO
 	pildora.mouse_filter = Control.MOUSE_FILTER_PASS
 	pildora.add_child(contenido)
 	return pildora
@@ -93,7 +103,8 @@ func _controles_tiempo() -> Control:
 	boton_pausa.tooltip_text = "Pausar (Espacio)"
 	boton_reanudar = UI.boton_pixel("▶", func() -> void: GestorTiempo.en_pausa = false, false, UI.T_TEXTO)
 	boton_reanudar.tooltip_text = "Reanudar (Espacio)"
-	boton_velocidad = UI.boton_pixel("x2", func() -> void: GestorTiempo.velocidad = 3 - GestorTiempo.velocidad, false, UI.T_TEXTO)
+	boton_velocidad = UI.boton_pixel("x2", func() -> void:
+		GestorTiempo.velocidad = 1 if GestorTiempo.velocidad == 2 else 2, false, UI.T_TEXTO)
 	boton_velocidad.tooltip_text = "Doble velocidad"
 	for b: Button in [boton_pausa, boton_reanudar, boton_velocidad]:
 		b.custom_minimum_size = Vector2(30, 30)
@@ -110,7 +121,7 @@ func _crear_botones_inferiores() -> void:
 	botones_inferiores.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	botones_inferiores.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	add_child(botones_inferiores)
-	for datos: Array in [["glosario", "Glosario", "G", false], ["construir", "Construir", "B", true], ["bitacora", "Bitácora", "L", false]]:
+	for datos: Array in BOTONES_INFERIORES:
 		var principal: bool = datos[3]
 		var boton := UI.boton_pixel("", accion_pedida.emit.bind(datos[0]), principal, UI.T_TEXTO)
 		UI.pintar_boton_pixel(boton, principal, UI.ACENTO, UI.FONDO_CLARO, UI.RADIO_PILDORA)
@@ -131,6 +142,21 @@ func _crear_botones_inferiores() -> void:
 		contenido.add_child(tecla)
 		boton.add_child(contenido)
 		botones_inferiores.add_child(boton)
+		botones[datos[0]] = boton
+
+
+## HU-05: el botón Construir se ve siempre (en modo construcción sirve para salir).
+## Los demás se ocultan fuera del modo normal pero conservan su hueco, para que
+## Construir no cambie de sitio.
+func mostrar_modo_normal(normal: bool) -> void:
+	for id: String in botones:
+		if id == "construir":
+			continue
+		var b: Button = botones[id]
+		b.modulate.a = 1.0 if normal else 0.0
+		b.disabled = not normal
+		b.mouse_filter = Control.MOUSE_FILTER_STOP if normal else Control.MOUSE_FILTER_IGNORE
+	botones["construir"].tooltip_text = "Construir (B)" if normal else "Salir del modo construcción (B)"
 
 
 ## HU-08 y HU-09: arriba a la derecha, la tormenta solar en curso y lo que

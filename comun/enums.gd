@@ -1,3 +1,6 @@
+# enums.gd
+# Enumeraciones y nombres/colores compartidos por todo el proyecto (roles, estados, raciones, modos del mapa).
+
 class_name Enums
 extends RefCounted
 ## Enumeraciones compartidas por todo el proyecto.
@@ -7,6 +10,14 @@ enum Rol { INGENIERIA, ASTROAGRONOMIA, SOPORTE_VITAL, CIENCIA }
 enum EstadoColono { DISPONIBLE, EN_MISION, ENFERMO, RETIRADO, EN_VIAJE }
 enum Racion { ABUNDANTE, NORMAL, ESTRICTA }
 enum ModoMapa { NORMAL, CATALOGO, COLOCANDO, DEMOLICION }
+## Categorías de las entradas de la bitácora (HU-10).
+enum Categoria { ACCION, EVENTO, TRIPULACION }
+
+const NOMBRE_CATEGORIA := {
+	Categoria.ACCION: "Acción",
+	Categoria.EVENTO: "Evento",
+	Categoria.TRIPULACION: "Tripulación",
+}
 
 const NOMBRE_ROL := {
 	Rol.INGENIERIA: "Ingeniería",

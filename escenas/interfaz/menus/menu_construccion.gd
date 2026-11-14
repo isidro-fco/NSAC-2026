@@ -1,3 +1,6 @@
+# menu_construccion.gd
+# Panel lateral del modo construcción con las pestañas Construir y Demoler.
+
 class_name MenuConstruccion
 extends PanelContainer
 ## HU-05: panel lateral del modo construcción, según docs/diseno/Construir.pdf y Demoler.pdf:
@@ -25,7 +28,7 @@ func _init(mapa_base: Mapa) -> void:
 	offset_bottom = -Hud.MARGEN
 	offset_left = Hud.MARGEN
 	offset_right = Hud.MARGEN + ANCHO
-	add_theme_stylebox_override("panel", UI.estilo(UI.FONDO_CLARO, UI.BORDE, UI.RADIO_PILDORA, 10, 2))
+	UI.aplicar_marco(self, 14)
 	add_child(contenido)
 	EstadoJuego.estado_cambiado.connect(actualizar)
 	mapa.modo_cambiado.connect(func(modo: Enums.ModoMapa) -> void:

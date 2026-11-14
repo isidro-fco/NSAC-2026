@@ -1,3 +1,6 @@
+# menu_refugio.gd
+# Menú del refugio blindado: colonos resguardados y capacidad durante una tormenta solar.
+
 class_name MenuRefugio
 extends MenuModulo
 ## HU-08: colonos dentro de los refugios blindados y su capacidad (ej. 2 / 5).

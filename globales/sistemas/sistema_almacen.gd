@@ -1,14 +1,14 @@
+# sistema_almacen.gd
+# Sistema del almacén: capacidad del depósito, racionamiento, productividad y recetas de cocina.
+
 class_name SistemaAlmacen
-extends RefCounted
+extends Sistema
 ## Almacén y cocina (HU-04): capacidad del depósito, racionamiento y recetas.
 ## Se usa a través de EstadoJuego.almacen.
 
 var nivel := 1
 var racion: Enums.Racion = Enums.Racion.NORMAL
 var soles_estricta := 0               # soles seguidos con ración estricta
-
-var datos: DatosBalance:
-	get: return EstadoJuego.datos_balance
 
 
 func reiniciar() -> void:
@@ -89,5 +89,5 @@ func expandir() -> bool:
 		return false
 	nivel += 1
 	EstadoJuego.economia.pagar(datos.expandir_almacen_dinero, datos.expandir_almacen_materiales)
-	EstadoJuego.registrar("Acción", "Almacén ampliado al nivel %d" % nivel, false)
+	EstadoJuego.registrar(Enums.Categoria.ACCION, "Almacén ampliado al nivel %d" % nivel, false)
 	return true

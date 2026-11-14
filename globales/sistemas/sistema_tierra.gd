@@ -1,5 +1,8 @@
+# sistema_tierra.gd
+# Sistema de la Tierra: envíos de colonos, suministros y fondos que llegan con retraso.
+
 class_name SistemaTierra
-extends RefCounted
+extends Sistema
 ## Latencia con la Tierra (HU-09): nada de lo que viene de la Tierra llega al
 ## instante. Los colonos contratados, los pedidos de suministros y los fondos
 ## viajan unos soles antes de llegar. Se usa a través de EstadoJuego.tierra.
@@ -7,9 +10,6 @@ extends RefCounted
 ## [{ "nombre", "soles", "contenido": {recurso: cantidad}, "colono": DatosColono o null }]
 var envios: Array[Dictionary] = []
 var soles_para_transferencia := 0
-
-var datos: DatosBalance:
-	get: return EstadoJuego.datos_balance
 
 
 func reiniciar() -> void:
@@ -26,7 +26,7 @@ func pedir(pedido: Dictionary) -> void:
 	if EstadoJuego.economia.puede_pagar(pedido["dinero"], 0):
 		EstadoJuego.economia.pagar(pedido["dinero"], 0)
 		enviar(pedido["nombre"], pedido["soles"], pedido["contenido"])
-		EstadoJuego.registrar("Acción", "Pedido a la Tierra: %s (llega en %d soles)" % [pedido["nombre"], pedido["soles"]])
+		EstadoJuego.registrar(Enums.Categoria.ACCION, "Pedido a la Tierra: %s (llega en %d soles)" % [pedido["nombre"], pedido["soles"]])
 
 
 ## Se llama una vez por sol: acerca los envíos, entrega los que llegan y
@@ -43,7 +43,7 @@ func avanzar() -> void:
 	if soles_para_transferencia <= 0:
 		soles_para_transferencia = datos.transferencia_cada
 		enviar("Transferencia de fondos", datos.transferencia_soles, { "presupuesto": datos.transferencia_dinero })
-		EstadoJuego.registrar("Evento", "La Tierra aprobó una transferencia de $%d (llegará en %d soles)" % [
+		EstadoJuego.registrar(Enums.Categoria.EVENTO, "La Tierra aprobó una transferencia de $%d (llegará en %d soles)" % [
 			datos.transferencia_dinero, datos.transferencia_soles])
 
 
@@ -59,4 +59,7 @@ func _entregar(envio: Dictionary) -> void:
 		if entra < cantidad:
 			texto += " (%s no cupieron en el almacén)" % UI.num(cantidad - entra)
 		partes.append(texto)
-	EstadoJuego.registrar("Evento", "Llegó desde la Tierra: %s: %s" % [envio["nombre"], ", ".join(partes)])
+	EstadoJuego.registrar(Enums.Categoria.EVENTO, "Llegó desde la Tierra: %s: %s" % [envio["nombre"], ", ".join(partes)])
+	# El dinero llega por transferencia; lo demás baja en una nave de carga.
+	if envio["contenido"].keys().any(func(recurso: String) -> bool: return recurso != "presupuesto"):
+		EstadoJuego.suministros_recibidos.emit(envio["nombre"], envio["contenido"])

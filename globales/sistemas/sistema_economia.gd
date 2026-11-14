@@ -1,16 +1,23 @@
+# sistema_economia.gd
+# Sistema de economía: recursos, capacidad, producción, consumo, pagos e historial por sol.
+
 class_name SistemaEconomia
-extends RefCounted
+extends Sistema
 ## Recursos de la colonia: cuánto hay, cuánto cabe y cuánto entra y sale cada sol.
 ## Se usa a través de EstadoJuego.economia.
+
+## Recursos que se gastan directamente cada sol (la comida va aparte: raciones primero).
+const CONSUMIDOS := ["oxigeno", "agua", "energia"]
+## Recursos que se producen cada sol, en este orden (importa por la capacidad del almacén).
+const PRODUCIDOS := ["oxigeno", "energia", "agua", "comida", "presupuesto", "materiales"]
+## Recursos que pueden quedar por debajo de 0 al consumir y se corrigen tras producir.
+const NO_NEGATIVOS := ["oxigeno", "energia", "agua", "comida"]
 
 var recursos := {}                    # "oxigeno", "agua", "comida", "raciones", ...
 var investigacion := 0.0
 var historial := {}                   # recurso -> [{ "sol", "valor", "cambio" }]
 var producido := {}                   # recurso -> total producido en la partida
 var modulos_activos: Array[String] = []   # módulos construidos que producen o gastan energía
-
-var datos: DatosBalance:
-	get: return EstadoJuego.datos_balance
 
 
 func reiniciar() -> void:
@@ -71,7 +78,10 @@ func balance(recurso: String) -> float:
 	return produccion(recurso) - consumo(recurso)
 
 
+## HU-07: crítico si la reserva está baja o si el balance por sol es negativo.
 func es_critico(recurso: String) -> bool:
+	if balance(recurso) < 0.0:
+		return true
 	if recurso == "presupuesto":
 		return recursos[recurso] < datos.presupuesto_critico
 	return valor(recurso) <= capacidad(recurso) * datos.fraccion_critica
@@ -129,7 +139,7 @@ func restar(recurso: String, cantidad: float) -> void:
 ## Se permite bajar de 0 hasta producir: así se aplica el saldo neto del sol y
 ## una reserva con balance negativo sí llega a agotarse.
 func consumir() -> void:
-	for recurso: String in ["oxigeno", "agua", "energia"]:
+	for recurso: String in CONSUMIDOS:
 		recursos[recurso] -= consumo(recurso)
 	# Primero se comen las raciones preparadas y después la comida cruda.
 	var hambre := consumo("comida")
@@ -139,9 +149,9 @@ func consumir() -> void:
 
 
 func producir() -> void:
-	for recurso: String in ["oxigeno", "energia", "agua", "comida", "presupuesto", "materiales"]:
+	for recurso: String in PRODUCIDOS:
 		producido[recurso] = producido.get(recurso, 0.0) + sumar(recurso, produccion(recurso))
-	for recurso: String in ["oxigeno", "energia", "agua", "comida"]:
+	for recurso: String in NO_NEGATIVOS:
 		recursos[recurso] = maxf(recursos[recurso], 0.0)
 
 

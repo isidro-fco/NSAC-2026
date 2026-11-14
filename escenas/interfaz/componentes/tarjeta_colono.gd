@@ -1,3 +1,6 @@
+# tarjeta_colono.gd
+# Tarjeta de un colono (foto, rol, estado y radiación); también sirve como inspector flotante.
+
 class_name TarjetaColono
 extends PanelContainer
 ## Tarjeta de un colono (docs/diseno/Modulo Comando.pdf):
@@ -13,6 +16,13 @@ extends PanelContainer
 
 signal cerrado
 
+## Texto del inspector para cada valor de DatosColono.ubicacion.
+const NOMBRE_UBICACION := {
+	"exterior": "A la intemperie",
+	"interior": "Dentro de la base",
+	"refugio": "En el refugio blindado",
+}
+
 var colono: DatosColono
 var es_inspector := false
 var con_mision := false
@@ -26,10 +36,14 @@ func _init(c: DatosColono, al_enviar_a_tierra := Callable(), inspector := false,
 	colono = c
 	es_inspector = inspector
 	con_mision = mision
-	var caja := UI.estilo(UI.FONDO_CLARO if inspector else UI.TARJETA, UI.BORDE, UI.RADIO, 10, 2)
-	caja.content_margin_top = 8
-	caja.content_margin_bottom = 8
-	add_theme_stylebox_override("panel", caja)
+	if inspector:
+		# La ficha flotante es una ventana: lleva el marco de cinta de peligro.
+		UI.aplicar_marco(self, 14)
+	else:
+		var caja := UI.estilo(UI.TARJETA, UI.BORDE, UI.RADIO, 10, 2)
+		caja.content_margin_top = 8
+		caja.content_margin_bottom = 8
+		add_theme_stylebox_override("panel", caja)
 	var f := UI.fila(10)
 	add_child(f)
 	f.add_child(UI.avatar(c, 40 if inspector else 34))
@@ -73,9 +87,7 @@ func _actualizar() -> void:
 	elif con_mision and colono.estado == Enums.EstadoColono.EN_MISION:
 		estado += " (%s)" % UI.soles(colono.soles_restantes)
 	if es_inspector:
-		var lugar: String = {"exterior": "A la intemperie", "interior": "Dentro de la base",
-			"refugio": "En el refugio blindado"}[colono.ubicacion]
-		estado += " · %s\n%s" % [colono.actividad, lugar]
+		estado += " · %s\n%s" % [colono.actividad, NOMBRE_UBICACION[colono.ubicacion]]
 	UI.fijar_texto(estado_label, estado)
 	UI.fijar_texto(radiacion_label, "Radiación: %s / %d" % [UI.num(colono.radiacion), int(EstadoJuego.datos_balance.radiacion_max)])
 	barra.value = colono.radiacion

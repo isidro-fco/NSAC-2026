@@ -1,3 +1,6 @@
+# datos_balance.gd
+# Recurso con todos los valores de balance del juego (recursos iniciales, producción, consumo, radiación, costos, eventos y tareas).
+
 class_name DatosBalance
 extends Resource
 ## Valores de balance del juego (HU-01..07). Ajustables desde el inspector.

@@ -1,3 +1,6 @@
+# menu_glosario.gd
+# Menú del glosario estilo terminal: términos descubiertos y su ficha; pausa el tiempo mientras está abierto.
+
 class_name MenuGlosario
 extends MenuModulo
 ## HU-12: glosario con aspecto de terminal de datos. A la izquierda los términos

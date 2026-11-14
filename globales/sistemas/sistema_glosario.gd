@@ -1,5 +1,8 @@
+# sistema_glosario.gd
+# Sistema del glosario: descubre términos al aparecer en la interfaz y los resalta en los textos.
+
 class_name SistemaGlosario
-extends RefCounted
+extends Sistema
 ## Glosario técnico (HU-12): cada término empieza oculto y se descubre la
 ## primera vez que aparece en un texto de la interfaz (ver UI.etiqueta).
 ## Se usa a través de EstadoJuego.glosario. Los términos están en datos/glosario.tres.

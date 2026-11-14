@@ -1,5 +1,8 @@
+# sistema_tripulacion.gd
+# Sistema de tripulación: colonos, salud y radiación, cuartos, regreso a la Tierra y reclutamiento.
+
 class_name SistemaTripulacion
-extends RefCounted
+extends Sistema
 ## Colonos (HU-03): quién vive en la base, su salud y radiación, los cuartos
 ## del módulo de descanso y el reclutamiento de candidatos.
 ## Se usa a través de EstadoJuego.tripulacion.
@@ -11,9 +14,6 @@ var candidatos: Array[Dictionary] = []    # se pueden contratar
 var cuartos := 0
 var soles_sin_vitales := 0                # soles seguidos sin oxígeno, agua o comida
 var soles_para_renovar := 0               # soles hasta cambiar los candidatos
-
-var datos: DatosBalance:
-	get: return EstadoJuego.datos_balance
 var perfiles: DatosCandidatos:
 	get: return EstadoJuego.datos_candidatos
 
@@ -68,14 +68,14 @@ func _recuperar(c: DatosColono, sin_vitales: bool) -> void:
 	c.soles_enfermo += 1
 	if c.soles_enfermo >= necesarios:
 		c.estado = Enums.EstadoColono.DISPONIBLE
-		EstadoJuego.registrar("Tripulación", "%s se ha recuperado" % c.nombre)
+		EstadoJuego.registrar(Enums.Categoria.TRIPULACION, "%s se ha recuperado" % c.nombre)
 
 
 func enfermar(c: DatosColono) -> void:
 	if c.estado == Enums.EstadoColono.EN_MISION:
-		EstadoJuego.registrar("Tripulación", "Diagnóstico: %s enfermó y abandonó %s" % [c.nombre, c.tarea["titulo"]])
+		EstadoJuego.registrar(Enums.Categoria.TRIPULACION, "Diagnóstico: %s enfermó y abandonó %s" % [c.nombre, c.tarea["titulo"]])
 	else:
-		EstadoJuego.registrar("Tripulación", "Diagnóstico: %s ha enfermado" % c.nombre)
+		EstadoJuego.registrar(Enums.Categoria.TRIPULACION, "Diagnóstico: %s ha enfermado" % c.nombre)
 	c.estado = Enums.EstadoColono.ENFERMO
 	c.tarea = {}
 	c.soles_enfermo = 0
@@ -87,7 +87,7 @@ func anadir_radiacion(c: DatosColono, cantidad: float) -> void:
 	# Pico de radiación: al cruzar la mitad del umbral de enfermedad.
 	var umbral := datos.radiacion_enfermedad / 2.0
 	if antes < umbral and c.radiacion >= umbral:
-		EstadoJuego.registrar("Tripulación", "Pico de radiación: %s supera %d de dosis" % [c.nombre, int(umbral)])
+		EstadoJuego.registrar(Enums.Categoria.TRIPULACION, "Pico de radiación: %s supera %d de dosis" % [c.nombre, int(umbral)])
 	if c.radiacion >= datos.radiacion_enfermedad and c.estado != Enums.EstadoColono.ENFERMO:
 		enfermar(c)
 
@@ -102,7 +102,7 @@ func enviar_a_la_tierra(c: DatosColono) -> void:
 	colonos.erase(c)
 	retirados.append(c)
 	EstadoJuego.colono_retirado.emit(c)
-	EstadoJuego.registrar("Acción", "%s regresó a la Tierra" % c.nombre)
+	EstadoJuego.registrar(Enums.Categoria.ACCION, "%s regresó a la Tierra" % c.nombre)
 	EstadoJuego.estado_cambiado.emit()
 
 
@@ -113,15 +113,20 @@ func _nombre_usado(nombre: String) -> bool:
 	return false
 
 
+## Baraja `lista` en su sitio con el azar de la partida (Array.shuffle() usa el
+## generador global y rompería las partidas con semilla).
+static func _barajar(lista: Array) -> void:
+	for i in range(lista.size() - 1, 0, -1):
+		var j := EstadoJuego.rng.randi_range(0, i)
+		var temporal: Variant = lista[i]
+		lista[i] = lista[j]
+		lista[j] = temporal
+
+
 func _generar_candidatos() -> void:
 	candidatos.clear()
 	var pool: Array = perfiles.pool_perfiles.duplicate()
-	# Array.shuffle() usa el generador global: se baraja con el de la partida.
-	for i in range(pool.size() - 1, 0, -1):
-		var j := EstadoJuego.rng.randi_range(0, i)
-		var temporal: Variant = pool[i]
-		pool[i] = pool[j]
-		pool[j] = temporal
+	_barajar(pool)
 	for perfil: Dictionary in pool:
 		if candidatos.size() >= perfiles.max_candidatos:
 			break
@@ -151,7 +156,7 @@ func contratar(candidato: Dictionary) -> bool:
 	en_viaje.append(c)
 	EstadoJuego.economia.pagar(candidato["coste"], 0)
 	EstadoJuego.tierra.enviar(c.nombre, c.soles_restantes, {}, c)
-	EstadoJuego.registrar("Acción", "Contratado: %s (llegará en %d soles)" % [c.nombre, c.soles_restantes])
+	EstadoJuego.registrar(Enums.Categoria.ACCION, "Contratado: %s (llegará en %d soles)" % [c.nombre, c.soles_restantes])
 	return true
 
 
@@ -161,7 +166,7 @@ func llegar(c: DatosColono) -> void:
 	c.estado = Enums.EstadoColono.DISPONIBLE
 	colonos.append(c)
 	EstadoJuego.colono_agregado.emit(c)
-	EstadoJuego.registrar("Tripulación", "%s llegó a la plataforma de aterrizaje" % c.nombre)
+	EstadoJuego.registrar(Enums.Categoria.TRIPULACION, "%s llegó a la plataforma de aterrizaje" % c.nombre)
 
 
 # --- Cuartos del módulo de descanso ---------------------------------------
@@ -176,5 +181,5 @@ func ampliar_cuartos() -> bool:
 		return false
 	cuartos += 1
 	EstadoJuego.economia.pagar(datos.expandir_descanso_dinero, datos.expandir_descanso_materiales)
-	EstadoJuego.registrar("Acción", "Módulo de descanso ampliado a %d cuartos" % cuartos, false)
+	EstadoJuego.registrar(Enums.Categoria.ACCION, "Módulo de descanso ampliado a %d cuartos" % cuartos, false)
 	return true

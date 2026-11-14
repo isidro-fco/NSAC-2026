@@ -1,3 +1,6 @@
+# datos_modulo.gd
+# Recurso que define un tipo de módulo: nombre, tamaño, sprite, costo y producción.
+
 class_name DatosModulo
 extends Resource
 ## Definición de un tipo de módulo. Cada uno vive en datos/modulos/<id>.tres.

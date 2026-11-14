@@ -1,3 +1,6 @@
+# tarjeta_modulo.gd
+# Botón del catálogo de construcción que muestra un módulo con su costo y se deshabilita si no alcanza.
+
 class_name TarjetaModulo
 extends Button
 ## Entrada del catálogo de construcción (HU-05), según docs/diseno/Construir.pdf:

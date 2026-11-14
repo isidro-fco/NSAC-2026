@@ -1,3 +1,6 @@
+# dialogo_confirmacion.gd
+# Diálogo modal de confirmación con título, texto, tabla opcional de costos y botones.
+
 class_name DialogoConfirmacion
 extends ColorRect
 ## Diálogo modal centrado sobre un fondo oscurecido, según docs/diseno/aviso.png:
@@ -28,16 +31,12 @@ func _init(titulo: String, texto: String, al_confirmar := Callable(), botones: C
 		filas: Array = [], texto_confirmar := "Confirmar", peligro := false) -> void:
 	if botones == null:
 		botones = UI.fila(4)
-		var cancelar := UI.boton_pixel("Cancelar", cerrar)
-		var confirmar := UI.boton_pixel(texto_confirmar, func() -> void:
-			cerrar()
-			al_confirmar.call())
-		# Botones rectos, como en el aviso.
-		UI.pintar_boton_pixel(cancelar, false, UI.ACENTO, UI.TARJETA, 0)
+		var cancelar := boton("Cancelar", cerrar)
 		cancelar.add_theme_color_override("font_color", UI.TEXTO_SUAVE)
-		UI.pintar_boton_pixel(confirmar, true, UI.CRITICO if peligro else UI.ACENTO, UI.TARJETA, 0)
+		var confirmar := boton(texto_confirmar, func() -> void:
+			cerrar()
+			al_confirmar.call(), true, UI.CRITICO if peligro else UI.ACENTO)
 		for b: Button in [cancelar, confirmar]:
-			b.custom_minimum_size = Vector2(0, 38)
 			botones.add_child(UI.expandir(b))
 	color = Color(0, 0, 0, 0.6)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -46,7 +45,7 @@ func _init(titulo: String, texto: String, al_confirmar := Callable(), botones: C
 	add_child(centro)
 	caja = PanelContainer.new()
 	caja.custom_minimum_size = Vector2(460, 0)
-	caja.add_theme_stylebox_override("panel", UI.estilo(UI.FONDO, UI.BORDE, 0, 24, 2))
+	UI.aplicar_marco(caja, 24)
 	centro.add_child(caja)
 	var c := UI.columna(14)
 	cuerpo = c
@@ -65,6 +64,14 @@ func _init(titulo: String, texto: String, al_confirmar := Callable(), botones: C
 	if not filas.is_empty():
 		c.add_child(tabla(filas))
 	c.add_child(botones)
+
+
+## Botón recto de la fila inferior, como en el aviso. `activo` lo rellena con `color_activo`.
+static func boton(texto: String, accion: Callable, activo := false, color_activo := UI.ACENTO) -> Button:
+	var b := UI.boton_pixel(texto, accion)
+	UI.pintar_boton_pixel(b, activo, color_activo, UI.TARJETA, 0)
+	b.custom_minimum_size = Vector2(0, 38)
+	return b
 
 
 ## Añade un control encima de los botones.

@@ -1,5 +1,8 @@
+# sistema_comando.gd
+# Sistema del Módulo de Comando: niveles, mejoras y multiplicador de producción; el nivel máximo da la victoria.
+
 class_name SistemaComando
-extends RefCounted
+extends Sistema
 ## Niveles del Módulo de Comando (HU-02): cada mejora cuesta dinero y
 ## materiales, tarda unos soles y multiplica la producción de la base.
 ## Completar el nivel máximo gana la partida (HU-11).
@@ -8,9 +11,6 @@ extends RefCounted
 
 var nivel := 1
 var soles_mejora := 0                 # soles que faltan para terminar la mejora; 0 = ninguna
-
-var datos: DatosBalance:
-	get: return EstadoJuego.datos_balance
 
 
 func reiniciar() -> void:
@@ -24,6 +24,11 @@ func nivel_max() -> int:
 
 func multiplicador() -> float:
 	return datos.multiplicador_comando[nivel - 1]
+
+
+## Multiplicador que tendrá la base al terminar la siguiente mejora.
+func multiplicador_siguiente() -> float:
+	return datos.multiplicador_comando[nivel]
 
 
 ## Coste de pasar al siguiente nivel: { "dinero", "materiales", "soles" }.
@@ -42,7 +47,7 @@ func mejorar() -> void:
 		var mejora := siguiente_mejora()
 		soles_mejora = mejora["soles"]
 		EstadoJuego.economia.pagar(mejora["dinero"], mejora["materiales"])
-		EstadoJuego.registrar("Acción", "Mejora del Módulo de Comando al nivel %d iniciada (%d soles)" % [nivel + 1, soles_mejora], false)
+		EstadoJuego.registrar(Enums.Categoria.ACCION, "Mejora del Módulo de Comando al nivel %d iniciada (%d soles)" % [nivel + 1, soles_mejora], false)
 
 
 ## Se llama una vez por sol: avanza la mejora en curso.
@@ -52,4 +57,4 @@ func avanzar_mejora() -> void:
 	soles_mejora -= 1
 	if soles_mejora == 0:
 		nivel += 1
-		EstadoJuego.registrar("Acción", "Módulo de Comando mejorado a nivel %d (x%s producción)" % [nivel, UI.num(multiplicador())])
+		EstadoJuego.registrar(Enums.Categoria.ACCION, "Módulo de Comando mejorado a nivel %d (x%s producción)" % [nivel, UI.num(multiplicador())])

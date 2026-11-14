@@ -1,3 +1,6 @@
+# mapa.gd
+# Mapa de la colonia: suelo, módulos, obstáculos, colonos y modos de construcción y demolición; avisa a la interfaz por señales.
+
 class_name Mapa
 extends Node2D
 ## Mapa de la colonia: suelo, módulos, obstáculos, colonos y los modos de
@@ -18,6 +21,12 @@ const TEX_SUELO: Array[Texture2D] = [
 ]
 const MODULOS_CON_MENU := ["comando", "descanso", "almacen", "refugio"]
 const SIN_ORIGEN := Vector2i(-1000, -1000)
+## Casillas de terreno decorativo alrededor del mapa: la cámara cubre toda la
+## ventana y deja ver un poco más allá del borde bajo la barra superior.
+const BORDE_DECORATIVO := 8
+## Radio (en fracción del tamaño del módulo) de la zona donde se paran los
+## colonos: el edificio es el círculo central del sprite; las esquinas son terreno.
+const RADIO_INTERIOR := 0.2
 
 @export_range(0.0, 1.0) var densidad_obstaculos := 0.15
 @export_range(0.0, 1.0) var fraccion_crater_grande := 0.1
@@ -27,10 +36,15 @@ var cuadricula := GestorCuadricula.new()
 var rutas := BuscadorRutas.new()
 var rng := RandomNumberGenerator.new()
 var suelo := []                   # suelo[y][x] -> textura
+var decorado := {}                # casilla fuera del mapa -> textura de suelo
+var rocas_decorado := {}          # casilla fuera del mapa -> textura de roca (encima del suelo)
+var contenedor_naves := Node2D.new()
+var _nave_activa: NaveAterrizaje
+var _naves_en_cola: Array[NaveAterrizaje] = []    # esperan a que la plataforma quede libre
 
 var modo: Enums.ModoMapa = Enums.ModoMapa.NORMAL
 var modulo_elegido: DatosModulo
-var objetivo_demoler: Node2D
+var objetivo_demoler: ElementoMapa
 var modal_abierto := false:       # menú o diálogo sobre el mapa
 	set(valor):
 		modal_abierto = valor
@@ -59,10 +73,14 @@ func _ready() -> void:
 		suelo.append(range(GestorCuadricula.ANCHO).map(func(_x: int) -> Texture2D:
 			return TEX_SUELO[rng.randi_range(0, TEX_SUELO.size() - 1)]))
 	GeneradorMapa.generar(self, rng)
+	_generar_decorado()
 	rutas.actualizar(cuadricula)
+	contenedor_naves.z_index = 3                   # por encima de los colonos
+	add_child(contenedor_naves)
 	for c: DatosColono in EstadoJuego.tripulacion.colonos:
-		_crear_colono(c, celda_en_modulo("descanso"))
-	EstadoJuego.colono_agregado.connect(_crear_colono)
+		_crear_colono(c, punto_en_modulo("descanso"))
+	EstadoJuego.colono_agregado.connect(_recibir_colono)
+	EstadoJuego.suministros_recibidos.connect(_recibir_suministros)
 	EstadoJuego.colono_retirado.connect(func(datos: DatosColono) -> void:
 		for colono: Colono in contenedor_colonos.get_children():
 			if colono.datos == datos:
@@ -88,7 +106,9 @@ func agregar_obstaculo(origen: Vector2i, tam: Vector2i, textura: Texture2D) -> v
 ## Casilla al azar dentro del módulo `id` (o del de comando si no existe).
 func celda_en_modulo(id: String) -> Vector2i:
 	var modulos := modulos_de(id)
-	return celda_en((contenedor_modulos.get_child(0) if modulos.is_empty() else modulos[0]) as Modulo)
+	if modulos.is_empty():
+		modulos = modulos_de("comando")
+	return celda_en(modulos[0] as Modulo)
 
 
 func celda_en(modulo: Modulo) -> Vector2i:
@@ -96,8 +116,33 @@ func celda_en(modulo: Modulo) -> Vector2i:
 	return modulo.origen + Vector2i(rng.randi_range(0, tam.x - 1), rng.randi_range(0, tam.y - 1))
 
 
+## Punto al azar (en píxeles) dentro del edificio del módulo `id`, o del de comando si no existe.
+func punto_en_modulo(id: String) -> Vector2:
+	var modulos := modulos_de(id)
+	if modulos.is_empty():
+		modulos = modulos_de("comando")
+	return punto_en(modulos[0] as Modulo)
+
+
+## Punto al azar (en píxeles) dentro de la zona central del módulo, donde está
+## el edificio; así ningún colono se queda parado en las esquinas de tierra.
+func punto_en(modulo: Modulo) -> Vector2:
+	var tam := Vector2(modulo.tam_celdas()) * GestorCuadricula.TAM_CELDA
+	var desvio := Vector2.from_angle(rng.randf() * TAU) * sqrt(rng.randf())
+	return modulo.position + tam / 2.0 + desvio * tam * RADIO_INTERIOR
+
+
 func modulos_de(id: String) -> Array[Node]:
 	return contenedor_modulos.get_children().filter(func(m: Modulo) -> bool: return m.datos.id == id)
+
+
+## Primer módulo `id` al que se llega andando desde la casilla `desde` (o en el que
+## ya está), o null si no hay ninguno conectado.
+func modulo_alcanzable(id: String, desde: Vector2i) -> Modulo:
+	for m: Modulo in modulos_de(id):
+		if cuadricula.celdas_modulo.get(desde) == m or not rutas.ruta(desde, m.origen).is_empty():
+			return m
+	return null
 
 
 ## HU-08: refugio al que debe ir el colono durante una tormenta solar, o null.
@@ -121,18 +166,69 @@ func ubicacion(c: Vector2i) -> String:
 	return "refugio" if cuadricula.celdas_modulo[c].datos.id == "refugio" else "interior"
 
 
-func celda_exterior_aleatoria() -> Vector2i:
-	var opciones := rutas.casillas_exteriores(cuadricula)
-	if opciones.is_empty():
-		return celda_en_modulo("comando")
-	return opciones[rng.randi_range(0, opciones.size() - 1)]
-
-
-## Los que llegan de la Tierra aparecen en la plataforma de aterrizaje.
-func _crear_colono(datos: DatosColono, celda := SIN_ORIGEN) -> void:
+func _crear_colono(datos: DatosColono, punto: Vector2) -> void:
 	var colono := Colono.new()
 	contenedor_colonos.add_child(colono)
-	colono.configurar(datos, self, celda_en_modulo("plataforma") if celda == SIN_ORIGEN else celda)
+	colono.configurar(datos, self, punto)
+
+
+# --- Llegadas desde la Tierra (HU-09) -------------------------------------
+
+## Un colono contratado llegó: viene en una nave que aterriza en la plataforma.
+## Si ya hay una nave de tripulación bajando o esperando, viaja en ella.
+func _recibir_colono(datos: DatosColono) -> void:
+	for nave in [_nave_activa] + _naves_en_cola:      # sin tipo: _nave_activa puede ser null
+		if is_instance_valid(nave) and nave.tipo == NaveAterrizaje.Tipo.TRIPULACION and nave.bajando():
+			nave.colonos.append(datos)
+			return
+	var nueva := NaveAterrizaje.new(NaveAterrizaje.Tipo.TRIPULACION, _punto_aterrizaje())
+	nueva.colonos.append(datos)
+	_encolar_nave(nueva)
+
+
+## Llegaron víveres, materiales u oxígeno: los trae una nave de carga.
+func _recibir_suministros(_nombre: String, contenido: Dictionary) -> void:
+	var nueva := NaveAterrizaje.new(NaveAterrizaje.Tipo.CARGA, _punto_aterrizaje())
+	nueva.carga = contenido
+	_encolar_nave(nueva)
+
+
+## Una sola nave en la plataforma a la vez: las demás esperan su turno.
+func _encolar_nave(nave: NaveAterrizaje) -> void:
+	nave.compuerta_abierta.connect(_desembarcar)
+	nave.terminada.connect(_siguiente_nave)
+	if is_instance_valid(_nave_activa):
+		_naves_en_cola.append(nave)
+	else:
+		_lanzar_nave(nave)
+
+
+func _lanzar_nave(nave: NaveAterrizaje) -> void:
+	_nave_activa = nave
+	contenedor_naves.add_child(nave)
+
+
+func _siguiente_nave() -> void:
+	_nave_activa = null
+	if not _naves_en_cola.is_empty():
+		_lanzar_nave(_naves_en_cola.pop_front())
+
+
+## Los colonos bajan por la rampa (salvo los que ya se fueron a la Tierra).
+func _desembarcar(nave: NaveAterrizaje) -> void:
+	for i in nave.colonos.size():
+		var datos := nave.colonos[i]
+		if EstadoJuego.tripulacion.colonos.has(datos):
+			_crear_colono(datos, nave.position + Vector2((i - (nave.colonos.size() - 1) / 2.0) * 9.0, 10.0))
+
+
+## Centro de la plataforma de aterrizaje.
+func _punto_aterrizaje() -> Vector2:
+	var plataformas := modulos_de("plataforma")
+	if plataformas.is_empty():
+		return GestorCuadricula.centro_celda(GestorCuadricula.centro_mapa())
+	var plataforma := plataformas[0] as Modulo
+	return plataforma.position + Vector2(plataforma.tam_celdas()) * GestorCuadricula.TAM_CELDA / 2.0
 
 
 func _mapa_modificado() -> void:
@@ -188,8 +284,8 @@ func _pedir_construccion(origen: Vector2i) -> void:
 	origen_fijado = origen
 	capa.queue_redraw()
 	var filas := [
-		_fila_recurso("Presupuesto", "presupuesto", -d.dinero),
-		_fila_recurso("Materiales", "materiales", -d.materiales),
+		UI.fila_cambio("Presupuesto", "presupuesto", -d.dinero),
+		UI.fila_cambio("Materiales", "materiales", -d.materiales),
 	]
 	confirmacion_pedida.emit("¿Construir %s?" % d.nombre, "Ocupa %dx%d casillas" % [d.tam.x, d.tam.y],
 		construir.bind(d, origen), filas, "Construir", false)
@@ -202,7 +298,7 @@ func construir(d: DatosModulo, origen: Vector2i) -> void:
 	agregar_modulo(d.id, origen)
 	EstadoJuego.modulos_construidos += 1
 	if not d.es_pasillo():
-		EstadoJuego.registrar("Acción", "Construido: %s" % d.nombre, false)
+		EstadoJuego.registrar(Enums.Categoria.ACCION, "Construido: %s" % d.nombre, false)
 	_mapa_modificado()
 	# Los pasillos se trazan por tramos: se sigue colocando mientras alcance.
 	if modo == Enums.ModoMapa.COLOCANDO \
@@ -210,37 +306,31 @@ func construir(d: DatosModulo, origen: Vector2i) -> void:
 		cambiar_modo(Enums.ModoMapa.CATALOGO)
 
 
-func _pedir_demolicion(objetivo: Node2D) -> void:
-	var coste: int = objetivo.coste_demoler()
+func _pedir_demolicion(objetivo: ElementoMapa) -> void:
+	var coste := objetivo.coste_demoler()
 	if not EstadoJuego.economia.puede_pagar(coste, 0):
 		aviso_pedido.emit("No hay dinero para la demolición")
 		return
-	var filas := [_fila_recurso("Costo del trabajo", "presupuesto", -coste)]
+	var filas := [UI.fila_cambio("Costo del trabajo", "presupuesto", -coste)]
 	if objetivo.materiales_al_demoler() > 0:
-		filas.append(_fila_recurso("Materiales obtenidos", "materiales", objetivo.materiales_al_demoler()))
-	var titulo := "¿Demoler este módulo?"
+		filas.append(UI.fila_cambio("Materiales obtenidos", "materiales", objetivo.materiales_al_demoler()))
+	confirmacion_pedida.emit(_titulo_demolicion(objetivo), objetivo.nombre(), demoler.bind(objetivo), filas, "Demoler", true)
+
+
+func _titulo_demolicion(objetivo: ElementoMapa) -> String:
 	if objetivo is Obstaculo:
-		titulo = "¿Allanar este cráter?" if objetivo.es_crater() else "¿Excavar esta roca?"
-	confirmacion_pedida.emit(titulo, objetivo.nombre(), demoler.bind(objetivo), filas, "Demoler", true)
+		return "¿Allanar este cráter?" if (objetivo as Obstaculo).es_crater() else "¿Excavar esta roca?"
+	return "¿Demoler este módulo?"
 
 
-## Fila de la tabla del aviso: "Costo del trabajo | -$40 | $1,000 a $960".
-func _fila_recurso(nombre: String, recurso: String, cambio: float) -> Array:
-	var antes := EstadoJuego.economia.valor(recurso)
-	if recurso == "presupuesto":
-		var signo := "+" if cambio >= 0.0 else "-"
-		return [nombre, signo + UI.dinero(absf(cambio)), "%s a %s" % [UI.dinero(antes), UI.dinero(antes + cambio)]]
-	return [nombre, UI.con_signo(cambio), "%s a %s" % [UI.num(antes), UI.num(antes + cambio)]]
-
-
-func demoler(objetivo: Node2D) -> void:
+func demoler(objetivo: ElementoMapa) -> void:
 	if not is_instance_valid(objetivo) or not EstadoJuego.economia.puede_pagar(objetivo.coste_demoler(), 0):
 		return
 	EstadoJuego.economia.pagar(objetivo.coste_demoler(), 0)
-	EstadoJuego.registrar("Acción", "Demolido: %s" % objetivo.nombre(), false)
+	EstadoJuego.registrar(Enums.Categoria.ACCION, "Demolido: %s" % objetivo.nombre(), false)
 	cuadricula.liberar(objetivo.origen, objetivo.tam_celdas())
 	if objetivo is Modulo:
-		EstadoJuego.economia.quitar_modulo(objetivo.datos.id)
+		EstadoJuego.economia.quitar_modulo((objetivo as Modulo).datos.id)
 	else:
 		EstadoJuego.economia.sumar("materiales", objetivo.materiales_al_demoler())
 		EstadoJuego.estado_cambiado.emit()
@@ -261,11 +351,12 @@ func _process(_delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if modal_abierto or event is not InputEventMouseButton or not event.pressed:
+	if modal_abierto or event is not InputEventMouseButton:
 		return
-	if event.button_index == MOUSE_BUTTON_RIGHT and modo == Enums.ModoMapa.COLOCANDO:
+	# El clic derecho cancela al soltar: si hubo arrastre, la cámara ya se quedó el evento.
+	if event.button_index == MOUSE_BUTTON_RIGHT and not event.pressed and modo == Enums.ModoMapa.COLOCANDO:
 		cambiar_modo(Enums.ModoMapa.CATALOGO)
-	elif event.button_index == MOUSE_BUTTON_LEFT:
+	elif event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_clic_izquierdo()
 
 
@@ -288,7 +379,7 @@ func _clic_izquierdo() -> void:
 
 
 func _actualizar_objetivo_demoler() -> void:
-	var objetivo: Node2D = null
+	var objetivo: ElementoMapa = null
 	var c := GestorCuadricula.celda_desde_pixel(get_global_mouse_position())
 	if get_viewport().gui_get_hovered_control() == null and not modal_abierto and GestorCuadricula.dentro_del_mapa(c):
 		objetivo = cuadricula.objetivo_en(c)
@@ -310,6 +401,27 @@ func _draw() -> void:
 	for y in GestorCuadricula.ALTO:
 		for x in GestorCuadricula.ANCHO:
 			draw_texture(suelo[y][x], Vector2(x, y) * GestorCuadricula.TAM_CELDA)
+	for c: Vector2i in decorado:
+		draw_texture(decorado[c], Vector2(c) * GestorCuadricula.TAM_CELDA)
+	for c: Vector2i in rocas_decorado:
+		draw_texture(rocas_decorado[c], Vector2(c) * GestorCuadricula.TAM_CELDA)
+
+
+## Terreno y rocas alrededor del mapa jugable (solo se dibujan; no se pueden
+## pisar ni demoler). Usa su propio azar para no alterar el mapa de la partida.
+func _generar_decorado() -> void:
+	var azar := RandomNumberGenerator.new()
+	azar.seed = rng.seed + 1
+	var b := BORDE_DECORATIVO
+	for y in range(-b, GestorCuadricula.ALTO + b):
+		for x in range(-b, GestorCuadricula.ANCHO + b):
+			var c := Vector2i(x, y)
+			if GestorCuadricula.dentro_del_mapa(c):
+				continue
+			decorado[c] = TEX_SUELO[azar.randi_range(0, TEX_SUELO.size() - 1)]
+			if azar.randf() < densidad_obstaculos:
+				var rocas := GeneradorMapa.TEX_OBSTACULOS
+				rocas_decorado[c] = rocas[azar.randi_range(0, rocas.size() - 1)]
 
 
 func _dibujar_capa() -> void:
@@ -329,11 +441,15 @@ func _dibujar_capa() -> void:
 	if modo == Enums.ModoMapa.COLOCANDO:
 		var d := modulo_elegido
 		var origen := origen_preview()
-		var tinte := Color(UI.BIEN, 0.55) if cuadricula.puede_colocar(d, origen) else Color(UI.CRITICO, 0.55)
+		var tinte := UI.BIEN if cuadricula.puede_colocar(d, origen) else UI.CRITICO
 		var rect := Rect2(Vector2(origen) * lado, Vector2(d.tam) * lado)
-		capa.draw_rect(rect, d.color * Color(1, 1, 1, 0.45))
-		capa.draw_rect(rect, tinte)
-		capa.draw_rect(rect, Color(tinte, 1.0), false, 2.0)
+		# Sprite del módulo medio transparente y teñido de verde (válido) o rojo (inválido).
+		if d.textura:
+			capa.draw_texture_rect(d.textura, rect, false, Color(Color.WHITE.lerp(tinte, 0.45), 0.6))
+		else:
+			capa.draw_rect(rect, d.color * Color(1, 1, 1, 0.45))
+		capa.draw_rect(rect, Color(tinte, 0.25))
+		capa.draw_rect(rect, tinte, false, 2.0)
 	elif modo == Enums.ModoMapa.DEMOLICION and is_instance_valid(objetivo_demoler):
 		var rect := Rect2(objetivo_demoler.position, Vector2(objetivo_demoler.tam_celdas()) * lado)
 		capa.draw_rect(rect, UI.CRITICO, false, 3.0)

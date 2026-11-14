@@ -1,3 +1,6 @@
+# datos_colono.gd
+# Datos de un colono: nombre, rol, estado, radiación, tarea y retrato.
+
 class_name DatosColono
 extends RefCounted
 ## Datos de un colono. Su representación en el mapa es Colono (escenas/colonos).

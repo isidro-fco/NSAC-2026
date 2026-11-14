@@ -1,3 +1,6 @@
+# generador_mapa.gd
+# Genera el mapa inicial: coloca los módulos base, la plataforma de aterrizaje y los obstáculos.
+
 class_name GeneradorMapa
 extends RefCounted
 ## HU-01: coloca los módulos iniciales y siembra obstáculos fuera de la

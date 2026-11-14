@@ -1,3 +1,6 @@
+# menu_descanso.gd
+# Menú del módulo de descanso: lista de colonos, regreso a la Tierra, reclutamiento y ampliación de cuartos.
+
 class_name MenuDescanso
 extends MenuModulo
 ## HU-03: lista de colonos, regreso a la Tierra, reclutamiento y expansión.
@@ -6,11 +9,13 @@ var reclutando := false
 
 
 func construir() -> void:
+	var tripulacion := EstadoJuego.tripulacion
+	var recursos := EstadoJuego.economia.recursos
 	var resumen := "Cuartos ocupados: %d/%d    Presupuesto: $%s    Materiales: %s" % [
-		EstadoJuego.tripulacion.cuartos - EstadoJuego.tripulacion.cuartos_libres(), EstadoJuego.tripulacion.cuartos,
-		UI.num(EstadoJuego.economia.recursos["presupuesto"]), UI.num(EstadoJuego.economia.recursos["materiales"])]
+		tripulacion.cuartos - tripulacion.cuartos_libres(), tripulacion.cuartos,
+		UI.num(recursos["presupuesto"]), UI.num(recursos["materiales"])]
 	contenido.add_child(UI.etiqueta_pixel(resumen, UI.T_DETALLE))
-	if reclutando and EstadoJuego.tripulacion.cuartos_libres() <= 0:
+	if reclutando and tripulacion.cuartos_libres() <= 0:
 		reclutando = false
 	if reclutando:
 		_construir_reclutamiento()
@@ -50,27 +55,22 @@ func _panel_acciones() -> Control:
 	var texto_reclutar := "Reclutar Colono" if hay_cuartos else "Reclutar: se requiere expandir el módulo"
 	f.add_child(UI.expandir(UI.boton_primario(texto_reclutar, _ver_reclutamiento.bind(true), hay_cuartos)))
 
-	var texto_expandir := "Expandir Módulo ($%d + %d materiales)" % [
-		EstadoJuego.datos_balance.expandir_descanso_dinero, EstadoJuego.datos_balance.expandir_descanso_materiales]
-	if EstadoJuego.tripulacion.cuartos >= EstadoJuego.datos_balance.cuartos_max:
-		texto_expandir = "Capacidad máxima alcanzada (%d/%d)" % [EstadoJuego.tripulacion.cuartos, EstadoJuego.datos_balance.cuartos_max]
+	var datos := EstadoJuego.datos_balance
+	var texto_expandir := "Expandir Módulo ($%d + %d materiales)" % [datos.expandir_descanso_dinero, datos.expandir_descanso_materiales]
+	if EstadoJuego.tripulacion.cuartos >= datos.cuartos_max:
+		texto_expandir = "Capacidad máxima alcanzada (%d/%d)" % [EstadoJuego.tripulacion.cuartos, datos.cuartos_max]
 	f.add_child(UI.expandir(UI.boton(texto_expandir, _pedir_expansion, EstadoJuego.tripulacion.puede_ampliar_cuartos())))
 	return panel
 
 
 func _pedir_expansion() -> void:
-	var texto := "Añadir 1 cuarto por $%d y %d materiales" % [
-		EstadoJuego.datos_balance.expandir_descanso_dinero, EstadoJuego.datos_balance.expandir_descanso_materiales]
+	var datos := EstadoJuego.datos_balance
+	var texto := "Añadir 1 cuarto por $%d y %d materiales" % [datos.expandir_descanso_dinero, datos.expandir_descanso_materiales]
 	interfaz.confirmar("Expandir módulo", texto, EstadoJuego.tripulacion.ampliar_cuartos)
 
 
 func _construir_reclutamiento() -> void:
-	var cabecera := UI.fila()
-	cabecera.add_child(UI.boton("< Volver", _ver_reclutamiento.bind(false)))
-	var titulo := UI.seccion("Candidatos disponibles")
-	titulo.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	cabecera.add_child(titulo)
-	contenido.add_child(cabecera)
+	cabecera_subvista("Candidatos disponibles", _ver_reclutamiento.bind(false))
 	var lista := UI.columna(6)
 	for candidato in EstadoJuego.tripulacion.candidatos:
 		var tarjeta := UI.tarjeta()

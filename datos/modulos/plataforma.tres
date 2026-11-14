@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="DatosModulo" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="DatosModulo" load_steps=3 format=3]
 
+[ext_resource type="Texture2D" path="res://recursos/sprites/modulos/plataforma.png" id="1_textura"]
 [ext_resource type="Script" path="res://datos/clases/datos_modulo.gd" id="1_script"]
 
 [resource]
@@ -9,4 +10,5 @@ nombre = "Plataforma de aterrizaje"
 tam = Vector2i(2, 2)
 letra = "P"
 color = Color(0.8118, 0.7961, 0.7608, 1)
+textura = ExtResource("1_textura")
 es_base = true

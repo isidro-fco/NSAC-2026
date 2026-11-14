@@ -1,5 +1,8 @@
+# sistema_eventos.gd
+# Sistema de eventos: incidentes aleatorios con dos opciones y tormentas solares que aumentan la radiación.
+
 class_name SistemaEventos
-extends RefCounted
+extends Sistema
 ## Incidentes aleatorios (HU-08): cada 5 a 20 soles salta un evento que pausa
 ## el juego y ofrece dos opciones con costes distintos. Uno de ellos es la
 ## tormenta solar, que dispara la radiación durante unos soles salvo en el
@@ -11,9 +14,6 @@ var evento: Dictionary = {}           # evento que espera la decisión del jugad
 var pausa_previa := false             # estado de la pausa antes del evento
 var tormenta_soles := 0               # soles que le quedan a la tormenta solar
 var blindaje := 1.0                   # factor de la dosis interior durante la tormenta
-
-var datos: DatosBalance:
-	get: return EstadoJuego.datos_balance
 
 
 func reiniciar() -> void:
@@ -48,7 +48,7 @@ func avanzar_tormenta() -> void:
 		tormenta_soles -= 1
 		if tormenta_soles == 0:
 			blindaje = 1.0
-			EstadoJuego.registrar("Evento", "La tormenta solar ha terminado")
+			EstadoJuego.registrar(Enums.Categoria.EVENTO, "La tormenta solar ha terminado")
 
 
 ## Se llama una vez por sol: true si toca un evento (queda en `evento` y el juego se pausa).
@@ -66,37 +66,22 @@ func toca_evento() -> bool:
 ## Aplica la opción elegida del evento en curso y devuelve la pausa a como estaba.
 func resolver(indice: int) -> void:
 	var opcion: Dictionary = evento["opciones"][indice]
+	var economia := EstadoJuego.economia
+	var tripulacion := EstadoJuego.tripulacion
 	for recurso: String in opcion.get("recursos", {}):
 		var cantidad: float = opcion["recursos"][recurso]
 		if cantidad >= 0.0:
-			EstadoJuego.economia.sumar(recurso, cantidad)
+			economia.sumar(recurso, cantidad)
 		else:
-			EstadoJuego.economia.restar(recurso, -cantidad)
-	for c: DatosColono in EstadoJuego.tripulacion.colonos.duplicate():
-		EstadoJuego.tripulacion.anadir_radiacion(c, opcion.get("radiacion", 0.0))
+			economia.restar(recurso, -cantidad)
+	for c: DatosColono in tripulacion.colonos.duplicate():
+		tripulacion.anadir_radiacion(c, opcion.get("radiacion", 0.0))
 		if EstadoJuego.rng.randf() < opcion.get("enfermar", 0.0) and c.estado != Enums.EstadoColono.ENFERMO:
-			EstadoJuego.tripulacion.enfermar(c)
+			tripulacion.enfermar(c)
 	if opcion.has("tormenta"):
 		tormenta_soles = opcion["tormenta"]
 		blindaje = opcion.get("blindaje", 1.0)
-	EstadoJuego.registrar("Evento", "%s: %s" % [evento["titulo"], opcion["texto"]])
+	EstadoJuego.registrar(Enums.Categoria.EVENTO, "%s: %s" % [evento["titulo"], opcion["texto"]])
 	evento = {}
 	GestorTiempo.en_pausa = pausa_previa
 	EstadoJuego.estado_cambiado.emit()
-
-
-## Costes y consecuencias de una opción, para mostrarlos antes de elegir.
-static func texto_efectos(opcion: Dictionary) -> String:
-	var partes := PackedStringArray()
-	for recurso: String in opcion.get("recursos", {}):
-		partes.append("%s %s" % [UI.con_signo(opcion["recursos"][recurso]), Enums.NOMBRE_RECURSO[recurso]])
-	if opcion.has("radiacion"):
-		partes.append("+%s de radiación a cada colono" % UI.num(opcion["radiacion"]))
-	if opcion.has("enfermar"):
-		partes.append("%d %% de riesgo de enfermar por colono" % roundi(opcion["enfermar"] * 100))
-	if opcion.has("tormenta"):
-		partes.append("tormenta solar durante %d soles" % opcion["tormenta"])
-	if opcion.get("blindaje", 1.0) < 1.0:
-		partes.append("dosis dentro de los módulos al %d %%" % roundi(opcion["blindaje"] * 100))
-	var texto := ", ".join(partes)
-	return "Sin consecuencias" if texto == "" else texto[0].to_upper() + texto.substr(1)

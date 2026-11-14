@@ -1,3 +1,6 @@
+# estado_juego.gd
+# Autoload EstadoJuego: coordina la partida, reparte el trabajo entre los sistemas y aplica las reglas de cada sol.
+
 extends Node
 ## Autoload "EstadoJuego": el corazón de la partida.
 ##
@@ -20,6 +23,8 @@ extends Node
 signal estado_cambiado                          # algo cambió: redibujar la interfaz
 signal sol_terminado
 signal colono_agregado(colono: DatosColono)     # llegó a la base
+## HU-09: llegó un envío con recursos físicos (víveres, materiales, oxígeno), no solo dinero.
+signal suministros_recibidos(nombre: String, contenido: Dictionary)
 signal colono_retirado(colono: DatosColono)
 signal aviso(texto: String)                     # mensaje corto para el jugador
 signal partida_terminada(motivo: String)
@@ -28,7 +33,6 @@ signal evento_iniciado(evento: Dictionary)      # HU-08: hay que elegir una opci
 signal glosario_pedido(id: String)              # HU-12: clic en un término resaltado
 
 const VITALES := ["oxigeno", "agua", "comida"]
-const CATEGORIAS := ["Acción", "Evento", "Tripulación"]
 
 ## Valores de balance y perfiles de colonos, editables desde el inspector.
 var datos_balance: DatosBalance = load("res://datos/balance.tres")
@@ -47,8 +51,11 @@ var rng := RandomNumberGenerator.new()          # azar de la partida
 var terminado := false
 var modulos_apagados := false                   # sin energía: la base a oscuras
 var modulos_construidos := 0                    # por el jugador (resumen de victoria)
-## HU-10: [{ "sol", "categoria", "texto" }], de la más antigua a la más reciente.
+## HU-10: [{ "sol", "categoria": Enums.Categoria, "texto" }], de la más antigua a la más reciente.
 var bitacora: Array[Dictionary] = []
+
+## Sistemas que se reinician con cada partida, en este orden.
+var _sistemas: Array[Sistema] = [comando, economia, almacen, tripulacion, eventos, tierra, glosario]
 
 
 func _ready() -> void:
@@ -64,12 +71,12 @@ func nueva_partida() -> void:
 	modulos_apagados = false
 	modulos_construidos = 0
 	bitacora.clear()
-	for sistema: RefCounted in [comando, economia, almacen, tripulacion, eventos, tierra, glosario]:
+	for sistema in _sistemas:
 		sistema.reiniciar()
 
 
-## Anota en la bitácora (categoría de CATEGORIAS) y, si `avisar`, lo muestra como aviso.
-func registrar(categoria: String, texto: String, avisar := true) -> void:
+## Anota en la bitácora y, si `avisar`, lo muestra también como aviso.
+func registrar(categoria: Enums.Categoria, texto: String, avisar := true) -> void:
 	bitacora.append({ "sol": GestorTiempo.sol_actual, "categoria": categoria, "texto": texto })
 	if avisar:
 		aviso.emit(texto)
@@ -96,14 +103,24 @@ func terminar_sol(sol: int) -> void:
 
 	economia.anotar_historial(sol, antes)
 	_comprobar_derrota()
-	if not terminado and comando.nivel > nivel_antes and comando.nivel == comando.nivel_max():
-		registrar("Evento", "Misión cumplida: la colonia es autosuficiente", false)
-		GestorTiempo.en_pausa = true
-		victoria.emit()
-	elif not terminado and eventos.toca_evento():
-		evento_iniciado.emit(eventos.evento)
+	if not terminado:
+		if _alcanzo_nivel_maximo(nivel_antes):
+			_ganar()
+		elif eventos.toca_evento():
+			evento_iniciado.emit(eventos.evento)
 	sol_terminado.emit()
 	estado_cambiado.emit()
+
+
+## HU-11: true si en este sol terminó la mejora al último nivel del Módulo de Comando.
+func _alcanzo_nivel_maximo(nivel_antes: int) -> bool:
+	return comando.nivel > nivel_antes and comando.nivel == comando.nivel_max()
+
+
+func _ganar() -> void:
+	registrar(Enums.Categoria.EVENTO, "Misión cumplida: la colonia es autosuficiente", false)
+	GestorTiempo.en_pausa = true
+	victoria.emit()
 
 
 func _comprobar_derrota() -> void:
@@ -116,6 +133,6 @@ func _comprobar_derrota() -> void:
 
 func _terminar(motivo: String) -> void:
 	terminado = true
-	registrar("Evento", motivo, false)
+	registrar(Enums.Categoria.EVENTO, motivo, false)
 	GestorTiempo.detenido = true
 	partida_terminada.emit(motivo)

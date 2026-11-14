@@ -1,3 +1,6 @@
+# datos_glosario.gd
+# Recurso con la lista de términos del glosario técnico.
+
 class_name DatosGlosario
 extends Resource
 ## Términos del glosario (HU-12): [{ "id", "nombre", "palabras": [formas en el texto],

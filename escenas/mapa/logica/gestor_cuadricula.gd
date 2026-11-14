@@ -1,3 +1,6 @@
+# gestor_cuadricula.gd
+# Cuadrícula del mapa: estado de cada casilla, qué la ocupa y conversiones entre casillas y píxeles.
+
 class_name GestorCuadricula
 extends RefCounted
 ## Estado de las 32x18 casillas del mapa y qué módulo u obstáculo ocupa cada una.
@@ -86,7 +89,7 @@ func puede_colocar(datos: DatosModulo, origen: Vector2i) -> bool:
 
 ## Lo que se puede demoler en la casilla: un obstáculo o un módulo
 ## construido (los iniciales no). null si no hay nada.
-func objetivo_en(c: Vector2i) -> Node2D:
+func objetivo_en(c: Vector2i) -> ElementoMapa:
 	if celdas_obstaculo.has(c):
 		return celdas_obstaculo[c]
 	if celdas_modulo.has(c) and not celdas_modulo[c].datos.es_base:
@@ -104,7 +107,7 @@ func ocupar_modulo(modulo: Modulo) -> void:
 
 
 func ocupar_obstaculo(obstaculo: Obstaculo) -> void:
-	for c in celdas_de(obstaculo.origen, obstaculo.tam):
+	for c in celdas_de(obstaculo.origen, obstaculo.tam_celdas()):
 		estados[c.y][c.x] = Enums.EstadoCasilla.BLOQUEADA
 		celdas_obstaculo[c] = obstaculo
 

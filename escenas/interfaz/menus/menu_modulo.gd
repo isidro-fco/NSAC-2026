@@ -1,3 +1,6 @@
+# menu_modulo.gd
+# Clase base de los menús de módulo: ventana, título, botón de cerrar y reconstrucción al cambiar el estado.
+
 class_name MenuModulo
 extends Control
 ## Base de los menús de módulo (comando, descanso, almacén): ventana redondeada
@@ -7,13 +10,13 @@ extends Control
 
 const TAM_MENU := Vector2(1040, 580)
 
-var interfaz                  # escena Juego: abre diálogos y cierra el menú
+var interfaz: Juego           # abre diálogos y cierra el menú
 var contenido: VBoxContainer
 var scrolls: Array[ScrollContainer] = []
 var reconstruccion_pendiente := false
 
 
-func iniciar(juego: Node, titulo: String) -> void:
+func iniciar(juego: Juego, titulo: String) -> void:
 	interfaz = juego
 	contenido = _montar_marco(titulo)
 	EstadoJuego.estado_cambiado.connect(_pedir_reconstruccion)
@@ -32,6 +35,16 @@ func construir() -> void:
 ## Escape: devuelve true si cerró una subvista en lugar del menú entero.
 func atras() -> bool:
 	return false
+
+
+## Cabecera de una subvista (historial, reclutamiento): botón "< Volver" y título.
+func cabecera_subvista(titulo: String, al_volver: Callable) -> void:
+	var cabecera := UI.fila()
+	cabecera.add_child(UI.boton("< Volver", al_volver))
+	var etiqueta := UI.seccion(titulo)
+	etiqueta.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	cabecera.add_child(etiqueta)
+	contenido.add_child(cabecera)
 
 
 ## Lista con scroll cuya posición se conserva al reconstruir.
@@ -85,10 +98,8 @@ func _montar_marco(titulo: String) -> VBoxContainer:
 	add_child(centro)
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = TAM_MENU
-	var caja := UI.estilo_elevado(UI.FONDO_CLARO, UI.BORDE, UI.RADIO_PANEL, 24)
-	caja.set_border_width_all(3)
-	caja.content_margin_top = 18
-	panel.add_theme_stylebox_override("panel", caja)
+	UI.aplicar_marco(panel, 24)
+	panel.get_theme_stylebox("panel").content_margin_top = 18
 	centro.add_child(panel)
 	var marco := UI.columna(10)
 	panel.add_child(marco)

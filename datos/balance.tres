@@ -69,6 +69,7 @@ recetas = [{
 tareas = [{
 "exterior": true,
 "id": "mantener_paneles",
+"modulo": "energia",
 "radiacion": 6.0,
 "recompensa": {
 "energia": 25.0
@@ -91,6 +92,7 @@ tareas = [{
 }, {
 "exterior": true,
 "id": "extraer_regolito",
+"modulo": "taller",
 "radiacion": 8.0,
 "recompensa": {
 "materiales": 20.0
@@ -112,6 +114,7 @@ tareas = [{
 }, {
 "exterior": true,
 "id": "muestras_suelo",
+"modulo": "agricultura",
 "radiacion": 6.0,
 "recompensa": {
 "comida": 6.0,
@@ -145,6 +148,7 @@ tareas = [{
 }, {
 "exterior": true,
 "id": "estudio_atmosfera",
+"modulo": "comando",
 "radiacion": 7.0,
 "recompensa": {
 "investigacion": 25.0,

@@ -1,3 +1,6 @@
+# menu_comando.gd
+# Menú del Módulo de Comando: métricas e historial de recursos, mejora del módulo, tripulación y asignación de tareas.
+
 class_name MenuComando
 extends MenuModulo
 ## HU-02: tripulación, métricas de la base, historial, nivel del módulo y tablero de tareas.
@@ -79,21 +82,18 @@ func _panel_mejora() -> Control:
 
 
 func _pedir_mejora() -> void:
-	var mejora := EstadoJuego.comando.siguiente_mejora()
+	var comando := EstadoJuego.comando
+	var mejora := comando.siguiente_mejora()
 	var texto := "Subir al nivel %d por $%d y %d materiales.\nLa obra tarda %d soles; al terminar, la producción pasa a x%s." % [
-		EstadoJuego.comando.nivel + 1, mejora["dinero"], mejora["materiales"], mejora["soles"],
-		UI.num(EstadoJuego.datos_balance.multiplicador_comando[EstadoJuego.comando.nivel])]
-	interfaz.confirmar("Mejorar Módulo de Comando", texto, EstadoJuego.comando.mejorar)
+		comando.nivel + 1, mejora["dinero"], mejora["materiales"], mejora["soles"],
+		UI.num(comando.multiplicador_siguiente())]
+	interfaz.confirmar("Mejorar Módulo de Comando", texto, comando.mejorar)
 
 
 func _construir_historial() -> void:
 	var nombre: String = Enums.NOMBRE_RECURSO[recurso_historial]
-	var cabecera := UI.fila()
-	cabecera.add_child(UI.boton("< Volver", _ver_historial.bind("")))
-	var titulo := UI.seccion("%s: últimos %d soles" % [nombre, EstadoJuego.datos_balance.soles_historial])
-	titulo.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	cabecera.add_child(titulo)
-	contenido.add_child(cabecera)
+	cabecera_subvista("%s: últimos %d soles" % [nombre, EstadoJuego.datos_balance.soles_historial],
+		_ver_historial.bind(""))
 
 	var puntos: Array = EstadoJuego.economia.historial[recurso_historial]
 	contenido.add_child(_grafica("Reserva al final de cada sol", puntos, "valor", false))

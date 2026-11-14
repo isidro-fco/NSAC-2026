@@ -1,17 +1,18 @@
+# obstaculo.gd
+# Roca o cráter que bloquea casillas; se puede demoler a cambio de materiales.
+
 class_name Obstaculo
-extends Node2D
+extends ElementoMapa
 ## Roca o cráter que bloquea casillas. Se puede demoler para obtener materiales.
 
-var origen := Vector2i.ZERO
 var tam := Vector2i.ONE
 var textura: Texture2D
 
 
 func _init(origen_celda: Vector2i, tam_celdas_: Vector2i, textura_: Texture2D) -> void:
-	origen = origen_celda
 	tam = tam_celdas_
 	textura = textura_
-	position = Vector2(origen) * GestorCuadricula.TAM_CELDA
+	_colocar_en(origen_celda)
 
 
 func tam_celdas() -> Vector2i:

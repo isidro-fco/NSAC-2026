@@ -1,3 +1,6 @@
+# gestor_tiempo.gd
+# Autoload GestorTiempo: reloj de soles con pausa y velocidad; avisa cuando termina cada sol.
+
 extends Node
 ## Autoload "GestorTiempo": reloj de soles (HU-07). Solo mide el tiempo; las
 ## reglas de cada sol las aplica EstadoJuego al recibir sol_transcurrido.

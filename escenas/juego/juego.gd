@@ -1,3 +1,7 @@
+# juego.gd
+# Escena principal: une mapa, cámara e interfaz, abre menús, diálogos y avisos, y maneja el fin de la partida.
+
+class_name Juego
 extends Node2D
 ## Escena principal ("el director"): junta el Mapa, la Cámara y la Interfaz.
 ## - Abre y cierra los menús de módulo, los diálogos, los avisos y el
@@ -7,6 +11,8 @@ extends Node2D
 
 const SEGUNDOS_AVISO := 4.0
 
+## id -> [título de la ventana, clase del menú]. Es var y no const porque
+## GDScript no admite clases globales en una expresión constante.
 var menus := {
 	"comando": ["Módulo de Comando", MenuComando],
 	"descanso": ["Módulo de Descanso", MenuDescanso],
@@ -15,6 +21,9 @@ var menus := {
 	"bitacora": ["Bitácora de la misión", MenuBitacora],
 	"glosario": ["Glosario técnico", MenuGlosario],
 }
+## Atajos de teclado de los botones inferiores del HUD.
+const ACCION_POR_TECLA := { KEY_B: "construir", KEY_G: "glosario", KEY_L: "bitacora" }
+
 var menu: MenuModulo
 var dialogo: DialogoConfirmacion
 var inspector: TarjetaColono
@@ -48,7 +57,7 @@ func _ready() -> void:
 
 	hud.accion_pedida.connect(_accion)
 	mapa.modo_cambiado.connect(func(modo: Enums.ModoMapa) -> void:
-		hud.botones_inferiores.visible = modo == Enums.ModoMapa.NORMAL)
+		hud.mostrar_modo_normal(modo == Enums.ModoMapa.NORMAL))
 	mapa.modulo_clicado.connect(abrir_menu)
 	mapa.colono_clicado.connect(func(colono: Colono) -> void:
 		camara.enfocar(colono.position)
@@ -90,8 +99,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	elif event.keycode == KEY_SPACE:
 		GestorTiempo.en_pausa = not GestorTiempo.en_pausa
-	elif event.keycode in [KEY_B, KEY_G, KEY_L]:
-		_accion({KEY_B: "construir", KEY_G: "glosario", KEY_L: "bitacora"}[event.keycode])
+	elif ACCION_POR_TECLA.has(event.keycode):
+		_accion(ACCION_POR_TECLA[event.keycode])
 	else:
 		return
 	get_viewport().set_input_as_handled()
@@ -123,11 +132,12 @@ func _escape() -> void:
 
 func abrir_menu(id: String) -> void:
 	cerrar_menu()
+	var titulo: String = menus[id][0]
 	menu = menus[id][1].new()
 	raiz.add_child(menu)
 	# La etiqueta flotante siempre queda por encima del menú.
 	raiz.move_child(etiqueta_flotante, -1)
-	menu.iniciar(self, menus[id][0])
+	menu.iniciar(self, titulo)
 	_actualizar_modal()
 
 
@@ -191,11 +201,9 @@ func _mostrar_evento(evento: Dictionary) -> void:
 		bloque.add_child(titulo)
 		bloque.add_child(DialogoConfirmacion.tabla(_filas_evento(opcion), ["Efecto", "Cambio", "Quedará"]))
 		ventana.insertar(bloque)
-		var b := UI.boton_pixel("Opción %d" % (i + 1), func() -> void:
+		var b := DialogoConfirmacion.boton("Opción %d" % (i + 1), func() -> void:
 			ventana.cerrar()
 			EstadoJuego.eventos.resolver(i))
-		UI.pintar_boton_pixel(b, false, UI.ACENTO, UI.TARJETA, 0)
-		b.custom_minimum_size = Vector2(0, 38)
 		b.tooltip_text = opcion["texto"]
 		botones.add_child(UI.expandir(b))
 	_abrir_dialogo(ventana)
@@ -205,13 +213,7 @@ func _mostrar_evento(evento: Dictionary) -> void:
 func _filas_evento(opcion: Dictionary) -> Array:
 	var filas := []
 	for recurso: String in opcion.get("recursos", {}):
-		var cambio: float = opcion["recursos"][recurso]
-		var actual := EstadoJuego.economia.valor(recurso)
-		var final := maxf(actual + cambio, 0.0)
-		if recurso == "presupuesto":
-			filas.append([Enums.NOMBRE_RECURSO[recurso], UI.dinero(cambio), "%s a %s" % [UI.dinero(actual), UI.dinero(final)]])
-		else:
-			filas.append([Enums.NOMBRE_RECURSO[recurso], UI.con_signo(cambio), "%s a %s" % [UI.num(actual), UI.num(final)]])
+		filas.append(UI.fila_cambio(Enums.NOMBRE_RECURSO[recurso], recurso, opcion["recursos"][recurso]))
 	if opcion.has("radiacion"):
 		filas.append(["Radiación por colono", "+" + UI.num(opcion["radiacion"]), ""])
 	if opcion.has("enfermar"):
@@ -261,17 +263,12 @@ func _dialogo_final(titulo: String, texto: String, modo_libre: bool) -> void:
 	var botones := UI.fila()
 	var final := DialogoConfirmacion.new(titulo, texto, Callable(), botones)
 	if modo_libre:
-		var libre := UI.boton_pixel("Modo Libre", func() -> void:
+		botones.add_child(UI.expandir(DialogoConfirmacion.boton("Modo Libre", func() -> void:
 			final.cerrar()
-			GestorTiempo.en_pausa = false)
-		UI.pintar_boton_pixel(libre, false, UI.ACENTO, UI.TARJETA, 0)
-		botones.add_child(UI.expandir(libre))
-	var nueva := UI.boton_pixel("Nueva Partida", func() -> void:
+			GestorTiempo.en_pausa = false)))
+	botones.add_child(UI.expandir(DialogoConfirmacion.boton("Nueva Partida", func() -> void:
 		EstadoJuego.nueva_partida()
-		get_tree().reload_current_scene())
-	UI.pintar_boton_pixel(nueva, true, UI.ACENTO, UI.TARJETA, 0)
-	nueva.custom_minimum_size = Vector2(0, 38)
-	botones.add_child(UI.expandir(nueva))
+		get_tree().reload_current_scene(), true)))
 	final.cancelable = false
 	_abrir_dialogo(final)
 
@@ -297,11 +294,7 @@ func cerrar_inspector() -> void:
 ## Aviso tipo "toast": superficie elevada con franja naranja a la izquierda.
 func mostrar_aviso(texto: String) -> void:
 	var caja := PanelContainer.new()
-	var estilo := UI.estilo_elevado(UI.FONDO, UI.BORDE, UI.RADIO, 10)
-	estilo.border_width_left = 4
-	estilo.border_color = UI.ACENTO
-	estilo.content_margin_left = 14
-	caja.add_theme_stylebox_override("panel", estilo)
+	UI.aplicar_marco(caja, 12)
 	caja.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	caja.add_child(UI.etiqueta(texto, 13))
 	avisos.add_child(caja)

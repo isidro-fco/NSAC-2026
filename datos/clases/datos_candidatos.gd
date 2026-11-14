@@ -1,3 +1,6 @@
+# datos_candidatos.gd
+# Recurso con la tripulación inicial y los perfiles que pueden aparecer como candidatos para contratar.
+
 class_name DatosCandidatos
 extends Resource
 ## Tripulación inicial y perfiles que pueden aparecer como candidatos (HU-03).

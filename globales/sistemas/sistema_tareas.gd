@@ -1,11 +1,11 @@
+# sistema_tareas.gd
+# Sistema de tareas: lista de tareas disponibles, asignación a colonos y avance de las misiones cada sol.
+
 class_name SistemaTareas
-extends RefCounted
+extends Sistema
 ## Tareas y misiones (HU-02): qué tareas hay, quién puede hacerlas y cómo
 ## avanzan cada sol. Se usa a través de EstadoJuego.tareas.
 ## La lista de tareas está en datos/balance.tres (campo "tareas").
-
-var datos: DatosBalance:
-	get: return EstadoJuego.datos_balance
 
 
 func en_curso(id: String) -> bool:
@@ -39,7 +39,7 @@ func asignar(tarea: Dictionary, c: DatosColono) -> bool:
 	c.estado = Enums.EstadoColono.EN_MISION
 	c.tarea = tarea
 	c.soles_restantes = tarea["soles"]
-	EstadoJuego.registrar("Acción", "Tarea asignada: %s a %s" % [tarea["titulo"], c.nombre], false)
+	EstadoJuego.registrar(Enums.Categoria.ACCION, "Tarea asignada: %s a %s" % [tarea["titulo"], c.nombre], false)
 	EstadoJuego.estado_cambiado.emit()
 	return true
 
@@ -71,4 +71,4 @@ func _completar(c: DatosColono, tarea: Dictionary) -> void:
 			EstadoJuego.economia.sumar(recurso, cantidad)
 	c.estado = Enums.EstadoColono.DISPONIBLE
 	c.tarea = {}
-	EstadoJuego.registrar("Tripulación", "%s completó: %s" % [c.nombre, tarea["titulo"]])
+	EstadoJuego.registrar(Enums.Categoria.TRIPULACION, "%s completó: %s" % [c.nombre, tarea["titulo"]])

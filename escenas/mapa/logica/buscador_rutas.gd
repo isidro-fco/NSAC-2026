@@ -1,3 +1,6 @@
+# buscador_rutas.gd
+# Búsqueda de rutas con AStarGrid2D para los colonos, prefiriendo módulos y pasillos sobre el exterior.
+
 class_name BuscadorRutas
 extends RefCounted
 ## HU-06: AStarGrid2D que prefiere módulos y pasillos. Los colonos solo pisan
@@ -56,14 +59,3 @@ func casilla_transitable_cercana(c: Vector2i) -> Vector2i:
 					mejor = candidata
 					mejor_distancia = distancia
 	return mejor
-
-
-## Casillas transitables fuera de la base (trabajos de exterior).
-func casillas_exteriores(cuadricula: GestorCuadricula) -> Array[Vector2i]:
-	var opciones: Array[Vector2i] = []
-	for y in GestorCuadricula.ALTO:
-		for x in GestorCuadricula.ANCHO:
-			var c := Vector2i(x, y)
-			if es_transitable(c) and not cuadricula.es_estructura(c):
-				opciones.append(c)
-	return opciones
