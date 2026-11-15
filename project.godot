@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="NSAC-2026"
-run/main_scene="res://escenas/juego/juego.tscn"
+run/main_scene="res://escenas/inicio/inicio.tscn"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -25,11 +25,15 @@ GestorTiempo="*res://globales/gestor_tiempo.gd"
 GestorAudio="*res://globales/gestor_audio.gd"
 ServicioNasa="*res://globales/nasa/servicio_nasa.gd"
 EstadoJuego="*res://globales/estado_juego.gd"
+Tooltips="*res://escenas/interfaz/tooltips/gestor_tooltips.gd"
 
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
+window/size/mode=2
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [rendering]
 

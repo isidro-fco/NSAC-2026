@@ -4,24 +4,71 @@
 class_name MenuRefugio
 extends MenuModulo
 ## HU-08: colonos dentro de los refugios blindados y su capacidad (ej. 2 / 5).
+## Estilo de cabina del Módulo de Comando (ver Cabina):
+##   [TORMENTA SOLAR / QUEDAN 2 SOLES] [OCUPACION 2/5 ■■□□□] (explicación)
+##   REFUGIADOS [2]                              3 PLAZAS LIBRES
+##   ┌ ▣ ELENA ... ┐ ┌ ▣ TOMAS ... ┐
+##   ── FUERA DEL REFUGIO (1) ──          (solo durante la tormenta)
+
+const COLUMNAS := 2
 
 var refugiados: Array[DatosColono] = []
 
 
+func _init() -> void:
+	con_cabecera = false     # sin título: como la sala de comandos
+
+
 func construir() -> void:
 	var plazas: int = EstadoJuego.datos_balance.capacidad_refugio * interfaz.mapa.modulos_de("refugio").size()
-	var cabecera := UI.fila()
-	var estado := "Tormenta solar en curso: la tripulación se refugia aquí." \
-		if EstadoJuego.eventos.tormenta_activa() else "Sin tormenta solar: el refugio está en reserva."
-	cabecera.add_child(UI.expandir(UI.parrafo(estado)))
-	cabecera.add_child(UI.seccion("%d / %d colonos refugiados" % [refugiados.size(), plazas]))
-	contenido.add_child(cabecera)
+	var eventos := EstadoJuego.eventos
+	var tormenta := eventos.tormenta_activa()
+	var f := UI.fila(6)
+	var estado: Array = Cabina.celda(220)
+	estado[1].add_child(Cabina.centrada("TORMENTA SOLAR" if tormenta else "SIN TORMENTA",
+		Cabina.ROJO if tormenta else Cabina.VERDE))
+	estado[1].add_child(Cabina.centrada("QUEDAN %s" % Cabina.mayus(UI.soles(eventos.tormenta_soles)) if tormenta
+		else "REFUGIO EN RESERVA", UI.TEXTO_SUAVE, UI.T_DETALLE))
+	f.add_child(estado[0])
+	var ocupacion: Array = Cabina.celda(180)
+	ocupacion[1].add_child(Cabina.centrada("OCUPACION %d/%d" % [refugiados.size(), plazas]))
+	if plazas > 0:
+		ocupacion[1].add_child(Cabina.marcas(refugiados.size(), plazas, Cabina.VERDE, clampi(140 / plazas, 4, 14)))
+	else:
+		ocupacion[1].add_child(Cabina.centrada("SIN REFUGIOS CONSTRUIDOS", UI.CRITICO, UI.T_DETALLE))
+	f.add_child(ocupacion[0])
+	var texto := "Tormenta solar en curso: la tripulación se refugia aquí para no recibir radiación." if tormenta \
+		else "Sin tormenta solar: el refugio está en reserva. Cuando llegue una, la tripulación vendrá aquí."
+	var explicacion: Array = Cabina.celda()
+	explicacion[1].add_child(UI.parrafo(texto, 12))
+	f.add_child(UI.expandir(explicacion[0]))
+	contenido.add_child(f)
+
+	var libres := maxi(plazas - refugiados.size(), 0)
+	contenido.add_child(Cabina.encabezado("Refugiados", refugiados.size(),
+		"%d plaza%s libre%s" % [libres, "" if libres == 1 else "s", "" if libres == 1 else "s"]))
+	var pantalla := Cabina.pantalla()
+	contenido.add_child(pantalla)
 	var lista := UI.columna(6)
-	for c in refugiados:
-		lista.add_child(TarjetaColono.new(c))
+	lista.add_child(_rejilla(refugiados))
 	if refugiados.is_empty():
-		lista.add_child(UI.parrafo("No hay nadie dentro del refugio."))
-	contenido.add_child(vista_con_scroll(lista))
+		lista.add_child(Cabina.vacio("No hay nadie dentro del refugio."))
+	if tormenta:
+		var fuera := EstadoJuego.tripulacion.colonos.filter(func(c: DatosColono) -> bool: return not refugiados.has(c))
+		if not fuera.is_empty():
+			lista.add_child(Cabina.separador("Fuera del refugio", fuera.size()))
+			lista.add_child(_rejilla(fuera))
+	pantalla.add_child(vista_con_scroll(Cabina.con_margen_scroll(lista)))
+
+
+func _rejilla(colonos: Array) -> GridContainer:
+	var rejilla := GridContainer.new()
+	rejilla.columns = COLUMNAS
+	rejilla.add_theme_constant_override("h_separation", 8)
+	rejilla.add_theme_constant_override("v_separation", 6)
+	for c: DatosColono in colonos:
+		rejilla.add_child(UI.expandir(Cabina.ficha_colono(c)))
+	return rejilla
 
 
 ## Los colonos entran y salen andando: se rehace la lista cuando cambia quién está dentro.

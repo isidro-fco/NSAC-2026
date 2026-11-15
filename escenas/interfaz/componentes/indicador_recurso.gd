@@ -8,8 +8,9 @@ extends VBoxContainer
 ##   │   Oxígeno    │      │ Presupuesto  │   Los recursos con capacidad máxima
 ##   │   120/200    │      │     1250     │   muestran "lo que hay / máximo";
 ##   ╰──────────────╯      ╰──────────────╯   los demás, solo su valor.
-## La unidad va al lado del valor, más chica (kg, L, kWh). Balance por sol en
-## el tooltip (la energía, en kW). Si el recurso es crítico (reserva baja o
+## La unidad va al lado del valor, más chica (kg, L, kWh). Al pasar el mouse,
+## un tooltip encadenable (Tooltips) explica de dónde sale y a dónde va el
+## recurso, con los términos del glosario resaltados. Si el recurso es crítico (reserva baja o
 ## balance negativo), solo el valor se pinta en rojo; el nombre no cambia.
 
 const ANCHO := 108
@@ -43,25 +44,68 @@ func _init(id_recurso: String) -> void:
 	for hijo: Control in find_children("*", "Control", true, false):
 		hijo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	actualizar()
+	Tooltips.registrar(self, contenido_tooltip)
 
 
 func actualizar() -> void:
 	var cap := EstadoJuego.economia.capacidad(recurso)
 	var valor := EstadoJuego.economia.valor(recurso)
-	var saldo := EstadoJuego.economia.balance(recurso)
 	var critico := EstadoJuego.economia.es_critico(recurso)
 	var capacidad := "" if is_inf(cap) else "/%d" % int(cap)
 	valor_label.text = (UI.dinero(valor) if recurso == "presupuesto" else UI.num(valor)) + capacidad
 	valor_label.add_theme_color_override("font_color",
 		UI.CRITICO if critico else UI.COLOR_RECURSO.get(recurso, UI.TEXTO))
-	var nombre: String = Enums.NOMBRE_RECURSO[recurso]
+
+
+## Tooltip: cuánto hay, de dónde sale, en qué se gasta y para cuántos soles alcanza.
+func contenido_tooltip() -> Dictionary:
+	var e := EstadoJuego.economia
+	var valor := e.valor(recurso)
+	var cap := e.capacidad(recurso)
+	var lineas: PackedStringArray = []
+	var hay := UI.cantidad(recurso, valor) + ("" if is_inf(cap) else " de " + UI.cantidad(recurso, cap))
+	lineas.append(("Baterías: " if recurso == "energia" else "Hay: ") + hay)
 	if recurso == "energia":
-		var economia := EstadoJuego.economia
-		tooltip_text = "Baterías: %s de %s\nPaneles y reactores: %s · Módulos: %s\nBalance: %s (%s kWh por sol)" % [
-			UI.cantidad(recurso, valor), UI.cantidad(recurso, cap), UI.kw(economia.produccion(recurso)),
-			UI.kw(economia.consumo(recurso)), UI.kw(saldo, true), UI.con_signo(economia.cambio_por_sol(recurso))]
+		lineas.append("Producción: %s" % UI.kw(e.produccion(recurso)))
+		lineas.append("  Base: 2 reactores de fisión de 40 kW y 1 panel solar de 20 kW")
+		_lineas_modulos(lineas, func(d: DatosModulo) -> float: return d.produce.get("energia", 0.0), " kW")
+		lineas.append("Consumo de los módulos: %s" % UI.kw(e.consumo(recurso)))
+		_lineas_modulos(lineas, func(d: DatosModulo) -> float: return d.consumo_kw, " kW")
+		lineas.append("Balance: %s, o sea %s kWh por sol en las baterías." % [
+			UI.kw(e.balance(recurso), true), UI.con_signo(e.cambio_por_sol(recurso))])
 	else:
-		var tope := "" if is_inf(cap) else " de " + UI.cantidad(recurso, cap)
-		var por_sol: String = ("+" if saldo >= 0.0 else "") + UI.dinero(saldo) if recurso == "presupuesto" \
-			else UI.con_signo(saldo) + (" " + UI.UNIDAD[recurso] if UI.UNIDAD.has(recurso) else "")
-		tooltip_text = "%s: %s%s (%s por sol)" % [nombre, UI.cantidad(recurso, valor), tope, por_sol]
+		var unidad: String = " " + UI.UNIDAD[recurso] if UI.UNIDAD.has(recurso) else ""
+		var base: float = EstadoJuego.datos_balance.produccion_base.get(recurso, 0.0)
+		if recurso == "presupuesto":
+			lineas.append("Llega cada sol: %s (fondos de la misión)" % UI.dinero(e.produccion(recurso)))
+		else:
+			lineas.append("Producción por sol: %s%s" % [UI.num(e.produccion(recurso)), unidad])
+		if base > 0.0 and recurso != "presupuesto":
+			lineas.append("  Base inicial: %s%s" % [UI.num(base), unidad])
+		_lineas_modulos(lineas, func(d: DatosModulo) -> float: return d.produce.get(recurso, 0.0), unidad)
+		if recurso == "agua" and e.agua_reciclada() > 0.0:
+			lineas.append("  Reciclaje del soporte vital (80 %%): %s L" % UI.num(e.agua_reciclada()))
+		if e.consumo(recurso) > 0.0:
+			var por_colono: float = EstadoJuego.datos_balance.consumo_por_colono.get(recurso, 0.0)
+			lineas.append("Consumo por sol: %s%s (%d colonos x %s%s%s)" % [UI.num(e.consumo(recurso)), unidad,
+				EstadoJuego.tripulacion.activos(), UI.num(por_colono), unidad,
+				"" if recurso == "oxigeno" else ", según la ración"])
+		if EstadoJuego.comando.multiplicador() > 1.0:
+			lineas.append("El Módulo de Comando multiplica la producción x%s." % UI.num(EstadoJuego.comando.multiplicador()))
+	var restantes := e.soles_restantes(recurso)
+	if not is_inf(restantes):
+		lineas.append("Al ritmo de ahora se acaba en %s soles." % UI.num(floorf(restantes)))
+	return { "titulo": Enums.NOMBRE_RECURSO[recurso], "texto": "\n".join(lineas) }
+
+
+## "  2 Panel solar: 40 kW" por cada tipo de módulo construido que aporte algo.
+func _lineas_modulos(lineas: PackedStringArray, cuanto: Callable, unidad: String) -> void:
+	var cuenta := {}
+	for id: String in EstadoJuego.economia.modulos_activos:
+		cuenta[id] = cuenta.get(id, 0) + 1
+	for id: String in cuenta:
+		var d := DatosModulo.obtener(id)
+		var valor: float = cuanto.call(d)
+		if valor > 0.0:
+			lineas.append("  %s%s: %s%s" % ["%d x " % cuenta[id] if cuenta[id] > 1 else "", d.nombre,
+				UI.num(valor * cuenta[id]), unidad])

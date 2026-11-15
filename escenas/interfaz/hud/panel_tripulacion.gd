@@ -167,16 +167,15 @@ func _elegir(c: DatosColono) -> void:
 	colono_elegido.emit(c)
 
 
-## La fila elegida lleva borde amarillo, como el resaltado del mapa. Esquinas
-## rectas (radio 0) para la caja pixel, como el resto del HUD.
+## Filas pixel art; la elegida lleva contorno amarillo, como el resaltado del mapa.
 func _pintar_filas() -> void:
 	for c: DatosColono in filas:
 		var boton: Button = filas[c]["boton"]
 		var activo := c == elegido
-		var borde := UI.ADVERTENCIA if activo else UI.TARJETA
-		boton.add_theme_stylebox_override("normal", UI.estilo(UI.TARJETA, borde, 0, 6, 2))
-		boton.add_theme_stylebox_override("hover", UI.estilo(UI.TARJETA.lightened(0.06), UI.ADVERTENCIA if activo else UI.BORDE, 0, 6, 2))
-		boton.add_theme_stylebox_override("pressed", UI.estilo(UI.TARJETA.darkened(0.1), UI.ADVERTENCIA, 0, 6, 2))
+		# Bloque pixel art; la fila elegida lleva el contorno amarillo.
+		UI.vestir_boton_pixel(boton, UI.TARJETA, UI.ADVERTENCIA, 6, 6)
+		if activo:
+			boton.add_theme_stylebox_override("normal", UI.estilo_boton_pixel(UI.TARJETA, UI.ADVERTENCIA, false, 6, 6))
 
 
 func _actualizar_lugares() -> void:

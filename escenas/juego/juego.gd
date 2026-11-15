@@ -20,6 +20,7 @@ var menus := {
 	"refugio": ["Refugio Blindado", MenuRefugio],
 	"bitacora": ["Bitácora de la misión", MenuBitacora],
 	"glosario": ["Glosario técnico", MenuGlosario],
+	"opciones": ["Opciones", MenuOpciones],     # sin botón: solo con Esc (ver _escape)
 }
 ## Atajos de teclado de los botones inferiores del HUD.
 const ACCION_POR_TECLA := { KEY_B: "construir", KEY_G: "glosario", KEY_L: "bitacora" }
@@ -32,6 +33,7 @@ var panel_tripulacion: PanelTripulacion
 var avisos := UI.columna(4)
 var ayuda_colocar := UI.etiqueta_pixel("Clic: colocar   ·   Clic derecho o Esc: cancelar")
 var etiqueta_flotante := UI.etiqueta_pixel("")
+var tutorial: Tutorial
 
 @onready var mapa: Mapa = $Mapa
 @onready var camara: CamaraJuego = $Camara
@@ -40,8 +42,10 @@ var etiqueta_flotante := UI.etiqueta_pixel("")
 
 func _ready() -> void:
 	raiz.theme = UI.tema()
+	MenuOpciones.aplicar_pantalla()
 	RenderingServer.set_default_clear_color(UI.FONDO.darkened(0.3))
 	raiz.add_child(hud)
+	GestorAudio.iniciar_ambiente()
 	panel_tripulacion = PanelTripulacion.new(mapa)
 	raiz.add_child(panel_tripulacion)
 	raiz.add_child(MenuConstruccion.new(mapa))
@@ -59,6 +63,7 @@ func _ready() -> void:
 	raiz.add_child(etiqueta_flotante)
 
 	hud.accion_pedida.connect(_accion)
+	hud.alerta_pulsada.connect(_resolver_alerta)
 	mapa.modo_cambiado.connect(func(modo: Enums.ModoMapa) -> void:
 		hud.mostrar_modo_normal(modo == Enums.ModoMapa.NORMAL)
 		# El panel de construcción ocupa el mismo lado izquierdo.
@@ -81,6 +86,9 @@ func _ready() -> void:
 	EstadoJuego.victoria.connect(_victoria)
 	EstadoJuego.evento_iniciado.connect(_mostrar_evento)
 	EstadoJuego.glosario_pedido.connect(abrir_glosario)
+	# Guía para aprender a jugar: empieza sola la primera vez (después, con F1).
+	tutorial = Tutorial.new(self)
+	add_child(tutorial)
 
 
 ## Con un menú o diálogo abierto, el mapa y la cámara dejan de responder.
@@ -120,7 +128,24 @@ func _accion(id: String) -> void:
 		abrir_menu(id)
 
 
+## Clic en una alerta: lleva a donde se resuelve.
+func _resolver_alerta(alerta: Dictionary) -> void:
+	var accion: Dictionary = alerta.get("accion", {})
+	if accion.has("colono"):
+		var datos: DatosColono = accion["colono"]
+		var colono := mapa.colono_de(datos)
+		if colono != null:
+			camara.enfocar(colono.position)
+		mapa.resaltar(datos)
+		inspeccionar(datos)
+	elif accion.has("menu") and mapa.modo == Enums.ModoMapa.NORMAL:
+		abrir_menu(accion["menu"])
+	elif accion.has("construir") and mapa.modo == Enums.ModoMapa.NORMAL:
+		mapa.alternar_construccion()
+
+
 ## Escape cierra lo que esté más arriba: el glosario puede abrirse sobre un diálogo.
+## Si no hay nada que cerrar, abre el menú de opciones.
 func _escape() -> void:
 	if dialogo != null and (menu == null or dialogo.get_index() > menu.get_index()):
 		if dialogo.cancelable:
@@ -130,13 +155,16 @@ func _escape() -> void:
 			cerrar_menu()
 	elif mapa.modo != Enums.ModoMapa.NORMAL:
 		mapa.cancelar_modo()
-	else:
+	elif inspector != null:
 		cerrar_inspector()
+	else:
+		abrir_menu("opciones")
 
 
 # --- Menús y diálogos -----------------------------------------------------
 
 func abrir_menu(id: String) -> void:
+	Tooltips.cerrar_todo()
 	cerrar_menu()
 	var titulo: String = menus[id][0]
 	menu = menus[id][1].new()
@@ -167,6 +195,7 @@ func confirmar(titulo: String, texto: String, al_confirmar: Callable, filas: Arr
 
 
 func _abrir_dialogo(nuevo: DialogoConfirmacion) -> void:
+	Tooltips.cerrar_todo()
 	if dialogo != null:
 		dialogo.cerrar()
 	dialogo = nuevo
@@ -242,9 +271,10 @@ func _insignia_real(real: Dictionary, bloque: Control) -> Control:
 	placa.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	placa.add_theme_font_override("font", UI.fuente_pixel())
 	placa.add_theme_font_size_override("font_size", UI.T_DETALLE)
-	for estado: String in ["normal", "hover", "pressed", "hover_pressed"]:
-		var fondo := 0.28 if estado.begins_with("hover") else 0.15
-		placa.add_theme_stylebox_override(estado, UI.estilo(Color(UI.BIEN, fondo), UI.BIEN, 0, 6, 2))
+	# Bloque pixel art verde azulado con contorno del mismo color.
+	var fondo_placa := UI.FONDO.lerp(UI.BIEN, 0.18)
+	UI.vestir_boton_pixel(placa, fondo_placa, UI.BIEN, 8, 6)
+	placa.add_theme_stylebox_override("normal", UI.estilo_boton_pixel(fondo_placa, UI.BIEN, false, 8, 6))
 	for color: String in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
 		placa.add_theme_color_override(color, UI.BIEN)
 	var pintar := func() -> void:

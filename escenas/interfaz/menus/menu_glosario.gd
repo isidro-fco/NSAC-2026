@@ -6,12 +6,16 @@ extends MenuModulo
 ## HU-12: glosario con aspecto de terminal de datos. A la izquierda los términos
 ## descubiertos; a la derecha la ficha del seleccionado. Mientras está abierto
 ## el tiempo se detiene; al cerrarlo la pausa vuelve a como estaba.
+## Las dos columnas usan las pantallas de cabina del Módulo de Comando (ver Cabina).
 
 const VERDE := UI.BIEN                       # Teal Signal
-const FONDO_TERMINAL := Color("#111a22")     # Deep Space muy oscuro
 
 var seleccionado := ""
 var pausa_previa := false
+
+
+func _init() -> void:
+	con_cabecera = false     # sin título: como la sala de comandos
 
 
 func _ready() -> void:
@@ -29,33 +33,50 @@ func seleccionar(id: String) -> void:
 
 
 func construir() -> void:
-	var pantalla := PanelContainer.new()
-	pantalla.add_theme_stylebox_override("panel", UI.estilo(FONDO_TERMINAL, VERDE.darkened(0.5), UI.RADIO, 16, 2))
-	pantalla.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	contenido.add_child(pantalla)
-	var cuerpo := UI.fila(16)
-	pantalla.add_child(cuerpo)
-
-	var lista := UI.columna(6)
-	lista.custom_minimum_size = Vector2(300, 0)
-	cuerpo.add_child(lista)
-	lista.add_child(UI.etiqueta_pixel("> ARCHIVO DE DATOS", 8, VERDE.darkened(0.3)))
-	var descubiertos: Array = EstadoJuego.glosario.descubiertos.keys()
-	if descubiertos.is_empty():
-		lista.add_child(UI.etiqueta_pixel("No se han encontrado palabras", 8, VERDE))
-	elif seleccionado == "":
+	var glosario := EstadoJuego.glosario
+	var descubiertos: Array = glosario.descubiertos.keys()
+	if seleccionado == "" and not descubiertos.is_empty():
 		seleccionado = descubiertos[0]
+	var cuerpo := UI.fila(16)
+	cuerpo.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	contenido.add_child(cuerpo)
+
+	# Izquierda: los términos descubiertos.
+	var izquierda := UI.columna(6)
+	izquierda.custom_minimum_size = Vector2(300, 0)
+	cuerpo.add_child(izquierda)
+	izquierda.add_child(Cabina.encabezado("> Archivo de datos", descubiertos.size(),
+		"de %d" % glosario.terminos.size()))
+	var pantalla := Cabina.pantalla()
+	izquierda.add_child(pantalla)
 	var botones := UI.columna(4)
 	for id: String in descubiertos:
-		var b := UI.boton_pixel(EstadoJuego.glosario.termino(id)["nombre"], seleccionar.bind(id), id == seleccionado)
+		var b := Cabina.boton_opcion(glosario.termino(id)["nombre"], seleccionar.bind(id), id == seleccionado, 28)
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		b.add_theme_font_size_override("font_size", UI.T_DETALLE)
 		botones.add_child(b)
-	lista.add_child(vista_con_scroll(botones))
+	if descubiertos.is_empty():
+		botones.add_child(Cabina.vacio("No se han encontrado palabras. Aparecen al leerlas en la interfaz."))
+	pantalla.add_child(vista_con_scroll(Cabina.con_margen_scroll(botones)))
 
+	# Derecha: la ficha del término elegido, como una terminal.
+	var derecha := UI.columna(6)
+	cuerpo.add_child(UI.expandir(derecha))
+	var termino := glosario.termino(seleccionado) if seleccionado != "" else {}
+	derecha.add_child(Cabina.encabezado("> Ficha", -1, "Tiempo en pausa"))
+	var ficha_pantalla := Cabina.pantalla(8)
+	derecha.add_child(ficha_pantalla)
 	var ficha := UI.columna(12)
-	cuerpo.add_child(UI.expandir(ficha))
-	if seleccionado != "":
-		var termino := EstadoJuego.glosario.termino(seleccionado)
-		ficha.add_child(UI.etiqueta_pixel("> " + termino["nombre"], 16, VERDE))
+	if termino.is_empty():
+		ficha.add_child(Cabina.vacio("Elige un término del archivo."))
+	else:
+		var titulo := UI.etiqueta_pixel("> " + Cabina.mayus(termino["nombre"]), 16, VERDE)
+		titulo.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		ficha.add_child(titulo)
+		var linea := ColorRect.new()
+		linea.color = Color(VERDE, 0.35)
+		linea.custom_minimum_size = Vector2(0, 2)
+		ficha.add_child(linea)
 		ficha.add_child(UI.parrafo(termino["corto"], 15, UI.TEXTO))
 		ficha.add_child(UI.parrafo(termino["detalle"], 14, VERDE.lerp(UI.TEXTO, 0.6)))
+	ficha_pantalla.add_child(vista_con_scroll(Cabina.con_margen_scroll(ficha)))

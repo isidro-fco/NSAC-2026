@@ -9,12 +9,14 @@ extends Control
 ## (Oxígeno)(Energía)(Agua)(Comida)(Materiales)(Presupuesto)(     Sol 11     )(II ▶ x2 x4)
 ##  ▪▪▪▪▫▫    ▪▪▪▪▫▫   ▪▪▫▫   ▪▪▪▫▫    ▪▪▪▪▫▫       1250     ▪▪▪▪▪▪▪▪▪▪▫▫▫▫▫▫
 ##
-## (● DONKI >)        ( Glosario G ) ( Construir B ) ( Bitácora L )
+##                                                          ¡Se acaba el agua!
+## (● DONKI >)        ( Glosario G ) ( Construir B ) ( Bitácora L )   2 colonos sin tarea
 ## Abajo a la izquierda, plegado, de dónde salen los datos del Sol (NASA DONKI):
 ## con ">" se despliega hacia la derecha; el punto es verde si están en vivo.
 ## El estilo y las piezas comunes de la interfaz viven en UI (ui.gd).
 
 signal accion_pedida(id: String)              # "glosario", "construir" o "bitacora"
+signal alerta_pulsada(alerta: Dictionary)       # clic en una alerta (ver PanelAlertas)
 
 const MARGEN := 12.0
 const ALTO_PANEL := 44.0
@@ -36,12 +38,14 @@ var boton_reanudar: Button
 var botones_velocidad := {}                   # velocidad -> Button (x2 y x4)
 var botones_inferiores: HBoxContainer
 var botones := {}                             # acción -> Button de la fila inferior
+var etiqueta_construir: Label                 # "Construir" o, en modo construcción, "Cancelar"
 var panel_tierra := UI.columna(6)
 var panel_donki: PanelContainer
 var donki_punto: ColorRect
 var donki_detalle: Label
 var donki_boton: Button
 var modo_normal := true
+var panel_alertas := PanelAlertas.new()
 
 
 func _ready() -> void:
@@ -50,6 +54,13 @@ func _ready() -> void:
 	_crear_barra()
 	_crear_botones_inferiores()
 	_crear_panel_donki()
+	# Alertas abajo a la derecha, apiladas hacia arriba.
+	panel_alertas.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, MARGEN)
+	panel_alertas.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	panel_alertas.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	panel_alertas.custom_minimum_size.x = 300
+	panel_alertas.alerta_pulsada.connect(alerta_pulsada.emit)
+	add_child(panel_alertas)
 	var caja := PanelContainer.new()
 	UI.aplicar_marco(caja, 12)
 	caja.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, MARGEN)
@@ -142,7 +153,10 @@ func _crear_botones_inferiores() -> void:
 		contenido.alignment = BoxContainer.ALIGNMENT_CENTER
 		contenido.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		contenido.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		contenido.add_child(UI.etiqueta_pixel(datos[1], UI.T_TEXTO))
+		var etiqueta := UI.etiqueta_pixel(datos[1], UI.T_TEXTO, UI.TEXTO_PRIMARIO if principal else UI.TEXTO)
+		contenido.add_child(etiqueta)
+		if datos[0] == "construir":
+			etiqueta_construir = etiqueta
 		var tecla := PanelContainer.new()
 		tecla.add_theme_stylebox_override("panel", UI.estilo(UI.FONDO, UI.FONDO, 3, 7, 0))
 		tecla.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -207,7 +221,9 @@ func mostrar_modo_normal(normal: bool) -> void:
 		b.modulate.a = 1.0 if normal else 0.0
 		b.disabled = not normal
 		b.mouse_filter = Control.MOUSE_FILTER_STOP if normal else Control.MOUSE_FILTER_IGNORE
-	botones["construir"].tooltip_text = "Construir (B)" if normal else "Salir del modo construcción (B)"
+	# En modo construcción el mismo botón sirve para salir: dice Cancelar.
+	etiqueta_construir.text = "Construir" if normal else "Cancelar"
+	botones["construir"].tooltip_text = "Construir (B)" if normal else "Salir del modo construcción (B o Esc)"
 
 
 ## HU-08 y HU-09: arriba a la derecha, el clima espacial (tormenta solar en
@@ -241,6 +257,7 @@ func actualizar() -> void:
 		UI.pintar_boton_pixel(botones_velocidad[v], GestorTiempo.velocidad == v, UI.ACENTO, UI.SILENCIADO, 4)
 	_actualizar_panel_tierra()
 	_actualizar_panel_donki()
+	panel_alertas.actualizar()
 
 
 func _process(_delta: float) -> void:

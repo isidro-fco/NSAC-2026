@@ -37,7 +37,8 @@ const ALTURA_TREN := 70.0             # por debajo de esta altura saca las patas
 
 const SPRITE_CAPSULA := preload("res://recursos/sprites/modulos/capsula_orion.png")
 const CAPSULA_ORIGEN := Vector2(-16, -39)    # esquina del sprite: el escudo térmico queda en base.y - 9
-const CARGA_CASCO := Color("#9aa3ab")
+const SPRITE_CARGUERO := preload("res://recursos/sprites/modulos/carguero_cygnus.png")
+const CARGUERO_ORIGEN := Vector2(-12, -46)   # esquina del sprite: la tobera acaba en base.y - 8
 const CARGA_SOMBRA := Color("#6f7882")
 const CONTORNO := Color(0, 0, 0, 0.55)
 const POLVO := Color("#f2b27a")
@@ -238,7 +239,7 @@ func _dibujar_patas(base: Vector2, h: float) -> void:
 	var fuera := clampf(1.0 - (h - 10.0) / ALTURA_TREN, 0.0, 1.0)    # 1 = tren desplegado
 	var ancho := 12.0 + 6.0 * fuera
 	for lado: float in [-1.0, 1.0]:
-		var cadera := base + Vector2(lado * 9.0, -10.0)
+		var cadera := base + Vector2(lado * 9.0, -14.0 if tipo == Tipo.CARGA else -10.0)
 		var pie := base + Vector2(lado * ancho, -2.0 * (1.0 - fuera))
 		draw_line(cadera, pie, CARGA_SOMBRA, 2.0)
 		draw_rect(Rect2(pie + Vector2(-2.5, -1.0), Vector2(5, 2)), CARGA_SOMBRA)
@@ -259,25 +260,15 @@ func _dibujar_capsula(base: Vector2) -> void:
 		draw_rect(Rect2(base + Vector2(-4, -17), Vector2(8, 8.0 * abre)), CONTORNO, false, 1.0)
 
 
-## Carguero: más ancho y gris, con franjas amarillas y una bodega.
+## Carguero de suministros inspirado en la Cygnus: sprite de 24x40; la luz y la bodega abierta se pintan encima.
 func _dibujar_carguero(base: Vector2) -> void:
-	var cuerpo := PackedVector2Array([base + Vector2(-15, -30), base + Vector2(15, -30),
-		base + Vector2(18, -9), base + Vector2(-18, -9)])
-	draw_colored_polygon(cuerpo, CARGA_CASCO)
-	draw_colored_polygon(PackedVector2Array([base + Vector2(6, -30), base + Vector2(15, -30),
-		base + Vector2(18, -9), base + Vector2(8, -9)]), CARGA_SOMBRA)
-	for i in 4:
-		draw_rect(Rect2(base + Vector2(-16 + i * 9, -13), Vector2(5, 3)), UI.ADVERTENCIA)
-	_contorno(cuerpo)
-	draw_rect(Rect2(base + Vector2(-6, -36), Vector2(12, 6)), CARGA_CASCO)
-	draw_rect(Rect2(base + Vector2(-6, -36), Vector2(12, 6)), CONTORNO, false, 1.0)
-	draw_rect(Rect2(base + Vector2(-3, -34), Vector2(6, 2)), UI.FONDO_CLARO)
+	draw_texture(SPRITE_CARGUERO, base + CARGUERO_ORIGEN)
 	var luz := UI.ADVERTENCIA if fmod(_reloj, 0.8) < 0.4 else UI.ADVERTENCIA.darkened(0.5)
-	draw_circle(base + Vector2(0, -38), 1.6, luz)
-	# Bodega: se ve oscura mientras está abierta.
-	var bodega := Rect2(base + Vector2(-8, -26), Vector2(16, 11))
-	draw_rect(bodega, CARGA_SOMBRA.lerp(UI.FONDO, apertura()))
-	draw_rect(bodega, CONTORNO, false, 1.0)
+	draw_circle(base + Vector2(0, -46), 1.4, luz)
+	# Bodega: el hueco de la compuerta se ve oscuro mientras está abierta.
+	var abre := apertura()
+	if abre > 0.0:
+		draw_rect(Rect2(base + Vector2(-5, -33), Vector2(10, 7)), Color(UI.FONDO, abre))
 
 
 ## Cajas que salen de la bodega con el color de cada recurso y se desvanecen
@@ -301,9 +292,3 @@ func _dibujar_cajas() -> void:
 		draw_rect(caja, Color(color, alfa))
 		draw_line(caja.position + Vector2(0, 4), caja.position + Vector2(10, 4), Color(0, 0, 0, 0.35 * alfa), 1.0)
 		draw_rect(caja, Color(0, 0, 0, 0.5 * alfa), false, 1.0)
-
-
-func _contorno(puntos: PackedVector2Array) -> void:
-	var cerrado := puntos.duplicate()
-	cerrado.append(puntos[0])
-	draw_polyline(cerrado, CONTORNO, 1.0)

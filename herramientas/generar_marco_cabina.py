@@ -39,7 +39,7 @@ CRISTAL = (40, 92, 120, 255)         # filo del cristal, reflejo frío
 # - marco_cabina_acento: pantalla encendida en ACENTO (botón principal, p. ej. Construir).
 PANTALLAS = {
     "marco_cabina.png": ((11, 18, 28, 255), (14, 23, 35, 255), (18, 33, 48, 255), CRISTAL),
-    "marco_cabina_acento.png": ((200, 124, 84, 255), (190, 116, 78, 255), (214, 140, 98, 255), (246, 196, 158, 255)),
+    "marco_cabina_acento.png": ((255, 106, 19, 255), (240, 96, 14, 255), (255, 130, 52, 255), (255, 196, 150, 255)),  # UI.ACENTO #FF6A13
 }
 TORNILLO = (150, 156, 168, 255)
 TORNILLO_LUZ = (232, 236, 242, 255)

@@ -28,30 +28,37 @@ func _init(datos_modulo: DatosModulo, al_elegir: Callable) -> void:
 	if disabled:
 		modulate = Color(1, 1, 1, 0.55)
 	pressed.connect(al_elegir.bind(datos.id))
-	for estado: String in ["normal", "hover", "pressed", "hover_pressed", "disabled"]:
-		var borde := UI.ACENTO if estado.begins_with("hover") or estado == "pressed" else UI.BORDE
-		add_theme_stylebox_override(estado, UI.estilo(UI.TARJETA, borde, 4, 0, 2))
+	# Bloque pixel art (ver UI.vestir_boton_pixel) con franja verde si se puede
+	# pagar; al pasar el ratón, contorno naranja. La franja va dentro del bisel.
+	var franja := Cabina.REJILLA_BORDE if disabled else Cabina.VERDE
+	UI.vestir_boton_pixel(self, Cabina.TARJETA.lightened(0.05), UI.ACENTO, 0, 0)
+	add_theme_stylebox_override("disabled", UI.estilo_boton_pixel(Cabina.TARJETA.lightened(0.05), UI.CONTORNO_BOTON, false, 0, 0))
+	draw.connect(func() -> void:
+		# Junto a los remaches, a lo alto de la cara (sin el grosor de la tecla).
+		var p := UI.PIXEL_BOTON
+		draw_rect(Rect2(p * 3, p * 4, p * 2, size.y - p * (8 + UI.GROSOR_TECLA)), franja))
 
 	var f := UI.fila(10)
 	f.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	f.offset_left = 7
-	f.offset_right = -7
+	f.offset_left = 15
+	f.offset_bottom = -UI.PIXEL_BOTON * UI.GROSOR_TECLA     # centrado en la cara de la tecla
+	f.offset_right = -4
 	add_child(f)
 	f.add_child(_icono())
 
 	var c := UI.columna(5)
 	c.alignment = BoxContainer.ALIGNMENT_CENTER
 	f.add_child(UI.expandir(c))
-	c.add_child(UI.etiqueta_pixel(datos.nombre, UI.T_TEXTO, UI.TEXTO))
+	c.add_child(UI.etiqueta_pixel(Cabina.mayus(datos.nombre), UI.T_TEXTO, UI.TEXTO))
 	var coste := UI.fila(16)
 	var alcanza_dinero: bool = economia.recursos["presupuesto"] >= datos.dinero
 	var alcanzan_materiales: bool = economia.recursos["materiales"] >= datos.materiales
 	coste.add_child(UI.etiqueta_pixel(UI.dinero(datos.dinero), 8, UI.BIEN if alcanza_dinero else UI.CRITICO))
-	coste.add_child(UI.etiqueta_pixel("%d mat." % datos.materiales, 8, UI.ACENTO if alcanzan_materiales else UI.CRITICO))
+	coste.add_child(UI.etiqueta_pixel("%d MAT." % datos.materiales, 8, UI.ACENTO if alcanzan_materiales else UI.CRITICO))
 	c.add_child(coste)
 	var lineas := lineas_energia_y_produccion(datos)
 	for linea: Array in lineas:
-		c.add_child(UI.etiqueta_pixel(linea[0], 8, linea[1]))
+		c.add_child(UI.etiqueta_pixel(Cabina.mayus(linea[0]), 8, linea[1]))
 	# Alto según las líneas: nombre (10 px) + costo y cada línea (8 px), separadas 5 px.
 	custom_minimum_size.y = maxf(LADO_ICONO + 14, 26 + 13 * (lineas.size() + 1))
 	for hijo: Control in find_children("*", "Control", true, false):
@@ -89,7 +96,8 @@ func _icono() -> Control:
 	var tam := datos.tam
 	var textura := datos.textura
 	icono.draw.connect(func() -> void:
-		icono.draw_rect(Rect2(Vector2.ZERO, icono.size), UI.FONDO)
+		icono.draw_rect(Rect2(Vector2.ZERO, icono.size), Cabina.REJILLA_FONDO)
+		icono.draw_rect(Rect2(Vector2.ZERO, icono.size), Cabina.REJILLA_BORDE, false, 1.0)
 		var hueco := 1.0
 		var lado := minf(6.0, (LADO_ICONO - 6.0 - hueco * (maxi(tam.x, tam.y) - 1)) / maxi(tam.x, tam.y))
 		var total := Vector2(tam) * lado + Vector2(tam - Vector2i.ONE) * hueco

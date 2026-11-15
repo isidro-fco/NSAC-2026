@@ -51,8 +51,29 @@ const REGIONES := {
 }
 
 
+## Variante del Módulo de Comando (docs/diseno/Modulo Comando.pdf): placa azul
+## marino lisa con una pantalla negra encima, 3 perillas oscuras a la izquierda,
+## 3 perillas claras a la derecha y 5 botones cuadrados en la franja de abajo.
+##   ┌───────────────────────────────────┐
+##   │ ◉  ┌───────────────────────┐  ⚙  │
+##   │ ◉  │       pantalla        │  ⚙  │
+##   │ ◉  └───────────────────────┘  ⚙  │
+##   │     ▣     ▣     ▣     ▣     ▣     │
+##   └───────────────────────────────────┘
+const PLACA_COMANDO := Color("#34385d")
+const PLACA_COMANDO_BORDE := Color("#20233c")
+const PANTALLA_COMANDO := Color("#1b1e24")
+const LADO_COMANDO := 64         # franja de controles a cada lado
+const ARRIBA_COMANDO := 22
+const ABAJO_COMANDO := 58        # franja de los botones de abajo
+
+
 ## Pone el marco en un PanelContainer. `margen` es el espacio libre dentro del bisel.
-static func aplicar(panel: PanelContainer, margen := 10) -> void:
+## Con `comando` usa la variante del Módulo de Comando.
+static func aplicar(panel: PanelContainer, margen := 10, comando := false) -> void:
+	if comando:
+		_aplicar_comando(panel, margen)
+		return
 	var caja := StyleBoxTexture.new()
 	caja.texture = BISEL
 	caja.set_texture_margin_all(MARGEN)
@@ -65,15 +86,15 @@ static func aplicar(panel: PanelContainer, margen := 10) -> void:
 	caja.content_margin_right = MARGEN_LADO + margen
 	panel.add_theme_stylebox_override("panel", caja)
 	panel.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	panel.draw.connect(_dibujar.bind(panel))
+	panel.draw.connect((_dibujar_comando if comando else _dibujar).bind(panel))
 	panel.resized.connect(panel.queue_redraw)
 
 
-## Dibuja una pieza con su esquina superior izquierda en `pos` (px).
-static func _pieza(panel: Control, nombre: String, pos: Vector2) -> void:
+## Dibuja una pieza con su esquina superior izquierda en `pos` (px), a `escala` px por píxel lógico.
+static func _pieza(panel: Control, nombre: String, pos: Vector2, escala := float(ESCALA)) -> void:
 	var region: Rect2 = REGIONES[nombre]
-	pos = (pos / ESCALA).floor() * ESCALA          # alineado a la rejilla de píxeles lógicos
-	panel.draw_texture_rect_region(HOJA, Rect2(pos, region.size * ESCALA), region)
+	pos = (pos / escala).floor() * escala          # alineado a la rejilla de píxeles lógicos
+	panel.draw_texture_rect_region(HOJA, Rect2(pos, region.size * escala), region)
 
 
 ## Centros de `n` piezas repartidas a lo largo de `largo` px.
@@ -133,3 +154,59 @@ static func _dibujar(panel: Control) -> void:
 	_pieza(panel, "perilla_chica", Vector2(s.x - lado - 14 * e, s.y - 14 * e))
 	for pos: Vector2 in [Vector2(2, 2), Vector2(s.x / e - 5, 2), Vector2(2, s.y / e - 5), Vector2(s.x / e - 5, s.y / e - 5)]:
 		_pieza(panel, "tornillo", pos * e)
+
+
+static func _aplicar_comando(panel: PanelContainer, margen: int) -> void:
+	var caja := StyleBoxFlat.new()
+	caja.bg_color = PLACA_COMANDO
+	caja.border_color = PLACA_COMANDO_BORDE
+	caja.set_border_width_all(3)
+	caja.content_margin_left = LADO_COMANDO + margen
+	caja.content_margin_right = LADO_COMANDO + margen
+	caja.content_margin_top = ARRIBA_COMANDO + margen
+	caja.content_margin_bottom = ABAJO_COMANDO + margen
+	panel.add_theme_stylebox_override("panel", caja)
+	panel.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	panel.draw.connect(_dibujar_comando.bind(panel))
+	panel.resized.connect(panel.queue_redraw)
+
+
+## Panel lateral (p. ej. construcción) con los colores del Módulo de Comando:
+## fondo gris liso de la pantalla y placa azul marino como borde.
+static func aplicar_lateral(panel: PanelContainer, margen := 12) -> void:
+	var caja := StyleBoxFlat.new()
+	caja.bg_color = PANTALLA_COMANDO
+	caja.border_color = PLACA_COMANDO
+	caja.set_border_width_all(6)
+	caja.set_content_margin_all(6 + margen)
+	panel.add_theme_stylebox_override("panel", caja)
+	panel.draw.connect(func() -> void:
+		var r := Rect2(Vector2.ZERO, panel.size)
+		panel.draw_rect(r, PLACA_COMANDO_BORDE, false, 2.0)
+		panel.draw_rect(r.grow(-6), PLACA_COMANDO_BORDE, false, 2.0))
+
+
+## Pantalla negra (bajo el contenido) y controles centrados en cada franja.
+static func _dibujar_comando(panel: Control) -> void:
+	var s := panel.size
+	var pantalla := Rect2(LADO_COMANDO, ARRIBA_COMANDO, s.x - LADO_COMANDO * 2, s.y - ARRIBA_COMANDO - ABAJO_COMANDO)
+	panel.draw_rect(pantalla.grow(2), PLACA_COMANDO_BORDE)
+	panel.draw_rect(pantalla, PANTALLA_COMANDO)
+
+	var izquierda := LADO_COMANDO / 2.0
+	var derecha := s.x - LADO_COMANDO / 2.0
+	for cy in _repartir(pantalla.size.y, 3):
+		var y := pantalla.position.y + cy
+		_control(panel, "perilla_0", Vector2(izquierda, y), 4)
+		_control(panel, "perilla_chica", Vector2(derecha, y), 6)
+	for cx in _repartir(pantalla.size.x, 5):
+		_control(panel, "protegido", Vector2(pantalla.position.x + cx, s.y - ABAJO_COMANDO / 2.0), 4)
+
+
+## Pieza centrada en `centro` con su rótulo (rayita clara) debajo.
+static func _control(panel: Control, nombre: String, centro: Vector2, escala: int) -> void:
+	var tam: Vector2 = REGIONES[nombre].size * escala
+	var arriba := centro - Vector2(tam.x / 2.0, tam.y / 2.0 + 4)
+	_pieza(panel, nombre, arriba, escala)
+	var rotulo: Vector2 = REGIONES["rotulo_corto"].size * 4
+	panel.draw_rect(Rect2(Vector2(centro.x - rotulo.x / 2.0, arriba.y + tam.y + 5).floor(), rotulo), Color("#c9cad6"))

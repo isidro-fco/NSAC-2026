@@ -7,20 +7,20 @@ extends RefCounted
 ## fuentes, tema y piezas básicas (etiquetas, botones, filas...). Solo funciones estáticas.
 
 # --- Paleta ---------------------------------------------------------------
-# Colores de docs/diseno/paleta_colores.png y sus derivados.
+# Colores de docs/diseno/paleta_colores.png, avivados un poco, y sus derivados.
 
-const FONDO := Color("#18232d")          # diálogos, placas de tecla (Deep Space oscurecido)
-const FONDO_CLARO := Color("#22313F")    # Deep Space: píldoras del HUD, paneles y menús
-const TARJETA := Color("#2b3d4e")        # tarjetas dentro de un panel
-const SILENCIADO := Color("#2c3e4f")     # hover, pistas de barras, botones apagados
-const BORDE := Color("#3a4f62")          # bordes y divisores
-const ACENTO := Color("#D98B5F")         # Dusty Clay: acción principal, selección
+const FONDO := Color("#223241")          # diálogos, placas de tecla (Deep Space oscurecido)
+const FONDO_CLARO := Color("#2e4357")    # Deep Space: píldoras del HUD, paneles y menús
+const TARJETA := Color("#395168")        # tarjetas dentro de un panel
+const SILENCIADO := Color("#3a536a")     # hover, pistas de barras, botones apagados
+const BORDE := Color("#506a82")          # bordes y divisores
+const ACENTO := Color("#FF6A13")         # naranja Marte intenso: acción principal, selección
 const TEXTO := Color("#F5F1E8")          # Mist White
-const TEXTO_SUAVE := Color("#a3aab0")    # Mist White apagado
-const TEXTO_PRIMARIO := TEXTO            # texto sobre ACENTO (como en los diseños)
-const ADVERTENCIA := Color("#F2C66D")    # Sand Glow
-const CRITICO := Color("#B55239")        # Rust Red
-const BIEN := Color("#36C2B4")           # Teal Signal
+const TEXTO_SUAVE := Color("#c8ced3")    # Mist White apagado
+const TEXTO_PRIMARIO := Color("#140a04")  # texto oscuro sobre los colores fuertes (botones rellenos)
+const ADVERTENCIA := Color("#FFD60A")    # amarillo intenso
+const CRITICO := Color("#FF2D3D")        # rojo alarma
+const BIEN := Color("#00F5C8")           # verde turquesa neón
 const RADIO := 6                         # tarjetas y botones (docs/diseno/*.pdf)
 const RADIO_PILDORA := 10                # píldoras del HUD y panel de construcción
 const RADIO_PANEL := 16                  # ventanas de módulo
@@ -35,7 +35,7 @@ const T_DETALLE := 8                     # líneas secundarias, botones pequeño
 ## Como en docs/diseno/barra_superior.png (oxígeno claro, energía amarilla,
 ## agua azulada, comida cálida), pero con tonos de la paleta.
 const COLOR_RECURSO := {
-	"oxigeno": Color("#9fe3dc"), "energia": ADVERTENCIA, "agua": BIEN,
+	"oxigeno": Color("#4DE6FF"), "energia": ADVERTENCIA, "agua": BIEN,
 	"comida": ACENTO, "presupuesto": BIEN, "materiales": ADVERTENCIA,
 }
 
@@ -95,8 +95,8 @@ static func aplicar_marco(panel: PanelContainer, margen := 12) -> void:
 const MARGEN_VENTANA := MarcoVentana.MARGEN
 
 
-static func aplicar_marco_ventana(panel: PanelContainer, margen := 10) -> void:
-	MarcoVentana.aplicar(panel, margen)
+static func aplicar_marco_ventana(panel: PanelContainer, margen := 10, comando := false) -> void:
+	MarcoVentana.aplicar(panel, margen, comando)
 
 
 ## Viste un botón con el marco de cabina: `activo` usa la pantalla encendida
@@ -128,21 +128,133 @@ static func fuente_pixel() -> Font:
 		_fuente_pixel.antialiasing = TextServer.FONT_ANTIALIASING_NONE
 		_fuente_pixel.hinting = TextServer.HINTING_NONE
 		_fuente_pixel.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+		# Con la ventana escalada (stretch canvas_items) se rasteriza a su tamaño
+		# base y se escala la imagen: a tamaños fraccionarios no se pierden píxeles.
+		_fuente_pixel.oversampling = 1.0
 	return _fuente_pixel
 
 
-## Estilos de un tipo de botón: normal, hover/pulsado (más claro) y deshabilitado (translúcido).
+# --- Botones pixel art ------------------------------------------------------
+
+const PIXEL_BOTON := 2                       # px de pantalla por píxel del dibujo
+const CONTORNO_BOTON := Color("#05080c")
+static var _texturas_boton := {}             # "color|contorno|hundido" -> ImageTexture
+
+
+## Tecla de consola en pixel art (14x14 píxeles de dibujo, a PIXEL_BOTON), para
+## un StyleBoxTexture de 9 partes:
+##   ..OOOOOOOO..     O  contorno oscuro con esquinas en chaflán
+##   .O''O.     '  filo de luz arriba (y a la izquierda)
+##   O'●┄┄┄┄┄┄●▒O     ●  remaches en las esquinas de la cara
+##   O'────────▒O     ┄─ cara con líneas de escaneo (CRT) alternas
+##   O'┄┄┄┄┄┄┄┄▒O     ▒  sombra a la derecha y abajo de la cara
+##   O'●▒▒▒▒▒▒●▒O
+##   O##########O     #  grosor de la tecla (2 filas): al pulsarla desaparece
+##   .O########O.        y la cara baja, como una tecla física
+##   ..OOOOOOOO..
+const LADO_TECLA := 14
+const BORDE_TECLA := 5                       # píxeles de dibujo de cada borde del 9-slice
+const GROSOR_TECLA := 2                      # filas de grosor bajo la cara
+
+
+static func _textura_boton(fondo: Color, contorno: Color, hundido: bool) -> ImageTexture:
+	var clave := "%s|%s|%s" % [fondo.to_html(), contorno.to_html(), hundido]
+	if _texturas_boton.has(clave):
+		return _texturas_boton[clave]
+	var n := LADO_TECLA
+	var luz := fondo.lightened(0.35)
+	var luz_lado := fondo.lightened(0.15)
+	var sombra := fondo.darkened(0.22)
+	var escaneo := fondo.darkened(0.06)
+	var remache := fondo.darkened(0.45)
+	var grosor := fondo.darkened(0.55)
+	var hueco := fondo.darkened(0.7)
+	# Pulsada: la cara baja GROSOR_TECLA filas y deja un hueco oscuro arriba.
+	var arriba := 1 + (GROSOR_TECLA if hundido else 0)
+	var abajo := n - 2 - (0 if hundido else GROSOR_TECLA)   # última fila de la cara
+	var img := Image.create_empty(n * PIXEL_BOTON, n * PIXEL_BOTON, false, Image.FORMAT_RGBA8)
+	for y in n:
+		for x in n:
+			var d := mini(x, n - 1 - x) + mini(y, n - 1 - y)
+			var color := Color(0, 0, 0, 0)
+			if d < 2:
+				pass                                         # chaflán
+			elif d == 2 or x == 0 or y == 0 or x == n - 1 or y == n - 1:
+				color = contorno
+			elif y < arriba:
+				color = hueco
+			elif y > abajo:
+				color = grosor
+			elif y == arriba:
+				color = luz
+			elif y == abajo or x == n - 2:
+				color = sombra
+			elif x == 1:
+				color = luz_lado
+			elif (x == 2 or x == n - 3) and (y == arriba + 1 or y == abajo - 1):
+				color = remache
+			else:
+				color = escaneo if (y - arriba) % 2 == 0 else fondo
+			img.fill_rect(Rect2i(x * PIXEL_BOTON, y * PIXEL_BOTON, PIXEL_BOTON, PIXEL_BOTON), color)
+	var textura := ImageTexture.create_from_image(img)
+	_texturas_boton[clave] = textura
+	return textura
+
+
+## Estilo pixel art de un botón (tecla de consola). Cada llamada devuelve un
+## StyleBox nuevo (se pueden cambiar sus márgenes); la textura se comparte. El
+## texto queda centrado en la cara: pulsada, baja con ella.
+static func estilo_boton_pixel(fondo: Color, contorno := CONTORNO_BOTON, hundido := false,
+		margen_x := 10, margen_y := 6) -> StyleBoxTexture:
+	var caja := StyleBoxTexture.new()
+	caja.texture = _textura_boton(fondo, contorno, hundido)
+	caja.set_texture_margin_all(PIXEL_BOTON * BORDE_TECLA)
+	# Las líneas de escaneo se repiten (no se estiran) para que sigan nítidas.
+	caja.axis_stretch_horizontal = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
+	caja.axis_stretch_vertical = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
+	var desnivel := PIXEL_BOTON * GROSOR_TECLA
+	caja.content_margin_left = margen_x
+	caja.content_margin_right = margen_x
+	caja.content_margin_top = margen_y + (desnivel if hundido else 0)
+	caja.content_margin_bottom = margen_y + (0 if hundido else desnivel)
+	return caja
+
+
+## Viste un botón con los cinco estados pixel art: `fondo` en reposo, más claro
+## al pasar el ratón (con `contorno_hover` si se da), hundido al pulsar y
+## apagado si está deshabilitado.
+static func vestir_boton_pixel(b: Button, fondo: Color, contorno_hover := CONTORNO_BOTON,
+		margen_x := 10, margen_y := 6) -> void:
+	var hover := fondo.lightened(0.1)
+	b.add_theme_stylebox_override("normal", estilo_boton_pixel(fondo, CONTORNO_BOTON, false, margen_x, margen_y))
+	b.add_theme_stylebox_override("hover", estilo_boton_pixel(hover, contorno_hover, false, margen_x, margen_y))
+	b.add_theme_stylebox_override("pressed", estilo_boton_pixel(fondo.darkened(0.08), contorno_hover, true, margen_x, margen_y))
+	b.add_theme_stylebox_override("hover_pressed", estilo_boton_pixel(hover, contorno_hover, true, margen_x, margen_y))
+	b.add_theme_stylebox_override("disabled", estilo_boton_pixel(fondo.darkened(0.25), CONTORNO_BOTON, false, margen_x, margen_y))
+	b.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+
+
+## Estilos de un tipo de botón (pixel art): normal, hover/pulsado (más claro) y deshabilitado.
 static func _botones(t: Theme, tipo: String, fondo: Color, borde: Color, texto: Color, hover: Color) -> void:
 	if tipo != "Button":
 		t.set_type_variation(tipo, "Button")
-	var borde_hover := hover if borde == fondo else borde
-	var estados := {"normal": [fondo, borde], "hover": [hover, borde_hover], "hover_pressed": [hover, borde_hover],
-		"pressed": [hover.darkened(0.1), borde_hover], "disabled": [Color(fondo, fondo.a * 0.5), Color(borde, borde.a * 0.5)]}
-	for estado: String in estados:
-		var caja := estilo(estados[estado][0], estados[estado][1], RADIO, 8, 2)
-		caja.content_margin_left = 14
-		caja.content_margin_right = 14
-		t.set_stylebox(estado, tipo, caja)
+	var contorno := CONTORNO_BOTON if borde == fondo else borde
+	if fondo.a < 0.1:
+		# Fantasma: sin bloque en reposo; el bloque aparece al pasar el ratón.
+		var vacio := StyleBoxEmpty.new()
+		vacio.content_margin_left = 14
+		vacio.content_margin_right = 14
+		vacio.content_margin_top = 8
+		vacio.content_margin_bottom = 8
+		t.set_stylebox("normal", tipo, vacio)
+		t.set_stylebox("disabled", tipo, vacio)
+	else:
+		t.set_stylebox("normal", tipo, estilo_boton_pixel(fondo, contorno, false, 14, 8))
+		t.set_stylebox("disabled", tipo, estilo_boton_pixel(fondo.darkened(0.25), CONTORNO_BOTON, false, 14, 8))
+	var base := hover if fondo.a < 0.1 else fondo
+	t.set_stylebox("hover", tipo, estilo_boton_pixel(base.lightened(0.05), contorno, false, 14, 8))
+	t.set_stylebox("hover_pressed", tipo, estilo_boton_pixel(base.lightened(0.05), contorno, true, 14, 8))
+	t.set_stylebox("pressed", tipo, estilo_boton_pixel(base.darkened(0.08), contorno, true, 14, 8))
 	for estado: String in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
 		t.set_color(estado, tipo, texto)
 	t.set_color("font_disabled_color", tipo, Color(texto, 0.5))
@@ -163,7 +275,7 @@ static func tema() -> Theme:
 	_botones(t, PRIMARIO, ACENTO, ACENTO, TEXTO_PRIMARIO, ACENTO.lightened(0.1))
 	_botones(t, FANTASMA, Color(FONDO, 0.0), Color(FONDO, 0.0), TEXTO_SUAVE, SILENCIADO)
 	t.set_color("font_hover_color", FANTASMA, TEXTO)
-	_botones(t, PELIGRO, CRITICO, CRITICO, TEXTO, CRITICO.lightened(0.1))
+	_botones(t, PELIGRO, CRITICO, CRITICO, TEXTO_PRIMARIO, CRITICO.lightened(0.1))
 
 	t.set_stylebox("background", "ProgressBar", estilo(SILENCIADO, SILENCIADO, 999, 0))
 	t.set_stylebox("fill", "ProgressBar", estilo(ACENTO, ACENTO, 999, 0))
@@ -201,15 +313,12 @@ static func boton_pixel(texto: String, accion: Callable, activo := false, tam :=
 
 
 ## `color_activo` cambia el color del estado activo (p. ej. CRITICO para "Demoler").
-## `fondo_inactivo` y `radio` permiten usarlo dentro de píldoras y paneles.
+## `fondo_inactivo` permite usarlo dentro de píldoras y paneles. Todos son pixel art (vestir_boton_pixel).
 static func pintar_boton_pixel(b: Button, activo: bool, color_activo := ACENTO, fondo_inactivo := TARJETA,
-		radio := RADIO) -> void:
+		_radio := RADIO) -> void:
 	var fondo := color_activo if activo else fondo_inactivo
-	var hover := fondo.lightened(0.08)
-	var estados := {"normal": fondo, "hover": hover, "pressed": fondo.darkened(0.1), "hover_pressed": hover, "disabled": fondo}
-	for estado: String in estados:
-		var borde := color_activo if estado == "hover" and not activo else fondo
-		b.add_theme_stylebox_override(estado, estilo(estados[estado], borde, radio, 6, 2))
+	# Inactivo: al pasar el ratón el contorno toma el color activo.
+	vestir_boton_pixel(b, fondo, CONTORNO_BOTON if activo else color_activo)
 	var texto := TEXTO_PRIMARIO if activo else TEXTO
 	for estado: String in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
 		b.add_theme_color_override(estado, texto)
@@ -230,8 +339,9 @@ static func parrafo(texto: String, tam := 13, color := TEXTO_SUAVE) -> Control:
 	return control
 
 
-## Texto enriquecido cuyos términos marcados muestran su definición al pasar el
-## ratón y abren el glosario al hacer clic. Cambia su texto con fijar_texto().
+## Texto enriquecido cuyos términos marcados abren un tooltip encadenable al
+## pasar el ratón (ver Tooltips) y el glosario al hacer clic. Cambia su texto
+## con fijar_texto().
 static func texto_glosario(bbcode := "", tam := 14, color := TEXTO) -> RichTextLabel:
 	var r := RichTextLabel.new()
 	r.bbcode_enabled = true
@@ -243,10 +353,11 @@ static func texto_glosario(bbcode := "", tam := 14, color := TEXTO) -> RichTextL
 	r.add_theme_color_override("default_color", color)
 	if tam >= 16:
 		r.add_theme_font_override("normal_font", FUENTE_NEGRITA)
-	r.meta_hover_started.connect(func(id: Variant) -> void:
-		r.tooltip_text = EstadoJuego.glosario.termino(str(id))["corto"])
-	r.meta_hover_ended.connect(func(_id: Variant) -> void: r.tooltip_text = "")
-	r.meta_clicked.connect(func(id: Variant) -> void: EstadoJuego.glosario_pedido.emit(str(id)))
+	r.meta_hover_started.connect(func(id: Variant) -> void: Tooltips.entrar_termino(r, str(id)))
+	r.meta_hover_ended.connect(func(id: Variant) -> void: Tooltips.salir_termino(r, str(id)))
+	r.meta_clicked.connect(func(id: Variant) -> void:
+		Tooltips.cerrar_todo()
+		EstadoJuego.glosario_pedido.emit(str(id)))
 	r.text = bbcode
 	return r
 
@@ -320,18 +431,8 @@ static func boton_accion(texto: String, accion: Callable, habilitado := true) ->
 	var b := boton(texto, accion, habilitado)
 	b.add_theme_font_size_override("font_size", T_DETALLE)
 	b.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	for estado: String in ["normal", "hover", "pressed", "hover_pressed", "disabled"]:
-		var fondo := ACENTO
-		if estado.begins_with("hover"):
-			fondo = ACENTO.lightened(0.1)
-		elif estado == "pressed":
-			fondo = ACENTO.darkened(0.1)
-		elif estado == "disabled":
-			fondo = SILENCIADO
-		var caja := estilo(fondo, fondo, 3, 4, 0)
-		caja.content_margin_left = 10
-		caja.content_margin_right = 10
-		b.add_theme_stylebox_override(estado, caja)
+	vestir_boton_pixel(b, ACENTO, CONTORNO_BOTON, 10, 4)
+	b.add_theme_stylebox_override("disabled", estilo_boton_pixel(SILENCIADO, CONTORNO_BOTON, false, 10, 4))
 	b.add_theme_color_override("font_disabled_color", ACENTO)
 	for estado: String in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
 		b.add_theme_color_override(estado, TEXTO)
