@@ -12,7 +12,7 @@ extends PanelContainer
 ##   ╚ ┃  $300 M 30 MAT ╝
 ## Para salir, el botón Construir del HUD pasa a ser Cancelar.
 
-const ANCHO := 300
+const ANCHO := 360
 
 var mapa: Mapa
 var contenido := UI.columna(12)

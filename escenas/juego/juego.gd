@@ -410,7 +410,7 @@ func cerrar_inspector() -> void:
 
 # --- Avisos ---------------------------------------------------------------
 
-## Aviso tipo "toast": superficie elevada con franja naranja a la izquierda.
+## Aviso tipo "toast": pantalla de cabina con el texto.
 func mostrar_aviso(texto: String) -> void:
 	var caja := PanelContainer.new()
 	UI.aplicar_marco(caja, 12)

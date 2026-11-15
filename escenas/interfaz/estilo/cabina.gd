@@ -5,7 +5,7 @@ class_name Cabina
 extends RefCounted
 ## Estilo "pantalla de cabina" (Modulo Comando.pdf): pantallas oscuras con
 ## rejilla, encabezados pixel con contador, píldoras de estado, fichas de
-## colono con borde naranja y tarjetas con franja de color.
+## colono con borde naranja y tarjetas de lista con borde fino.
 ##   TRIPULACION [3]                     2 LIBRES
 ##   ┌ ▣ ELENA VARGAS RUIZ ─────── [LIBRE] ┐
 ##   │   INGENIERIA                        │
@@ -212,16 +212,14 @@ static func marcas(llenas: int, total: int, color := NARANJA, ancho := 14) -> HB
 	return f
 
 
-## Tarjeta de lista con franja de color a la izquierda. Devuelve la tarjeta;
-## el contenido se añade como su único hijo.
-static func tarjeta(color_franja: Color, margen := 7) -> PanelContainer:
+## Tarjeta de lista (fondo oscuro con borde fino). Devuelve la tarjeta;
+## el contenido se añade como su único hijo. `_color` ya no se dibuja (antes
+## era una franja a la izquierda); se conserva para no cambiar las llamadas.
+static func tarjeta(_color: Color, margen := 7) -> PanelContainer:
 	var t := PanelContainer.new()
 	var caja := UI.estilo(TARJETA, REJILLA_BORDE, 0, margen, 1)
-	caja.border_width_left = 4
-	caja.content_margin_left = 12
+	caja.content_margin_left = 10
 	t.add_theme_stylebox_override("panel", caja)
-	t.draw.connect(func() -> void:
-		t.draw_rect(Rect2(0, 0, 4, t.size.y), color_franja))
 	return t
 
 

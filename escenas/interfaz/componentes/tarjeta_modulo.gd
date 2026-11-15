@@ -28,19 +28,13 @@ func _init(datos_modulo: DatosModulo, al_elegir: Callable) -> void:
 	if disabled:
 		modulate = Color(1, 1, 1, 0.55)
 	pressed.connect(al_elegir.bind(datos.id))
-	# Bloque pixel art (ver UI.vestir_boton_pixel) con franja verde si se puede
-	# pagar; al pasar el ratón, contorno naranja. La franja va dentro del bisel.
-	var franja := Cabina.REJILLA_BORDE if disabled else Cabina.VERDE
+	# Bloque pixel art (ver UI.vestir_boton_pixel); al pasar el ratón, contorno naranja.
 	UI.vestir_boton_pixel(self, Cabina.TARJETA.lightened(0.05), UI.ACENTO, 0, 0)
 	add_theme_stylebox_override("disabled", UI.estilo_boton_pixel(Cabina.TARJETA.lightened(0.05), UI.CONTORNO_BOTON, false, 0, 0))
-	draw.connect(func() -> void:
-		# Junto a los remaches, a lo alto de la cara (sin el grosor de la tecla).
-		var p := UI.PIXEL_BOTON
-		draw_rect(Rect2(p * 3, p * 4, p * 2, size.y - p * (8 + UI.GROSOR_TECLA)), franja))
 
 	var f := UI.fila(10)
 	f.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	f.offset_left = 15
+	f.offset_left = 10
 	f.offset_bottom = -UI.PIXEL_BOTON * UI.GROSOR_TECLA     # centrado en la cara de la tecla
 	f.offset_right = -4
 	add_child(f)

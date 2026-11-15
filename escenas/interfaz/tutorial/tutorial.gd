@@ -22,7 +22,7 @@ extends CanvasLayer
 const RUTA_AJUSTES := "user://ajustes.cfg"
 const ANCHO_MAX := 980.0
 const MARGEN_BOTONES_HUD := 70.0      # hueco para los botones inferiores del HUD
-const ANCHO_PANEL_CONSTRUCCION := 330.0
+const ANCHO_PANEL_CONSTRUCCION := 390.0
 
 var juego: Juego
 var pasos: Array[Dictionary] = []

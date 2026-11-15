@@ -66,7 +66,7 @@ func construir() -> void:
 	pantalla.add_child(vista_con_scroll(Cabina.con_margen_scroll(lista)))
 
 
-## Entrada: franja y etiqueta del color de su categoría, y el texto.
+## Entrada: etiqueta del color de su categoría y el texto.
 func _fila(entrada: Dictionary) -> Control:
 	var color: Color = COLOR_CATEGORIA[entrada["categoria"]]
 	var tarjeta := Cabina.tarjeta(color, 5)

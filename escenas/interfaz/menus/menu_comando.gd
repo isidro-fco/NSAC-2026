@@ -287,7 +287,7 @@ func _tablero_tareas() -> Control:
 	return columna
 
 
-## Tarjeta con franja de color (ámbar: exterior con radiación; verde: interior).
+## Tarjeta de una tarea (exterior con radiación o interior).
 ## Arriba el título y la duración; debajo, etiquetas de rol y entorno y la
 ## recompensa. A la derecha, un botón por colono libre con el rol necesario;
 ## avisa si la dosis de la tarea lo dejaría cerca de enfermar.
