@@ -28,7 +28,8 @@ const CONTROLES := [
 	["RUEDA", "Acercar o alejar"], ["ESPACIO", "Pausar o reanudar"],
 	["B", "Construir o cancelar"], ["G", "Glosario"],
 	["L", "Bitácora"], ["F1", "Tutorial"],
-	["ESC", "Cerrar o abrir opciones"],
+	["ESC", "Cerrar o abrir opciones"], ["Q", "Girar el pasillo"],
+	["FLECHAS", "Moverse en los paneles"], ["ENTER", "Elegir en los paneles"],
 ]
 
 var pausa_previa := false

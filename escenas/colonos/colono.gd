@@ -10,8 +10,8 @@ extends Node2D
 ## el Módulo de Comando si no está construido) y, al llegar, se anima trabajando.
 ## Camina casilla a casilla y al final se acerca a un punto exacto dentro del
 ## edificio, para no quedarse en las esquinas de tierra del módulo.
-## Al quedarse quieto dentro de un módulo se desvanece (entró al edificio) y
-## reaparece al salir. En el panel de tripulación se ve en qué módulo está.
+## Al cruzar el contorno negro de un edificio se desvanece (entró) y reaparece
+## al salir, aunque solo vaya de pasada. En el panel de tripulación se ve en qué módulo está.
 
 const VELOCIDAD_PX := 48.0
 ## Multiplicador de velocidad al ir a la estación de su tarea.
@@ -20,6 +20,7 @@ const FACTOR_PRISA := 1.4
 const ESTACION_POR_DEFECTO := "comando"
 const RADIO_CLIC := 14.0
 # Hoja de caminata: 6 fotogramas por fila, filas = abajo, izquierda, derecha, arriba.
+# Es el traje espacial (afuera); sin traje usa DatosColono.hoja_civil(), del mismo formato.
 const HOJA := preload("res://recursos/sprites/colonos/astronauta.png")
 const HOJA_ACENTO := preload("res://recursos/sprites/colonos/astronauta_acento.png")
 const TAM_FOTOGRAMA := 32
@@ -31,6 +32,13 @@ enum Direccion { ABAJO, IZQUIERDA, DERECHA, ARRIBA }
 const MODULOS_DE_PASO := ["pasillo", "plataforma"]
 ## Opacidad que gana o pierde por segundo al entrar o salir de un módulo.
 const VELOCIDAD_FUNDIDO := 4.0
+## Pasos: en la hoja de caminata un pie toca el suelo en los fotogramas 1 y 4,
+## o sea cada 3 fotogramas empezando en el 1.
+const FOTOGRAMA_PRIMER_PASO := 1
+const FOTOGRAMAS_ENTRE_PASOS := 3
+## El golpe del sonido llega un poco después de que empieza: se dispara este
+## tiempo (segundos reales) antes del fotograma para que coincida con el pie.
+const ADELANTO_PASO := 0.12
 
 var datos: DatosColono
 var mapa: Mapa
@@ -47,6 +55,8 @@ var ir_a_descanso := true
 var con_prisa := false               # va hacia la estación de su tarea
 var tiempo := 0.0
 var direccion := Direccion.ABAJO
+var _paso_previo := -1               # último paso que sonó (-1: no estaba caminando)
+var _fps_previo := 0.0
 
 
 ## `punto` es donde aparece: en su módulo al empezar la partida o al pie de la nave.
@@ -74,6 +84,7 @@ func _process(delta: float) -> void:
 	var tasa := EstadoJuego.eventos.tasa_radiacion(datos.ubicacion)
 	if tasa > 0.0:
 		EstadoJuego.tripulacion.anadir_radiacion(datos, tasa * escala / EstadoJuego.datos_balance.segundos_por_sol)
+	_sonar_pasos(escala / delta if delta > 0.0 else 1.0)
 	if en_camino():
 		_avanzar(VELOCIDAD_PX * (FACTOR_PRISA if con_prisa else 1.0) * escala)
 	elif datos.estado == Enums.EstadoColono.DISPONIBLE and refugio == null:
@@ -82,16 +93,34 @@ func _process(delta: float) -> void:
 			_elegir_paseo()
 
 
+## Un paso cada vez que un pie toca el suelo en la animación (ver _draw).
+## `velocidad` es cuántas veces más rápido que el tiempo real corre el juego.
+func _sonar_pasos(velocidad: float) -> void:
+	if not en_camino() or oculto():
+		_paso_previo = -1
+		return
+	var fps := _fps_caminata()
+	var fotograma := (tiempo + ADELANTO_PASO * velocidad) * fps
+	var paso := floori((fotograma - FOTOGRAMA_PRIMER_PASO) / FOTOGRAMAS_ENTRE_PASOS)
+	# Al echar a andar (o al cambiar de ritmo) solo se toma la cuenta, sin sonar.
+	if _paso_previo != -1 and fps == _fps_previo and paso != _paso_previo:
+		GestorAudio.reproducir_paso(global_position)
+	_paso_previo = paso
+	_fps_previo = fps
+
+
+func _fps_caminata() -> float:
+	return FPS_CAMINATA * (FACTOR_PRISA if con_prisa else 1.0)
+
+
 func en_camino() -> bool:
 	return not ruta.is_empty() or not position.is_equal_approx(punto_final)
 
 
-## true si está quieto dentro de un edificio (no en un pasillo ni en la plataforma).
+## true si tiene los pies dentro del contorno negro de un edificio, quieto o de
+## pasada (no en un pasillo ni en la plataforma): ahí se desvanece.
 func dentro_de_modulo() -> bool:
-	if en_camino():
-		return false
-	var modulo: Modulo = mapa.cuadricula.celdas_modulo.get(celda)
-	return modulo != null and modulo.datos.id not in MODULOS_DE_PASO
+	return mapa.dentro_de_edificio(position)
 
 
 ## true cuando ya casi no se ve (no se puede clicar en el mapa).
@@ -223,15 +252,21 @@ func _draw() -> void:
 		# Trabajando: se balancea un poco y golpea suave, como si usara una herramienta.
 		base = Vector2(sin(tiempo * 3.0) * 1.0, -absf(sin(tiempo * 6.0)) * 0.8)
 	# Al caminar anima la hoja; con prisa, más rápido.
-	var fps := FPS_CAMINATA * (FACTOR_PRISA if con_prisa else 1.0)
+	var fps := _fps_caminata()
 	var fotograma := int(tiempo * fps) % FOTOGRAMAS if en_camino() else 0
 	var region := Rect2(fotograma * TAM_FOTOGRAMA, direccion * TAM_FOTOGRAMA, TAM_FOTOGRAMA, TAM_FOTOGRAMA)
 	var destino_rect := Rect2(base + DESFASE_SPRITE, Vector2(TAM_FOTOGRAMA, TAM_FOTOGRAMA))
 	draw_set_transform(Vector2(0, 7), 0.0, Vector2(1.0, 0.45))
 	draw_circle(Vector2.ZERO, 6.0, Color(0, 0, 0, 0.3))
 	draw_set_transform(Vector2.ZERO)
-	draw_texture_rect_region(HOJA, destino_rect, region, tinte)
-	draw_texture_rect_region(HOJA_ACENTO, destino_rect, region, datos.color_rol() * tinte)
+	# Sin traje mientras pisa un pasillo o el edificio de un módulo; se pone el
+	# traje justo al cruzar el contorno negro del edificio hacia afuera.
+	var civil := datos.hoja_civil() if mapa.a_cubierto(position) else null
+	if civil != null:
+		draw_texture_rect_region(civil, destino_rect, region, tinte)
+	else:
+		draw_texture_rect_region(HOJA, destino_rect, region, tinte)
+		draw_texture_rect_region(HOJA_ACENTO, destino_rect, region, datos.color_rol() * tinte)
 	if trabajando():
 		_dibujar_herramienta(base)
 

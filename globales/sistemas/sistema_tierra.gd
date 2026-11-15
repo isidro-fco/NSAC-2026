@@ -27,6 +27,7 @@ func pedir(pedido: Dictionary) -> void:
 		EstadoJuego.economia.pagar(pedido["dinero"], 0)
 		enviar(pedido["nombre"], pedido["soles"], pedido["contenido"])
 		EstadoJuego.registrar(Enums.Categoria.ACCION, "Pedido a la Tierra: %s (llega en %d soles)" % [pedido["nombre"], pedido["soles"]])
+		EstadoJuego.curiosidades.disparar("pedido:enviado")
 
 
 ## El clima espacial interrumpe las comunicaciones: todo lo que viene en camino tarda más.

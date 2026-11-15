@@ -11,12 +11,13 @@ enum EstadoColono { DISPONIBLE, EN_MISION, ENFERMO, RETIRADO, EN_VIAJE }
 enum Racion { ABUNDANTE, NORMAL, ESTRICTA }
 enum ModoMapa { NORMAL, CATALOGO, COLOCANDO, DEMOLICION }
 ## Categorías de las entradas de la bitácora (HU-10).
-enum Categoria { ACCION, EVENTO, TRIPULACION }
+enum Categoria { ACCION, EVENTO, TRIPULACION, CURIOSIDAD }
 
 const NOMBRE_CATEGORIA := {
 	Categoria.ACCION: "Acción",
 	Categoria.EVENTO: "Evento",
 	Categoria.TRIPULACION: "Tripulación",
+	Categoria.CURIOSIDAD: "Curiosidad",
 }
 
 const NOMBRE_ROL := {

@@ -82,6 +82,7 @@ func _fila(c: DatosColono) -> Button:
 	boton.custom_minimum_size = Vector2(0, ALTO_FILA)
 	boton.focus_mode = Control.FOCUS_NONE
 	boton.pressed.connect(func() -> void: _elegir(null if elegido == c else c))
+	Tooltips.registrar(boton, _contenido_tooltip.bind(c))
 	var contenido := UI.fila(8)
 	contenido.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	contenido.offset_left = 8
@@ -176,6 +177,24 @@ func _pintar_filas() -> void:
 		UI.vestir_boton_pixel(boton, UI.TARJETA, UI.ADVERTENCIA, 6, 6)
 		if activo:
 			boton.add_theme_stylebox_override("normal", UI.estilo_boton_pixel(UI.TARJETA, UI.ADVERTENCIA, false, 6, 6))
+
+
+## Tooltip de la fila: quién es, qué hace, dónde está y cuánta radiación lleva.
+func _contenido_tooltip(c: DatosColono) -> Dictionary:
+	var datos := EstadoJuego.datos_balance
+	var lineas := PackedStringArray([
+		"Rol: %s" % Enums.NOMBRE_ROL[c.rol],
+		"Estado: %s" % Enums.NOMBRE_ESTADO_COLONO[c.estado],
+	])
+	if not c.tarea.is_empty():
+		lineas.append("Tarea: %s (le faltan %s)" % [c.tarea["titulo"], UI.soles(c.soles_restantes)])
+	var lugar: String = filas[c]["lugar"].text if filas.has(c) else ""
+	if lugar != "":
+		lineas.append("Está en: %s" % lugar)
+	lineas.append("Radiación: %s de %d. A los %d enferma." % [UI.num(c.radiacion), int(datos.radiacion_max), int(datos.radiacion_enfermedad)])
+	if c.estado == Enums.EstadoColono.ENFERMO:
+		lineas.append("Se recupera en %s si no le faltan oxígeno, agua ni comida." % UI.soles(c.soles_enfermo))
+	return { "titulo": c.nombre, "texto": "\n".join(lineas), "pie": "Clic: señalarlo en el mapa" }
 
 
 func _actualizar_lugares() -> void:

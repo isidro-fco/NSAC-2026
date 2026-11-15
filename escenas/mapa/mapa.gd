@@ -27,6 +27,11 @@ const BORDE_DECORATIVO := 8
 ## Radio (en fracción del tamaño del módulo) de la zona donde se paran los
 ## colonos: el edificio es el círculo central del sprite; las esquinas son terreno.
 const RADIO_INTERIOR := 0.2
+## Colores de la franja de peligro y de la grava que rodean el edificio en los
+## sprites de módulos: todo eso es exterior (a_cubierto).
+const COLORES_PLATAFORMA: Array[Color] = [
+	Color8(255, 195, 0), Color8(51, 51, 51), Color8(51, 50, 50), Color8(79, 64, 107), Color8(105, 96, 121),
+]
 
 @export_range(0.0, 1.0) var densidad_obstaculos := 0.15
 @export_range(0.0, 1.0) var fraccion_crater_grande := 0.1
@@ -39,6 +44,8 @@ var suelo := []                   # suelo[y][x] -> textura
 var decorado := {}                # casilla fuera del mapa -> textura de suelo
 var rocas_decorado := {}          # casilla fuera del mapa -> textura de roca (encima del suelo)
 var contenedor_naves := Node2D.new()
+var capa_pasillos := CapaPasillos.new()
+var _mascaras := {}               # textura de módulo -> PackedByteArray (1 = edificio)
 var resaltado := ResaltadoColono.new()
 var viento := Viento.new()
 var _nave_activa: NaveAterrizaje
@@ -46,6 +53,7 @@ var _naves_en_cola: Array[NaveAterrizaje] = []    # esperan a que la plataforma 
 
 var modo: Enums.ModoMapa = Enums.ModoMapa.NORMAL
 var modulo_elegido: DatosModulo
+var rotacion_pasillo := 0      # cuartos de vuelta del próximo pasillo (tecla Q)
 var objetivo_demoler: ElementoMapa
 var modal_abierto := false:       # menú o diálogo sobre el mapa
 	set(valor):
@@ -77,6 +85,9 @@ func _ready() -> void:
 	GeneradorMapa.generar(self, rng)
 	_generar_decorado()
 	rutas.actualizar(cuadricula)
+	capa_pasillos.mapa = self                      # antes de los módulos: queda debajo de ellos
+	add_child(capa_pasillos)
+	move_child(capa_pasillos, contenedor_modulos.get_index())
 	resaltado.mapa = self
 	resaltado.z_index = 2                          # como los colonos, pero dibujado antes:
 	add_child(resaltado)                           # el halo queda detrás del sprite
@@ -95,12 +106,14 @@ func _ready() -> void:
 				colono.queue_free())
 
 
-func agregar_modulo(id: String, origen: Vector2i) -> void:
+func agregar_modulo(id: String, origen: Vector2i, rotacion := 0) -> void:
 	var modulo := Modulo.new(origen, DatosModulo.obtener(id))
+	modulo.rotacion = rotacion
 	contenedor_modulos.add_child(modulo)
 	cuadricula.ocupar_modulo(modulo)
 	rutas.actualizar(cuadricula)          # antes de avisar: los colonos reaccionan al aviso
 	EstadoJuego.economia.registrar_modulo(id)
+	capa_pasillos.queue_redraw()
 
 
 func agregar_obstaculo(origen: Vector2i, tam: Vector2i, textura: Texture2D) -> void:
@@ -167,6 +180,110 @@ func refugio_para(datos: DatosColono) -> Modulo:
 	return refugios[i / plazas] as Modulo if i >= 0 and i < refugios.size() * plazas else null
 
 
+## true si el punto (píxeles del mapa) cae sobre lo que se ve techado: un
+## pasillo o el edificio de un módulo (dentro de su contorno negro; la grava,
+## la franja de peligro y las esquinas son exterior). Afuera los colonos se ven
+## con traje. Solo es visual: la radiación sigue usando ubicacion().
+func a_cubierto(punto: Vector2) -> bool:
+	var c := GestorCuadricula.celda_desde_pixel(punto)
+	if capa_pasillos.cubre(c):
+		return true
+	var m: Modulo = cuadricula.celdas_modulo.get(c)
+	return m != null and _sobre_edificio(m, punto)
+
+
+## true si el punto cae dentro del contorno negro del edificio de un módulo
+## (sin contar pasillos ni la plataforma, que son de paso): ahí el colono entró
+## al edificio y no se ve, esté quieto o de pasada.
+func dentro_de_edificio(punto: Vector2) -> bool:
+	var m: Modulo = cuadricula.celdas_modulo.get(GestorCuadricula.celda_desde_pixel(punto))
+	return m != null and m.datos.id not in Colono.MODULOS_DE_PASO and _sobre_edificio(m, punto)
+
+
+## true si el punto cae sobre el edificio del sprite de `m` (ver _mascara_edificio).
+func _sobre_edificio(m: Modulo, punto: Vector2) -> bool:
+	if m.datos.textura == null:
+		return true
+	var textura := m.datos.textura
+	if not _mascaras.has(textura):
+		_mascaras[textura] = _mascara_edificio(textura.get_image())
+	var ancho := textura.get_width()
+	var tam_px := Vector2(m.tam_celdas()) * GestorCuadricula.TAM_CELDA
+	var p := Vector2i((punto - m.position) * Vector2(textura.get_size()) / tam_px)
+	p = p.clamp(Vector2i.ZERO, Vector2i(textura.get_size()) - Vector2i.ONE)
+	return _mascaras[textura][p.y * ancho + p.x] == 1
+
+
+## Máscara (1 por píxel del edificio) de un sprite de módulo: la mayor pieza de
+## lo que no es transparente, franja ni grava, con sus huecos rellenos. Así el
+## límite es el contorno del edificio aunque tenga líneas negras por dentro.
+static func _mascara_edificio(imagen: Image) -> PackedByteArray:
+	var ancho := imagen.get_width()
+	var alto := imagen.get_height()
+	var total := ancho * alto
+	var plataforma := {}
+	for color in COLORES_PLATAFORMA:
+		plataforma[Vector3i(color.r8, color.g8, color.b8)] = true
+	var candidato := PackedByteArray()
+	candidato.resize(total)
+	for y in alto:
+		for x in ancho:
+			var p := imagen.get_pixel(x, y)
+			candidato[y * ancho + x] = 1 if p.a > 0.0 and not plataforma.has(Vector3i(p.r8, p.g8, p.b8)) else 0
+	# Pieza más grande (el edificio): descarta banderas, antenas y motas.
+	var pieza := PackedInt32Array()
+	pieza.resize(total)
+	var mayor := 0
+	var tam_mayor := 0
+	var cuenta := 0
+	for i in total:
+		if candidato[i] == 0 or pieza[i] != 0:
+			continue
+		cuenta += 1
+		pieza[i] = cuenta
+		var tam := 0
+		var pila: Array[int] = [i]
+		while not pila.is_empty():
+			var j: int = pila.pop_back()
+			tam += 1
+			for v in _vecinos(j, ancho, alto):
+				if candidato[v] == 1 and pieza[v] == 0:
+					pieza[v] = cuenta
+					pila.append(v)
+		if tam > tam_mayor:
+			mayor = cuenta
+			tam_mayor = tam
+	# Rellenar huecos: es exterior solo lo que se alcanza desde el borde sin cruzar el edificio.
+	var mascara := PackedByteArray()
+	mascara.resize(total)
+	mascara.fill(1)
+	var pendientes: Array[int] = []
+	for x in ancho:
+		pendientes.append(x)
+		pendientes.append((alto - 1) * ancho + x)
+	for y in alto:
+		pendientes.append(y * ancho)
+		pendientes.append(y * ancho + ancho - 1)
+	while not pendientes.is_empty():
+		var j: int = pendientes.pop_back()
+		if mascara[j] == 0 or pieza[j] == mayor:
+			continue
+		mascara[j] = 0
+		pendientes.append_array(_vecinos(j, ancho, alto))
+	return mascara
+
+
+static func _vecinos(i: int, ancho: int, alto: int) -> Array[int]:
+	var x := i % ancho
+	var y := i / ancho
+	var lista: Array[int] = []
+	if x > 0: lista.append(i - 1)
+	if x < ancho - 1: lista.append(i + 1)
+	if y > 0: lista.append(i - ancho)
+	if y < alto - 1: lista.append(i + ancho)
+	return lista
+
+
 ## "interior", "exterior" o "refugio" según la casilla.
 func ubicacion(c: Vector2i) -> String:
 	if not cuadricula.es_estructura(c):
@@ -214,6 +331,7 @@ func _recibir_colono(datos: DatosColono) -> void:
 			nave.colonos.append(datos)
 			return
 	var nueva := NaveAterrizaje.new(NaveAterrizaje.Tipo.TRIPULACION, _punto_aterrizaje())
+	EstadoJuego.curiosidades.disparar("nave:colonos")
 	nueva.colonos.append(datos)
 	_encolar_nave(nueva)
 
@@ -267,6 +385,7 @@ func _mapa_modificado() -> void:
 	for colono: Colono in contenedor_colonos.get_children():
 		colono.replanificar()
 	capa.queue_redraw()
+	capa_pasillos.queue_redraw()
 
 
 # --- Modos de construcción (HU-05) ----------------------------------------
@@ -333,7 +452,8 @@ func construir(d: DatosModulo, origen: Vector2i) -> void:
 	if not _se_puede_construir(d, origen):
 		return
 	EstadoJuego.economia.pagar(d.dinero, d.materiales)
-	agregar_modulo(d.id, origen)
+	agregar_modulo(d.id, origen, rotacion_pasillo if d.es_pasillo() else 0)
+	EstadoJuego.curiosidades.disparar("construir:" + d.id)
 	GestorAudio.reproducir("poner_modulo")
 	EstadoJuego.modulos_construidos += 1
 	if not d.es_pasillo():
@@ -366,7 +486,7 @@ func demoler(objetivo: ElementoMapa) -> void:
 	if not is_instance_valid(objetivo) or not EstadoJuego.economia.puede_pagar(objetivo.coste_demoler(), 0):
 		return
 	EstadoJuego.economia.pagar(objetivo.coste_demoler(), 0)
-	GestorAudio.reproducir("quitar_modulo")
+	GestorAudio.reproducir("quitar_piedra" if objetivo is Obstaculo else "quitar_modulo")
 	EstadoJuego.registrar(Enums.Categoria.ACCION, "Demolido: %s" % objetivo.nombre(), false)
 	cuadricula.liberar(objetivo.origen, objetivo.tam_celdas())
 	if objetivo is Modulo:
@@ -391,6 +511,13 @@ func _process(_delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	# Q gira el pasillo que se está colocando (horizontal <-> vertical).
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_Q \
+			and not modal_abierto and modo == Enums.ModoMapa.COLOCANDO and modulo_elegido.es_pasillo():
+		rotacion_pasillo = (rotacion_pasillo + 1) % 4
+		capa.queue_redraw()
+		get_viewport().set_input_as_handled()
+		return
 	if modal_abierto or event is not InputEventMouseButton:
 		return
 	# El clic derecho cancela al soltar: si hubo arrastre, la cámara ya se quedó el evento.
@@ -486,7 +613,8 @@ func _dibujar_capa() -> void:
 		var rect := Rect2(Vector2(origen) * lado, Vector2(d.tam) * lado)
 		# Sprite del módulo medio transparente y teñido de verde (válido) o rojo (inválido).
 		if d.textura:
-			capa.draw_texture_rect(d.textura, rect, false, Color(Color.WHITE.lerp(tinte, 0.45), 0.6))
+			Modulo.dibujar_textura(capa, d.textura, rect, rotacion_pasillo if d.es_pasillo() else 0,
+				Color(Color.WHITE.lerp(tinte, 0.45), 0.6))
 		else:
 			capa.draw_rect(rect, d.color * Color(1, 1, 1, 0.45))
 		capa.draw_rect(rect, Color(tinte, 0.25))

@@ -1,0 +1,270 @@
+[gd_resource type="Resource" script_class="DatosCuriosidades" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://datos/clases/datos_curiosidades.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+curiosidades = [{
+"id": "dia_marte",
+"disparador": "sol:2",
+"titulo": "Un día en Marte",
+"texto": "Un día en Marte se llama sol y dura 24 horas, 39 minutos y 35 segundos: casi 40 minutos más que un día en la Tierra.",
+"fuente": "NASA/JPL, «Mars at a Glance»",
+"enlace": "https://www.jpl.nasa.gov/news/press_kits/insight/launch/facts/mars-at-a-glance"
+},
+{
+"id": "gravedad",
+"disparador": "sol:3",
+"titulo": "Saltos marcianos",
+"texto": "En Marte la gravedad es solo el 38 % de la de la Tierra. Un niño de 30 kg se sentiría como de 11 kg (30 x 0.38 = 11.4) y podría saltar casi 3 veces más alto.",
+"fuente": "NASA/JPL, «Mars at a Glance»",
+"enlace": "https://www.jpl.nasa.gov/news/press_kits/insight/launch/facts/mars-at-a-glance"
+},
+{
+"id": "lunas",
+"disparador": "sol:5",
+"titulo": "Dos lunas",
+"texto": "Marte tiene dos lunas pequeñas: Fobos, que significa «miedo», y Deimos, que significa «terror».",
+"fuente": "NASA/JPL, «Mars at a Glance»",
+"enlace": "https://www.jpl.nasa.gov/news/press_kits/insight/launch/facts/mars-at-a-glance"
+},
+{
+"id": "atardecer",
+"disparador": "sol:8",
+"titulo": "Atardeceres azules",
+"texto": "En Marte el cielo es anaranjado de día, pero los atardeceres se ven azules. El polvo deja pasar mejor la luz azul cerca del Sol. El rover Curiosity fotografió uno el 15 de abril de 2015.",
+"fuente": "Space.com, «Blue Sunset on Mars Captured by Curiosity Rover»",
+"enlace": "https://www.space.com/29368-mars-blue-sunset-curiosity-rover-video.html"
+},
+{
+"id": "olimpo",
+"disparador": "sol:12",
+"titulo": "El volcán más alto",
+"texto": "El Monte Olimpo, en Marte, es un volcán de unos 26 km de alto: casi 3 veces el monte Everest, que mide 8.8 km.",
+"fuente": "NASA/JPL, «Mars at a Glance»",
+"enlace": "https://www.jpl.nasa.gov/news/press_kits/insight/launch/facts/mars-at-a-glance"
+},
+{
+"id": "aire",
+"disparador": "sol:15",
+"titulo": "Un aire muy delgado",
+"texto": "El aire de Marte es 95 % dióxido de carbono y es tan delgado que su presión es menos de la centésima parte de la de la Tierra. Sin traje no se podría respirar.",
+"fuente": "NASA/JPL, «Mars at a Glance»",
+"enlace": "https://www.jpl.nasa.gov/news/press_kits/insight/launch/facts/mars-at-a-glance"
+},
+{
+"id": "agua_estacion",
+"disparador": "construir:soporte_vital",
+"titulo": "Agua que se recicla",
+"texto": "En la Estación Espacial Internacional se recupera el 98 % del agua, incluso la del sudor y la orina, y se vuelve agua para beber. Lo lograron en 2023.",
+"fuente": "Space.com, «NASA just recycled 98% of all astronaut pee and sweat on the ISS» (junio de 2023)",
+"enlace": "https://www.space.com/astronaut-pee-iss-water-recycling-98-percent-milestone"
+},
+{
+"id": "lechuga",
+"disparador": "construir:agricultura",
+"titulo": "La primera ensalada espacial",
+"texto": "En agosto de 2015 los astronautas de la Estación Espacial comieron por primera vez lechuga romana roja cultivada allá arriba, en el invernadero Veggie, con luces LED rojas, azules y verdes.",
+"fuente": "Phys.org, «First bite of space-grown lettuce is 'awesome'» (agosto de 2015)",
+"enlace": "https://phys.org/news/2015-08-space-grown-lettuce-awesome.html"
+},
+{
+"id": "insight",
+"disparador": "construir:energia",
+"titulo": "El polvo y los paneles",
+"texto": "La sonda InSight funcionó en Marte más de 4 años con paneles solares y detectó 1319 sismos marcianos. En diciembre de 2022 el polvo cubrió tanto sus paneles que se quedó sin energía.",
+"fuente": "EarthSky, «InSight falls silent, NASA declares mission end» (diciembre de 2022)",
+"enlace": "https://earthsky.org/space/insight-falls-silent-nasa-declares-mission-end/"
+},
+{
+"id": "hielo_phoenix",
+"disparador": "construir:perforadora",
+"titulo": "Hielo que desaparece",
+"texto": "En 2008 la sonda Phoenix escarbó el suelo de Marte y encontró trocitos blancos. En 4 días desaparecieron: eran hielo de agua que se evaporó al quedar al aire.",
+"fuente": "Space.com, «Proof! Water Ice Found on Mars» (junio de 2008)",
+"enlace": "https://www.space.com/5546-proof-water-ice-mars.html"
+},
+{
+"id": "impresora",
+"disparador": "construir:taller",
+"titulo": "Fábrica en el espacio",
+"texto": "El 24 de noviembre de 2014 se imprimió la primera pieza 3D fuera de la Tierra, en la Estación Espacial: una tapa para la misma impresora.",
+"fuente": "collectSPACE, «Made In Space 3D printing» (noviembre de 2014)",
+"enlace": "https://www.collectspace.com/news/news-112514c-made-in-space-3d-printing.html"
+},
+{
+"id": "dosis_viaje",
+"disparador": "construir:refugio",
+"titulo": "Radiación del viaje",
+"texto": "Solo el viaje de ida y vuelta a Marte daría a un astronauta unos 660 milisieverts de radiación, más que el límite de toda la carrera en la NASA (600). Por eso las naves y las bases necesitan blindaje.",
+"fuente": "Southwest Research Institute, mediciones del detector RAD de Curiosity (2013)",
+"enlace": "https://www.swri.org/newsroom/press-releases/swri-led-team-calculates-the-radiation-exposure-associated-trip-mars"
+},
+{
+"id": "opportunity",
+"disparador": "evento:tormenta_polvo",
+"titulo": "El rover que no se rendía",
+"texto": "El rover Opportunity estaba hecho para durar 90 soles y funcionó unos 15 años, recorriendo más de 45 km. Una tormenta de polvo que cubrió todo Marte en 2018 lo dejó sin energía.",
+"fuente": "NASA Astrobiology, «Opportunity rover mission comes to an end» (febrero de 2019)",
+"enlace": "https://astrobiology.nasa.gov/news/opportunity-rover-mission-comes-to-an-end/"
+},
+{
+"id": "moxie",
+"disparador": "evento:moxie",
+"titulo": "Oxígeno hecho en Marte",
+"texto": "El experimento MOXIE del rover Perseverance fabricó 122 gramos de oxígeno con el aire de Marte en 16 pruebas: lo que respira un perrito en unas 10 horas.",
+"fuente": "Space.com, «Perseverance Mars rover ends MOXIE oxygen experiment» (septiembre de 2023)",
+"enlace": "https://www.space.com/perseverance-mars-rover-ends-moxie-oxygen-experiment"
+},
+{
+"id": "luz_marte",
+"disparador": "evento:paneles_polvo",
+"titulo": "Menos luz del Sol",
+"texto": "Marte está 1.5 veces más lejos del Sol que la Tierra. La luz se reparte en un área 1.5 x 1.5 = 2.3 veces más grande, así que a Marte le llega solo un 43 % de la luz.",
+"fuente": "NASA/JPL, «Mars at a Glance» (distancia al Sol) y cálculo",
+"enlace": "https://www.jpl.nasa.gov/news/press_kits/insight/launch/facts/mars-at-a-glance"
+},
+{
+"id": "auroras",
+"disparador": "tormenta",
+"titulo": "Auroras en todo Marte",
+"texto": "En mayo de 2024 una tormenta solar enorme llegó a Marte y la sonda MAVEN vio auroras en todo el planeta. En la Tierra solo se ven cerca de los polos.",
+"fuente": "NASA/JPL vía Phys.org, «NASA Watches Mars Light Up During Epic Solar Storm» (junio de 2024)",
+"enlace": "https://phys.org/news/2024-06-nasa-mars-epic-solar-storm.html"
+},
+{
+"id": "luz_13min",
+"disparador": "real:CME",
+"titulo": "Más rápido que la nube",
+"texto": "La luz del Sol llega a Marte en unos 13 minutos (227.7 millones de km ÷ 300 000 km/s ≈ 760 segundos). Una nube de plasma es mucho más lenta: tarda días.",
+"fuente": "NASA/JPL, «Mars at a Glance» (distancia al Sol) y cálculo",
+"enlace": "https://www.jpl.nasa.gov/news/press_kits/insight/launch/facts/mars-at-a-glance"
+},
+{
+"id": "viaje",
+"disparador": "nave:colonos",
+"titulo": "Un viaje largo",
+"texto": "El rover Perseverance despegó de la Tierra el 30 de julio de 2020 y aterrizó en Marte el 18 de febrero de 2021: casi 7 meses de viaje.",
+"fuente": "The Planetary Society, «Perseverance, NASA's newest Mars rover»",
+"enlace": "https://www.planetary.org/space-missions/perseverance"
+},
+{
+"id": "huesos",
+"disparador": "colono:enfermo",
+"titulo": "Huesos en el espacio",
+"texto": "Sin la gravedad de la Tierra, los huesos de los astronautas pierden entre 1 % y 1.5 % de su densidad cada mes. Por eso hacen ejercicio todos los días.",
+"fuente": "NASA, «Risk of Spaceflight-Induced Bone Changes»",
+"enlace": "https://www.nasa.gov/reference/risk-of-spaceflight-induced-bone-changes/"
+},
+{
+"id": "valles_marineris",
+"disparador": "sol:20",
+"titulo": "El cañón gigante",
+"texto": "Valles Marineris es un sistema de cañones en Marte de más de 4000 km de largo y hasta 7 km de profundidad: es casi 10 veces más largo que el Gran Cañón del Colorado.",
+"fuente": "NASA Science, «Valles Marineris: The Grand Canyon of Mars»",
+"enlace": "https://science.nasa.gov/mars/facts/"
+},
+{
+"id": "helicoptero_ingenuity",
+"disparador": "sol:25",
+"titulo": "El primer vuelo en otro mundo",
+"texto": "En abril de 2021 el helicóptero Ingenuity logró el primer vuelo controlado con motor en otro planeta. Estaba diseñado para volar 5 veces y completó 72 vuelos antes de dañar sus rotores en 2024.",
+"fuente": "NASA/JPL, «After Three Years on Mars, NASA's Ingenuity Helicopter Mission Ends» (enero de 2024)",
+"enlace": "https://www.jpl.nasa.gov/news/after-three-years-on-mars-nasas-ingenuity-helicopter-mission-ends/"
+},
+{
+"id": "temperatura_marte",
+"disparador": "sol:30",
+"titulo": "Frío extremo y cambios bruscos",
+"texto": "La temperatura media en Marte es de unos -60 °C. En el ecuador puede subir a 20 °C al mediodía, pero esa misma noche caer por debajo de los -70 °C porque su aire delgado no retiene el calor.",
+"fuente": "NASA/JPL, «Mars at a Glance»",
+"enlace": "https://www.jpl.nasa.gov/news/press_kits/insight/launch/facts/mars-at-a-glance"
+},
+{
+"id": "esclusas_aire",
+"disparador": "construir:pasillo",
+"titulo": "Cuidar cada gota de aire",
+"texto": "En las naves y bases espaciales se usan esclusas de aire: cámaras con dos puertas que nunca se abren a la vez, para que los astronautas puedan salir sin que se escape el aire de toda la base.",
+"fuente": "NASA, «Spacewalk Spacesuits & Airlocks»",
+"enlace": "https://www.nasa.gov/mission/station/research-explorer/"
+},
+{
+"id": "fuga_iss",
+"disparador": "evento:fuga_agua",
+"titulo": "Un agujero diminuto en órbita",
+"texto": "En agosto de 2018 se detectó una caída de presión en la Estación Espacial Internacional causada por un agujero de apenas 2 milímetros en una nave acoplada. Los astronautas lo sellaron temporalmente con cinta Kapton y resina.",
+"fuente": "Space.com, «International Space Station Leak Plugged» (agosto de 2018)",
+"enlace": "https://www.space.com/41684-international-space-station-air-leak.html"
+},
+{
+"id": "papa_marciana",
+"disparador": "evento:plaga",
+"titulo": "Cultivar en suelo marciano",
+"texto": "En 2017 el Centro Internacional de la Papa y la NASA demostraron que las papas pueden crecer en condiciones similares a las de Marte usando tierra del desierto de Atacama, uno de los lugares más secos de la Tierra.",
+"fuente": "CIP / NASA, «Indicators show potatoes can grow on Mars» (marzo de 2017)",
+"enlace": "https://cipotato.org/press_room/press-releases/indicators-show-potatoes-can-grow-mars/"
+},
+{
+"id": "cuarentena_apollo",
+"disparador": "evento:virus",
+"titulo": "Cuarentena lunar",
+"texto": "Cuando los astronautas del Apolo 11 volvieron de la Luna en 1969, pasaron 21 días encerrados en una caravana sellada por miedo a que trajeran microbios espaciales desconocidos.",
+"fuente": "NASA History, «Apollo 11 Quarantine»",
+"enlace": "https://www.nasa.gov/history/50-years-ago-apollo-11-astronauts-leave-quarantine/"
+},
+{
+"id": "meteorito_marte",
+"disparador": "evento:meteorito",
+"titulo": "Rocas de Marte en la Tierra",
+"texto": "En la Tierra se han encontrado cientos de meteoritos que vienen de Marte: impactos gigantes en el planeta rojo lanzaron rocas al espacio que, millones de años después, cayeron aquí.",
+"fuente": "NASA/JPL, «Mars Meteorites»",
+"enlace": "https://www2.jpl.nasa.gov/snc/"
+},
+{
+"id": "llamarada_x",
+"disparador": "real:FLR",
+"titulo": "El destello más potente",
+"texto": "En noviembre de 2003 el Sol lanzó una llamarada tan intensa que saturó los sensores de los satélites que la medían; se calculó en clase X28, una de las más fuertes jamás registradas.",
+"fuente": "NASA, «Biggest Solar Flare on Record» (noviembre de 2003)",
+"enlace": "https://www.nasa.gov/missions/science/f_xflare.html"
+},
+{
+"id": "agua_en_marte",
+"disparador": "tarea:filtros_agua",
+"titulo": "Marte tuvo ríos y lagos",
+"texto": "Hace más de 3500 millones de años Marte tuvo ríos, lagos y posiblemente un océano en su hemisferio norte. El rover Perseverance explora el cráter Jezero precisamente porque fue el delta de un antiguo río.",
+"fuente": "NASA Science, «Jezero Crater»",
+"enlace": "https://science.nasa.gov/mission/mars-2020-perseverance/landing-site/"
+},
+{
+"id": "sonido_marte",
+"disparador": "tarea:estudio_atmosfera",
+"titulo": "El sonido viaja más lento",
+"texto": "El micrófono del rover Perseverance grabó por primera vez los sonidos de Marte en 2021. Como el aire es muy frío y tiene mucho dióxido de carbono, el sonido viaja a unos 240 m/s, más lento que en la Tierra (343 m/s).",
+"fuente": "NASA/JPL, «NASA's Perseverance Rover Microphone Captures Sounds of Mars» (abril de 2022)",
+"enlace": "https://www.jpl.nasa.gov/news/nasas-perseverance-rover-microphone-captures-sounds-of-mars/"
+},
+{
+"id": "estatura_espacio",
+"disparador": "nave:colonos",
+"titulo": "Crecer en el espacio",
+"texto": "Sin la gravedad que comprime la columna vertebral, los astronautas se estiran y pueden crecer hasta 5 centímetros durante una misión espacial. Al volver a la Tierra recuperan su estatura normal.",
+"fuente": "NASA, «Human Body in Space»",
+"enlace": "https://www.nasa.gov/humans-in-space/the-human-body-in-space/"
+},
+{
+"id": "vision_espacio",
+"disparador": "colono:enfermo",
+"titulo": "Cambios en la vista",
+"texto": "En gravedad baja los fluidos del cuerpo suben hacia la cabeza, lo que aumenta la presión detrás de los ojos y puede achatar el globo ocular, provocando problemas de vista llamados síndrome SANS.",
+"fuente": "NASA, «Spaceflight Associated Neuro-ocular Syndrome (SANS)»",
+"enlace": "https://www.nasa.gov/reference/risk-of-spaceflight-associated-neuro-ocular-syndrome/"
+},
+{
+"id": "ventana_lanzamiento",
+"disparador": "pedido:enviado",
+"titulo": "Esperar la alineación",
+"texto": "La Tierra y Marte solo se acercan lo suficiente para enviar naves gastando poco combustible cada 26 meses. Si una misión pierde esa ventana de lanzamiento, tiene que esperar más de dos años.",
+"fuente": "The Planetary Society, «How long does it take to get to Mars?»",
+"enlace": "https://www.planetary.org/articles/how-long-does-it-take-to-get-to-mars"
+}]

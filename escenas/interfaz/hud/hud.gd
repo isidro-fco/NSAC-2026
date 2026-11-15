@@ -46,6 +46,7 @@ var donki_detalle: Label
 var donki_boton: Button
 var modo_normal := true
 var panel_alertas := PanelAlertas.new()
+var panel_curiosidades := PanelCuriosidades.new()   # "¿Sabías que...?" a la derecha
 
 
 func _ready() -> void:
@@ -55,6 +56,15 @@ func _ready() -> void:
 	_crear_botones_inferiores()
 	_crear_panel_donki()
 	# Alertas abajo a la derecha, apiladas hacia arriba.
+	# Datos curiosos a la derecha, desde un poco arriba de la mitad hacia abajo.
+	panel_curiosidades.anchor_left = 1.0
+	panel_curiosidades.anchor_right = 1.0
+	panel_curiosidades.anchor_top = 0.28
+	panel_curiosidades.anchor_bottom = 0.28
+	panel_curiosidades.offset_right = -MARGEN
+	panel_curiosidades.offset_left = -MARGEN - PanelCuriosidades.ANCHO
+	panel_curiosidades.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	add_child(panel_curiosidades)
 	panel_alertas.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, MARGEN)
 	panel_alertas.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	panel_alertas.grow_vertical = Control.GROW_DIRECTION_BEGIN
@@ -110,8 +120,16 @@ func _reloj() -> Control:
 	sol_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	barra_sol = BarraSegmentada.new(20, true)
 	barra_sol.color = UI.ADVERTENCIA
+	barra_sol.mouse_filter = Control.MOUSE_FILTER_IGNORE      # el tooltip es de toda la columna
 	c.add_child(sol_label)
 	c.add_child(barra_sol)
+	c.mouse_filter = Control.MOUSE_FILTER_PASS
+	Tooltips.registrar(c, func() -> Dictionary:
+		var segundos: float = (1.0 - GestorTiempo.progreso_sol) * EstadoJuego.datos_balance.segundos_por_sol
+		return { "titulo": "Sol %d" % GestorTiempo.sol_actual,
+			"texto": "Un sol es un día marciano: en Marte dura 24 horas y 39 minutos; en el juego, %d segundos de juego.\nEste sol termina en %d segundos de juego%s.\nAl terminar cada sol se consume, se produce y avanzan las tareas." % [
+				int(EstadoJuego.datos_balance.segundos_por_sol), ceili(segundos),
+				" (vas a x%d)" % GestorTiempo.velocidad if GestorTiempo.velocidad > 1 else ""] })
 	return c
 
 
@@ -181,6 +199,7 @@ func _crear_panel_donki() -> void:
 	var f := UI.fila(8)
 	f.alignment = BoxContainer.ALIGNMENT_CENTER
 	panel_donki.add_child(f)
+	Tooltips.registrar(panel_donki, _contenido_donki)
 	donki_punto = ColorRect.new()
 	donki_punto.custom_minimum_size = Vector2(8, 8)
 	donki_punto.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -193,6 +212,14 @@ func _crear_panel_donki() -> void:
 	donki_detalle = UI.etiqueta_pixel("", UI.T_DETALLE, UI.TEXTO_SUAVE)
 	donki_detalle.visible = false
 	f.add_child(donki_detalle)
+
+
+## Tooltip del indicador DONKI: de dónde salen los datos y qué es DONKI.
+func _contenido_donki() -> Dictionary:
+	var texto := "Datos del Sol: %s.\nLos eventos del Sol del juego (llamaradas, nubes de plasma, lluvias de partículas y tormentas magnéticas) son reales y vienen de NASA DONKI." % ServicioNasa.texto_origen()
+	if not ServicioNasa.en_vivo():
+		texto += "\nAhora no hay conexión con la NASA: se usan los últimos datos guardados o el archivo del juego."
+	return { "titulo": "NASA DONKI", "texto": texto, "pie": "Clic en > para ver el estado" }
 
 
 func _alternar_donki() -> void:
@@ -208,7 +235,7 @@ func _actualizar_panel_donki() -> void:
 	donki_punto.color = UI.BIEN if vivo else UI.TEXTO_SUAVE
 	donki_detalle.text = ServicioNasa.texto_corto()
 	donki_detalle.add_theme_color_override("font_color", UI.BIEN if vivo else UI.TEXTO_SUAVE)
-	panel_donki.tooltip_text = "Datos del Sol: " + ServicioNasa.texto_origen()
+	panel_donki.tooltip_text = ""
 
 
 func mostrar_modo_normal(normal: bool) -> void:

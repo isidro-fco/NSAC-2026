@@ -24,6 +24,7 @@ const UMBRAL_ARRASTRE := 6.0
 
 ## Mientras hay un menú o un diálogo abierto, la cámara no se mueve.
 var bloqueada := false
+var solo_wasd := false        # con un panel al frente las flechas son del panel (NavegacionTeclado)
 var _arrastre_derecho := 0.0          # píxeles movidos con el botón derecho pulsado
 
 
@@ -36,7 +37,8 @@ func _process(delta: float) -> void:
 	if bloqueada:
 		return
 	var tecla := func(k: Key) -> float: return float(Input.is_physical_key_pressed(k))
-	var dir := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down") \
+	var flechas := Vector2.ZERO if solo_wasd else Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	var dir := flechas \
 		+ Vector2(tecla.call(KEY_D) - tecla.call(KEY_A), tecla.call(KEY_S) - tecla.call(KEY_W))
 	if dir != Vector2.ZERO:
 		position = _limitar(position + dir.limit_length() * VELOCIDAD * delta / zoom.x)

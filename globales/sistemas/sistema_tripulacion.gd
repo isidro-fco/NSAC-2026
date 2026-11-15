@@ -72,6 +72,7 @@ func _recuperar(c: DatosColono, sin_vitales: bool) -> void:
 
 
 func enfermar(c: DatosColono) -> void:
+	EstadoJuego.curiosidades.disparar("colono:enfermo")
 	if c.estado == Enums.EstadoColono.EN_MISION:
 		EstadoJuego.registrar(Enums.Categoria.TRIPULACION, "Diagnóstico: %s enfermó y abandonó %s" % [c.nombre, c.tarea["titulo"]])
 	else:

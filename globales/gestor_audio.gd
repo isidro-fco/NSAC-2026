@@ -8,6 +8,8 @@ extends Node
 ## Hay varios reproductores para que los sonidos se puedan encimar.
 ## Aparte, un reproductor de ambiente (viento de Marte) suena en bucle durante
 ## la partida: GestorAudio.iniciar_ambiente() / detener_ambiente().
+## Los pasos de los colonos van por su cuenta: GestorAudio.reproducir_paso(punto)
+## (ver Colono), con un volumen que depende de qué tan cerca está la cámara.
 
 ## Rutas de los sonidos (se cargan en _ready: un preload fallaría la primera
 ## vez que se abre el proyecto, antes de que Godot importe los .ogg).
@@ -17,6 +19,7 @@ const RUTAS := {
 	# Módulos
 	"poner_modulo": "res://recursos/audio/efectos/modulos/poner_modulo.ogg",
 	"quitar_modulo": "res://recursos/audio/efectos/modulos/quitar_modulo.ogg",
+	"quitar_piedra": "res://recursos/audio/efectos/modulos/quitar_piedra.ogg",
 	"casilla_invalida": "res://recursos/audio/efectos/modulos/casilla_invalida.ogg",
 	# Nave
 	"aterrizaje": "res://recursos/audio/efectos/nave/aterrizaje.ogg",
@@ -26,14 +29,26 @@ const RUTAS := {
 ## Volumen de cada sonido (dB) para que ninguno tape a los demás.
 const VOLUMEN := {
 	"clic": -6.0,
-	"poner_modulo": 0.0,
+	"poner_modulo": -4.0,
 	"quitar_modulo": 2.0,
+	"quitar_piedra": -4.0,
 	"casilla_invalida": -3.0,
-	"aterrizaje": -2.0,
-	"despegue": -2.0,
+	"aterrizaje": -6.0,
+	"despegue": -6.0,
 	"caja_cayendo": -4.0,
 }
 const REPRODUCTORES := 8
+
+## Pasos de los colonos. Un solo paso que se repite al ritmo de la caminata.
+const PASO := "res://recursos/audio/efectos/colonos/paso.ogg"
+const VOLUMEN_PASO := -6.0            # dB con la cámara pegada al colono y el zoom al máximo
+const REPRODUCTORES_PASO := 6         # pasos que pueden sonar a la vez
+## Por debajo de este volumen (0 a 1) el paso no se reproduce: así de lejos no se oye nada.
+const PASO_MINIMO := 0.04
+## Qué tanto del zoom hace falta para empezar a oír pasos (0 = zoom mínimo, 1 = máximo).
+const PASO_ZOOM_DESDE := 0.15
+## Hasta dónde se oye un paso, en mitades de pantalla desde el centro (1 = el borde).
+const PASO_ALCANCE := 1.1
 const AMBIENTE := "res://recursos/audio/ambiente/viento.ogg"
 const VOLUMEN_AMBIENTE := -8.0        # dB
 const FUNDIDO_AMBIENTE := 2.5         # s para subir o bajar el volumen
@@ -43,6 +58,9 @@ var _reproductores: Array[AudioStreamPlayer] = []
 var _siguiente := 0
 var _ambiente := AudioStreamPlayer.new()
 var _fundido: Tween
+var _paso: AudioStream
+var _reproductores_paso: Array[AudioStreamPlayer] = []
+var _siguiente_paso := 0
 ## Volúmenes del menú de opciones (0 = silencio, 1 = normal). Se guardan en user://ajustes.cfg.
 var volumen_efectos := 1.0
 var volumen_ambiente := 1.0
@@ -61,6 +79,11 @@ func _ready() -> void:
 		add_child(reproductor)
 		_reproductores.append(reproductor)
 	get_tree().node_added.connect(_al_agregar_nodo)
+	_paso = load(PASO)
+	for i in REPRODUCTORES_PASO:
+		var reproductor := AudioStreamPlayer.new()
+		add_child(reproductor)
+		_reproductores_paso.append(reproductor)
 	var stream: AudioStream = load(AMBIENTE)
 	if stream is AudioStreamOggVorbis:
 		(stream as AudioStreamOggVorbis).loop = true     # el archivo ya empalma su final con su inicio
@@ -125,6 +148,47 @@ func reproducir(nombre: String) -> void:
 	reproductor.stream = _sonidos[nombre]
 	reproductor.volume_db = VOLUMEN.get(nombre, 0.0) + linear_to_db(volumen_efectos)
 	reproductor.play()
+
+
+## Un paso de un colono en `punto` (coordenadas del mapa). Suena más fuerte
+## mientras más cerca del centro de la pantalla está y mientras más zoom tiene
+## la cámara: con el mapa entero a la vista no se oye, y al acercarse a un
+## colono se le oye caminar. Si está fuera de la pantalla, tampoco se oye.
+func reproducir_paso(punto: Vector2) -> void:
+	if _paso == null or volumen_efectos <= 0.0:
+		return
+	var cercania := cercania_paso(punto)
+	if cercania < PASO_MINIMO:
+		return
+	# Primero uno libre; si todos suenan, el que lleva más tiempo.
+	var reproductor := _reproductores_paso[_siguiente_paso]
+	for r in _reproductores_paso:
+		if not r.playing:
+			reproductor = r
+			break
+	_siguiente_paso = (_siguiente_paso + 1) % REPRODUCTORES_PASO
+	reproductor.stream = _paso
+	reproductor.volume_db = VOLUMEN_PASO + linear_to_db(cercania * volumen_efectos)
+	reproductor.pitch_scale = randf_range(0.92, 1.08)      # que no suenen todos idénticos
+	reproductor.play()
+
+
+## Volumen (0 a 1) de un paso en `punto` según la cámara del mapa.
+func cercania_paso(punto: Vector2) -> float:
+	var camara := get_viewport().get_camera_2d()
+	if camara == null:
+		return 0.0
+	var zoom := camara.zoom.x
+	var zoom_min := (camara as CamaraJuego)._zoom_minimo() if camara is CamaraJuego else 1.0
+	var zoom_max := CamaraJuego.ZOOM_MAX
+	# Zoom: 0 con el mapa entero a la vista, 1 con el zoom al máximo.
+	var t := clampf(inverse_lerp(zoom_min, zoom_max, zoom), 0.0, 1.0) if zoom_max > zoom_min else 1.0
+	var por_zoom := smoothstep(PASO_ZOOM_DESDE, 1.0, t)
+	# Distancia: 1 en el centro de la pantalla, 0 un poco más allá del borde.
+	var media_pantalla := get_viewport().get_visible_rect().size.y / 2.0 / zoom
+	var d := punto.distance_to(camara.get_screen_center_position()) / media_pantalla
+	var por_distancia := clampf(1.0 - d / PASO_ALCANCE, 0.0, 1.0)
+	return por_zoom * por_distancia * por_distancia
 
 
 func _al_agregar_nodo(nodo: Node) -> void:

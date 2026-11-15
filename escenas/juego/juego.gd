@@ -32,8 +32,12 @@ var hud := Hud.new()
 var panel_tripulacion: PanelTripulacion
 var avisos := UI.columna(4)
 var ayuda_colocar := UI.etiqueta_pixel("Clic: colocar   ·   Clic derecho o Esc: cancelar")
+const AYUDA_COLOCAR := "Clic: colocar   ·   Clic derecho o Esc: cancelar"
+const AYUDA_PASILLO := "Clic: colocar   ·   Q: girar   ·   Clic derecho o Esc: cancelar"
 var etiqueta_flotante := UI.etiqueta_pixel("")
 var tutorial: Tutorial
+var construccion: MenuConstruccion
+var navegacion: NavegacionTeclado              # flechas + Enter en el panel al frente
 
 @onready var mapa: Mapa = $Mapa
 @onready var camara: CamaraJuego = $Camara
@@ -48,7 +52,13 @@ func _ready() -> void:
 	GestorAudio.iniciar_ambiente()
 	panel_tripulacion = PanelTripulacion.new(mapa)
 	raiz.add_child(panel_tripulacion)
-	raiz.add_child(MenuConstruccion.new(mapa))
+	construccion = MenuConstruccion.new(mapa)
+	raiz.add_child(construccion)
+	navegacion = NavegacionTeclado.new(panel_al_frente)
+	# Los datos curiosos esperan (y se esconden) mientras hay una ventana o un menú abiertos.
+	hud.panel_curiosidades.pausado = func() -> bool: return mapa.modal_abierto
+	hud.panel_curiosidades.elegida.connect(abrir_curiosidad)
+	add_child(navegacion)
 
 	for control: Control in [avisos, ayuda_colocar]:
 		control.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
@@ -97,7 +107,28 @@ func _actualizar_modal() -> void:
 	camara.bloqueada = mapa.modal_abierto
 
 
+## El panel que reciben las flechas: la ventana abierta, si no el menú del
+## módulo, si no el catálogo de construcción. null si no hay ninguno.
+func panel_al_frente() -> Control:
+	var hay_dialogo := dialogo != null and is_instance_valid(dialogo)
+	var hay_menu := menu != null and is_instance_valid(menu)
+	# El glosario puede abrirse encima de una ventana: manda el que está más arriba.
+	if hay_dialogo and hay_menu and menu.get_parent() == dialogo.get_parent():
+		return menu if menu.get_index() > dialogo.get_index() else dialogo.caja
+	if hay_dialogo:
+		return dialogo.caja
+	if hay_menu:
+		return menu
+	if mapa.modo == Enums.ModoMapa.CATALOGO and construccion.is_visible_in_tree():
+		return construccion
+	return null
+
+
 func _process(_delta: float) -> void:
+	# Con un panel al frente las flechas lo recorren; la cámara se mueve solo con WASD.
+	camara.solo_wasd = navegacion.activa()
+	if mapa.modo == Enums.ModoMapa.COLOCANDO:
+		ayuda_colocar.text = AYUDA_PASILLO if mapa.modulo_elegido.es_pasillo() else AYUDA_COLOCAR
 	ayuda_colocar.visible = mapa.modo == Enums.ModoMapa.COLOCANDO and dialogo == null
 	if etiqueta_flotante.visible:
 		var limite := raiz.size - etiqueta_flotante.size
@@ -182,6 +213,13 @@ func abrir_glosario(id: String) -> void:
 	menu.seleccionar(id)
 
 
+## Clic en una tarjeta "¿Sabías que...?": la bitácora en la página de curiosidades, con ese dato marcado.
+func abrir_curiosidad(dato: Dictionary) -> void:
+	if menu is not MenuBitacora:
+		abrir_menu("bitacora")
+	(menu as MenuBitacora).mostrar_curiosidad(str(dato.get("id", "")))
+
+
 func cerrar_menu() -> void:
 	if menu != null:
 		menu.queue_free()
@@ -219,11 +257,13 @@ func _abrir_dialogo(nuevo: DialogoConfirmacion) -> void:
 ##   │ Opción 2: ...                            │
 ## Los eventos reales llevan arriba la placa "▶ DATO REAL DE LA NASA": al
 ## pulsarla se despliega lo que pasó de verdad (fecha, números y fuente).
-##   │ [ Opción 1 ]           [ Opción 2 ]      │
 ##   └──────────────────────────────────────────┘
+## Cada opción (título + tabla) es un recuadro que se pulsa para elegirla: se
+## ilumina al pasar el mouse y también se elige con las flechas y Enter.
 func _mostrar_evento(evento: Dictionary) -> void:
-	var botones := UI.fila(4)
-	var ventana := DialogoConfirmacion.new(evento["titulo"], "", Callable(), botones)
+	var sin_botones := Control.new()               # las opciones mismas son los botones
+	sin_botones.visible = false
+	var ventana := DialogoConfirmacion.new(evento["titulo"], "", Callable(), sin_botones)
 	ventana.cancelable = false
 	ventana.caja.custom_minimum_size = Vector2(560, 0)
 	# Evento real: la placa es un botón; la información técnica (fecha, números,
@@ -239,18 +279,52 @@ func _mostrar_evento(evento: Dictionary) -> void:
 	ventana.insertar(descripcion)
 	for i in evento["opciones"].size():
 		var opcion: Dictionary = evento["opciones"][i]
-		var bloque := UI.columna(8)
-		var titulo := UI.etiqueta_pixel("Opción %d: %s" % [i + 1, opcion["texto"]], UI.T_DETALLE, UI.ADVERTENCIA)
-		titulo.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		bloque.add_child(titulo)
-		bloque.add_child(DialogoConfirmacion.tabla(_filas_evento(opcion), ["Efecto", "Cambio", "Quedará"]))
-		ventana.insertar(bloque)
-		var b := DialogoConfirmacion.boton("Opción %d" % (i + 1), func() -> void:
+		ventana.insertar(_opcion_evento(i, opcion, func() -> void:
 			ventana.cerrar()
-			EstadoJuego.eventos.resolver(i))
-		b.tooltip_text = opcion["texto"]
-		botones.add_child(UI.expandir(b))
+			EstadoJuego.eventos.resolver(i)))
 	_abrir_dialogo(ventana)
+
+
+## Recuadro de una opción del evento que se elige con un clic:
+##   ┌ OPCIÓN 1: Preparar el blindaje desde ya        ELEGIR > ┐
+##   │ ┌ Efecto            Cambio        Quedará ┐              │
+##   │ └ ...                                     ┘              │
+##   └──────────────────────────────────────────────────────────┘
+## El borde se pone naranja al pasar el mouse (o al llegar con las flechas).
+func _opcion_evento(i: int, opcion: Dictionary, elegir: Callable) -> Control:
+	var recuadro := PanelContainer.new()
+	recuadro.mouse_filter = Control.MOUSE_FILTER_STOP
+	recuadro.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	var normal := UI.estilo(UI.FONDO.darkened(0.05), UI.BORDE, 0, 10, 2)
+	var encima := UI.estilo(UI.FONDO.lerp(UI.ACENTO, 0.12), UI.ACENTO, 0, 10, 2)
+	recuadro.add_theme_stylebox_override("panel", normal)
+	var c := UI.columna(8)
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	recuadro.add_child(c)
+	var cabeza := UI.fila(8)
+	var titulo := UI.etiqueta_pixel("Opción %d: %s" % [i + 1, opcion["texto"]], UI.T_DETALLE, UI.ADVERTENCIA)
+	titulo.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	cabeza.add_child(UI.expandir(titulo))
+	var elegir_etiqueta := UI.etiqueta_pixel("ELEGIR >", UI.T_DETALLE, UI.TEXTO_SUAVE)
+	cabeza.add_child(elegir_etiqueta)
+	c.add_child(cabeza)
+	c.add_child(DialogoConfirmacion.tabla(_filas_evento(opcion), ["Efecto", "Cambio", "Quedará"]))
+	for hijo: Control in c.find_children("*", "Control", true, false):
+		hijo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var resaltar := func(si: bool) -> void:
+		recuadro.add_theme_stylebox_override("panel", encima if si else normal)
+		elegir_etiqueta.add_theme_color_override("font_color", UI.ACENTO if si else UI.TEXTO_SUAVE)
+	recuadro.mouse_entered.connect(resaltar.bind(true))
+	recuadro.mouse_exited.connect(resaltar.bind(false))
+	recuadro.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			recuadro.accept_event()
+			GestorAudio.reproducir("clic")
+			elegir.call())
+	# Navegación con flechas (NavegacionTeclado): resaltar al llegar y Enter para elegir.
+	recuadro.set_meta("navegable", elegir)
+	recuadro.set_meta("al_enfocar", resaltar)
+	return recuadro
 
 
 ## Placa verde arriba de los eventos que salen de datos reales de la NASA. Es un

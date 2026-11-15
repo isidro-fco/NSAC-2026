@@ -55,7 +55,9 @@ func _ready() -> void:
 		boton.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		columna.add_child(boton)
 
-	var pie := UI.etiqueta_pixel("ESC: OPCIONES", UI.T_DETALLE, UI.TEXTO_SUAVE)
+	# Flechas + Enter: los botones de la columna, o el menú de opciones si está abierto.
+	add_child(NavegacionTeclado.new(func() -> Control: return opciones if opciones != null else columna))
+	var pie := UI.etiqueta_pixel("ESC: OPCIONES  ·  FLECHAS Y ENTER: ELEGIR", UI.T_DETALLE, UI.TEXTO_SUAVE)
 	pie.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 16)
 	pie.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	pie.grow_vertical = Control.GROW_DIRECTION_BEGIN

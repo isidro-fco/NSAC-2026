@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="DatosModulo" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="DatosModulo" load_steps=3 format=3]
 
+[ext_resource type="Texture2D" uid="uid://cserd1itqkecl" path="res://recursos/sprites/modulos/refugio.png" id="2_textura"]
 [ext_resource type="Script" path="res://datos/clases/datos_modulo.gd" id="1_script"]
 
 [resource]
@@ -9,6 +10,7 @@ nombre = "Refugio blindado"
 tam = Vector2i(3, 2)
 letra = "R"
 color = Color(0.3569, 0.4353, 0.5098, 1)
+textura = ExtResource("2_textura")
 dinero = 350
 materiales = 50
 consumo_kw = 5.0

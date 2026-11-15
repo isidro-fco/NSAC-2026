@@ -299,6 +299,7 @@ static func tema() -> Theme:
 static func etiqueta_pixel(texto: String, tam := 8, color := TEXTO) -> Label:
 	var label := etiqueta_simple(texto, tam, color)
 	label.add_theme_font_override("font", fuente_pixel())
+	label.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST      # la fuente pixel sí va nítida
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return label
 
@@ -351,6 +352,7 @@ static func texto_glosario(bbcode := "", tam := 14, color := TEXTO) -> RichTextL
 	r.mouse_filter = Control.MOUSE_FILTER_PASS
 	r.add_theme_font_size_override("normal_font_size", tam)
 	r.add_theme_color_override("default_color", color)
+	r.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR     # ver etiqueta_simple()
 	if tam >= 16:
 		r.add_theme_font_override("normal_font", FUENTE_NEGRITA)
 	r.meta_hover_started.connect(func(id: Variant) -> void: Tooltips.entrar_termino(r, str(id)))
@@ -362,6 +364,33 @@ static func texto_glosario(bbcode := "", tam := 14, color := TEXTO) -> RichTextL
 	return r
 
 
+## "Fuente: <nombre>" con el nombre como enlace: al hacer clic abre `enlace` en
+## el navegador (y pausa el juego). Se queda con el clic: no lo pasa a lo que
+## tenga detrás (p. ej. la tarjeta de una curiosidad).
+static func enlace_fuente(fuente: String, enlace: String, tam := 11) -> RichTextLabel:
+	var r := RichTextLabel.new()
+	r.bbcode_enabled = true
+	r.fit_content = true
+	r.scroll_active = false
+	r.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	r.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	r.add_theme_font_size_override("normal_font_size", tam)
+	r.add_theme_color_override("default_color", TEXTO_SUAVE)
+	var nombre := fuente.replace("[", "[lb]")
+	if enlace.begins_with("https://") or enlace.begins_with("http://"):
+		r.text = "Fuente: [color=#%s][url=%s]%s[/url][/color]" % [BIEN.to_html(false), enlace, nombre]
+		r.mouse_filter = Control.MOUSE_FILTER_STOP
+		r.tooltip_text = "Abrir la fuente en el navegador"
+		r.meta_clicked.connect(func(url: Variant) -> void:
+			Tooltips.cerrar_todo()
+			GestorTiempo.en_pausa = true
+			OS.shell_open(str(url)))
+	else:
+		r.text = "Fuente: " + nombre
+		r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return r
+
+
 static func fijar_texto(r: RichTextLabel, texto: String) -> void:
 	var bbcode := EstadoJuego.glosario.resaltar(texto)
 	if bbcode == "":
@@ -370,8 +399,12 @@ static func fijar_texto(r: RichTextLabel, texto: String) -> void:
 		r.text = bbcode
 
 
+## La letra lisa (Manrope) se dibuja con filtro lineal: los marcos pixel art
+## ponen TEXTURE_FILTER_NEAREST y sus hijos lo heredan, y con ese filtro las
+## letras finas pierden trazos al escalar la ventana ("Glance" se veía "Gance").
 static func etiqueta_simple(texto: String, tam := 14, color := TEXTO) -> Label:
 	var label := Label.new()
+	label.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	label.text = texto
 	label.add_theme_font_size_override("font_size", tam)
 	label.add_theme_color_override("font_color", color)

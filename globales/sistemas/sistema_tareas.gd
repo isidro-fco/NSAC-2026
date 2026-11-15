@@ -40,6 +40,7 @@ func asignar(tarea: Dictionary, c: DatosColono) -> bool:
 	c.tarea = tarea
 	c.soles_restantes = tarea["soles"]
 	EstadoJuego.registrar(Enums.Categoria.ACCION, "Tarea asignada: %s a %s" % [tarea["titulo"], c.nombre], false)
+	EstadoJuego.curiosidades.disparar("tarea:%s" % tarea["id"])
 	EstadoJuego.estado_cambiado.emit()
 	return true
 

@@ -7,6 +7,8 @@ extends ElementoMapa
 ## Demolerlo no devuelve materiales.
 
 var datos: DatosModulo
+## Cuartos de vuelta (0..3). Solo los pasillos rotan (Q al colocarlos).
+var rotacion := 0
 
 
 func _init(origen_celda: Vector2i, datos_modulo: DatosModulo) -> void:
@@ -27,11 +29,24 @@ func nombre() -> String:
 	return datos.nombre
 
 
+## Dibuja `textura` en `rect` girada `cuartos` cuartos de vuelta alrededor de su
+## centro (la usan el módulo y la vista previa al colocar).
+static func dibujar_textura(lienzo: CanvasItem, textura: Texture2D, rect: Rect2, cuartos: int, tinte: Color) -> void:
+	if cuartos % 4 == 0:
+		lienzo.draw_texture_rect(textura, rect, false, tinte)
+		return
+	lienzo.draw_set_transform(rect.get_center(), cuartos * PI / 2.0)
+	lienzo.draw_texture_rect(textura, Rect2(-rect.size / 2.0, rect.size), false, tinte)
+	lienzo.draw_set_transform(Vector2.ZERO)
+
+
 func _draw() -> void:
+	if datos.es_pasillo():
+		return                      # los dibuja CapaPasillos, bajo los demás módulos
 	var rect := Rect2(Vector2.ZERO, Vector2(datos.tam) * GestorCuadricula.TAM_CELDA)
 	var tinte := Color(0.45, 0.45, 0.5) if EstadoJuego.modulos_apagados else Color.WHITE
 	if datos.textura:
-		draw_texture_rect(datos.textura, rect, false, tinte)
+		dibujar_textura(self, datos.textura, rect, rotacion, tinte)
 		return
 	draw_rect(rect, datos.color.darkened(0.35) * tinte)
 	draw_rect(rect.grow(-3), datos.color * tinte)

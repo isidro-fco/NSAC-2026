@@ -73,8 +73,18 @@ func toca_evento() -> bool:
 
 func _abrir(nuevo: Dictionary) -> void:
 	evento = nuevo
+	if nuevo.has("real"):
+		EstadoJuego.curiosidades.disparar("real:%s" % _codigo_real(nuevo["real"]["tipo"]))
+	else:
+		EstadoJuego.curiosidades.disparar("evento:%s" % nuevo.get("id", ""))
 	pausa_previa = GestorTiempo.en_pausa
 	GestorTiempo.en_pausa = true
+
+
+## "Llamarada solar (FLR)" -> "FLR": el código de DONKI que usan los disparadores.
+static func _codigo_real(tipo: String) -> String:
+	var i := tipo.rfind("(")
+	return tipo.substr(i + 1).trim_suffix(")") if i >= 0 else tipo
 
 
 func _incidente_al_azar() -> Dictionary:

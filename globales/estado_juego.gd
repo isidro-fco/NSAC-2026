@@ -31,6 +31,7 @@ signal partida_terminada(motivo: String)
 signal victoria                                 # HU-11: Módulo de Comando al nivel máximo
 signal evento_iniciado(evento: Dictionary)      # HU-08: hay que elegir una opción
 signal glosario_pedido(id: String)              # HU-12: clic en un término resaltado
+signal curiosidad_nueva(dato: Dictionary)        # dato curioso de STEM para mostrar (SistemaCuriosidades)
 
 const VITALES := ["oxigeno", "agua", "comida"]
 
@@ -47,6 +48,7 @@ var eventos := SistemaEventos.new()
 var tierra := SistemaTierra.new()
 var clima := SistemaClimaEspacial.new()       # eventos solares reales (NASA DONKI)
 var glosario := SistemaGlosario.new()
+var curiosidades := SistemaCuriosidades.new()   # datos curiosos de STEM
 
 var rng := RandomNumberGenerator.new()          # azar de la partida
 var terminado := false
@@ -56,7 +58,7 @@ var modulos_construidos := 0                    # por el jugador (resumen de vic
 var bitacora: Array[Dictionary] = []
 
 ## Sistemas que se reinician con cada partida, en este orden.
-var _sistemas: Array[Sistema] = [comando, economia, almacen, tripulacion, eventos, tierra, glosario, clima]
+var _sistemas: Array[Sistema] = [comando, economia, almacen, tripulacion, eventos, tierra, glosario, clima, curiosidades]
 
 
 func _ready() -> void:
@@ -77,8 +79,11 @@ func nueva_partida() -> void:
 
 
 ## Anota en la bitácora y, si `avisar`, lo muestra también como aviso.
-func registrar(categoria: Enums.Categoria, texto: String, avisar := true) -> void:
-	bitacora.append({ "sol": GestorTiempo.sol_actual, "categoria": categoria, "texto": texto })
+## `extra` agrega campos a la entrada (p. ej. "dato" en las curiosidades).
+func registrar(categoria: Enums.Categoria, texto: String, avisar := true, extra := {}) -> void:
+	var entrada := { "sol": GestorTiempo.sol_actual, "categoria": categoria, "texto": texto }
+	entrada.merge(extra)
+	bitacora.append(entrada)
 	if avisar:
 		aviso.emit(texto)
 
@@ -110,6 +115,9 @@ func terminar_sol(sol: int) -> void:
 			_ganar()
 		elif eventos.toca_evento():
 			evento_iniciado.emit(eventos.evento)
+	curiosidades.disparar("sol:%d" % GestorTiempo.sol_actual)
+	if eventos.tormenta_activa():
+		curiosidades.disparar("tormenta")
 	sol_terminado.emit()
 	estado_cambiado.emit()
 

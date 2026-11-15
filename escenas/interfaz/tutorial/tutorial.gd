@@ -212,7 +212,7 @@ func _crear_pasos() -> Array[Dictionary]:
 		},
 		{
 			"titulo": "El tiempo",
-			"texto": "Un sol es un día marciano (%d segundos). Al terminar cada sol se consume, se produce y avanzan las tareas. Con Espacio pausas y reanudas; x2 y x4 aceleran. Al cumplir este paso volveremos a pausar para seguir con calma." % int(balance.segundos_por_sol),
+			"texto": "Un sol es un día marciano. En Marte dura 24 horas y 39 minutos; en el juego, %d segundos de juego. Al terminar cada sol se consume, se produce y avanzan las tareas. Con Espacio pausas y reanudas; x2 y x4 aceleran. Al cumplir este paso volveremos a pausar para seguir con calma." % int(balance.segundos_por_sol),
 			"objetivo": "pulsa Espacio (o el botón ▶) para reanudar el tiempo",
 			"al_entrar": func() -> void: GestorTiempo.en_pausa = true,
 			"listo": func() -> bool: return not GestorTiempo.en_pausa,

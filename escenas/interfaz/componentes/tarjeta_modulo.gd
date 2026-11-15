@@ -22,7 +22,7 @@ func _init(datos_modulo: DatosModulo, al_elegir: Callable) -> void:
 	focus_mode = Control.FOCUS_NONE
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	custom_minimum_size = Vector2(0, LADO_ICONO + 14)
-	tooltip_text = "Ocupa %dx%d casillas" % [datos.tam.x, datos.tam.y]
+	Tooltips.registrar(self, contenido_tooltip)
 	var economia := EstadoJuego.economia
 	disabled = not economia.puede_pagar(datos.dinero, datos.materiales)
 	if disabled:
@@ -58,6 +58,35 @@ func _init(datos_modulo: DatosModulo, al_elegir: Callable) -> void:
 	for hijo: Control in find_children("*", "Control", true, false):
 		hijo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
+
+
+## Para qué sirve cada módulo (con palabras del glosario, que se pueden encadenar).
+const DESCRIPCION := {
+	"soporte_vital": "Mantiene el aire y el agua de la base: produce oxígeno y recicla el agua que usa la tripulación. Sin soporte vital, nadie aguanta mucho en Marte.",
+	"agricultura": "Invernadero con luces LED donde se cultiva comida. Así la colonia no depende tanto de los envíos de la Tierra (astroagronomía).",
+	"energia": "Paneles solares: convierten la luz del Sol en electricidad. En Marte llega menos luz que en la Tierra y el polvo los cubre.",
+	"perforadora": "Perfora el suelo hasta el hielo de Marte, lo derrite y saca agua.",
+	"taller": "Fabrica materiales para construir con el regolito y con impresión 3D.",
+	"refugio": "Módulo con paredes muy gruesas. Durante una tormenta solar, los colonos que estén adentro no reciben radiación.",
+	"pasillo": "Conecta los módulos para que los colonos pasen de uno a otro sin salir al exterior. Con Q lo giras al colocarlo.",
+}
+
+
+## Tooltip: para qué sirve, cuánto ocupa, cuesta, gasta y produce.
+func contenido_tooltip() -> Dictionary:
+	var lineas := PackedStringArray()
+	if DESCRIPCION.has(datos.id):
+		lineas.append(DESCRIPCION[datos.id])
+	lineas.append("Ocupa %dx%d casillas. Cuesta %s y %d materiales." % [datos.tam.x, datos.tam.y,
+		UI.dinero(datos.dinero), datos.materiales])
+	for linea: Array in lineas_energia_y_produccion(datos):
+		lineas.append(linea[0])
+	var e := EstadoJuego.economia
+	var despues: float = e.balance("energia") + datos.produce.get("energia", 0.0) - datos.consumo_kw
+	if datos.consumo_kw > 0.0 or datos.produce.has("energia"):
+		lineas.append("Con él, la energía quedaría en %s." % UI.kw(despues, true))
+	var falta := "" if not disabled else "No alcanza el presupuesto o los materiales."
+	return { "titulo": datos.nombre, "texto": "\n".join(lineas), "sugerencia": falta }
 
 
 ## Lo que gasta o produce el módulo: [[texto, color], ...]. La energía primero
