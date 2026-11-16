@@ -62,12 +62,12 @@ func productividad() -> float:
 func falta_para_receta(receta: Dictionary) -> String:
 	var recursos: Dictionary = EstadoJuego.economia.recursos
 	if recursos["comida"] < receta["comida"]:
-		return "Falta comida"
+		return Idioma.t("Falta comida")
 	if recursos["agua"] < receta["agua"]:
-		return "Falta agua"
+		return Idioma.t("Falta agua")
 	var neto: float = receta["raciones"] - receta["comida"] - receta["agua"]
 	if EstadoJuego.economia.viveres() + neto > capacidad():
-		return "Falta espacio en el almacén"
+		return Idioma.t("Falta espacio en el almacén")
 	return ""
 
 
@@ -94,5 +94,5 @@ func expandir() -> bool:
 		return false
 	nivel += 1
 	EstadoJuego.economia.pagar(datos.expandir_almacen_dinero, datos.expandir_almacen_materiales)
-	EstadoJuego.registrar(Enums.Categoria.ACCION, "Almacén ampliado al nivel %d" % nivel, false)
+	EstadoJuego.registrar(Enums.Categoria.ACCION, Idioma.t("Almacén ampliado al nivel %d") % nivel, false)
 	return true

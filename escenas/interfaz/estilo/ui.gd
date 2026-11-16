@@ -329,6 +329,7 @@ static func pintar_boton_pixel(b: Button, activo: bool, color_activo := ACENTO, 
 ## Etiqueta de una línea. Si el texto menciona un término del glosario (HU-12)
 ## devuelve un texto enriquecido con el término resaltado (ver texto_glosario).
 static func etiqueta(texto: String, tam := 14, color := TEXTO) -> Control:
+	texto = Idioma.t(texto)
 	var bbcode := EstadoJuego.glosario.resaltar(texto)
 	return texto_glosario(bbcode, tam, color) if bbcode != "" else etiqueta_simple(texto, tam, color)
 
@@ -376,22 +377,23 @@ static func enlace_fuente(fuente: String, enlace: String, tam := 11) -> RichText
 	r.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	r.add_theme_font_size_override("normal_font_size", tam)
 	r.add_theme_color_override("default_color", TEXTO_SUAVE)
-	var nombre := fuente.replace("[", "[lb]")
+	var nombre := Idioma.t(fuente).replace("[", "[lb]")
 	if enlace.begins_with("https://") or enlace.begins_with("http://"):
-		r.text = "Fuente: [color=#%s][url=%s]%s[/url][/color]" % [BIEN.to_html(false), enlace, nombre]
+		r.text = Idioma.t("Fuente: [color=#%s][url=%s]%s[/url][/color]") % [BIEN.to_html(false), enlace, nombre]
 		r.mouse_filter = Control.MOUSE_FILTER_STOP
-		r.tooltip_text = "Abrir la fuente en el navegador"
+		r.tooltip_text = Idioma.t("Abrir la fuente en el navegador")
 		r.meta_clicked.connect(func(url: Variant) -> void:
 			Tooltips.cerrar_todo()
 			GestorTiempo.en_pausa = true
 			OS.shell_open(str(url)))
 	else:
-		r.text = "Fuente: " + nombre
+		r.text = Idioma.t("Fuente: ") + nombre
 		r.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return r
 
 
 static func fijar_texto(r: RichTextLabel, texto: String) -> void:
+	texto = Idioma.t(texto)
 	var bbcode := EstadoJuego.glosario.resaltar(texto)
 	if bbcode == "":
 		bbcode = texto.replace("[", "[lb]")
@@ -476,7 +478,7 @@ static func boton_accion(texto: String, accion: Callable, habilitado := true) ->
 static func boton_cerrar(accion: Callable) -> Button:
 	var b := boton_pixel("X", accion, true, T_TITULO)
 	b.custom_minimum_size = Vector2(42, 42)
-	b.tooltip_text = "Cerrar (Esc)"
+	b.tooltip_text = Idioma.t("Cerrar (Esc)")
 	b.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	pintar_boton_pixel(b, true, ACENTO, TARJETA, 8)
 	return b
@@ -559,7 +561,7 @@ static func barra_radiacion(valor: float) -> ProgressBar:
 ## Número con un decimal como máximo; sin ".0" si es entero (120, no 120.0).
 ## "1 sol", "3 soles".
 static func soles(n: int) -> String:
-	return "%d sol%s" % [n, "" if n == 1 else "es"]
+	return Idioma.t("%d sol" if n == 1 else "%d soles") % n
 
 
 static func num(valor: float) -> String:
@@ -607,14 +609,14 @@ static func fila_cambio(nombre: String, recurso: String, cambio: float) -> Array
 	var antes := EstadoJuego.economia.valor(recurso)
 	var despues := maxf(antes + cambio, 0.0)
 	if recurso == "presupuesto":
-		return [nombre, ("+" if cambio >= 0.0 else "") + dinero(cambio), "%s a %s" % [dinero(antes), dinero(despues)]]
+		return [nombre, ("+" if cambio >= 0.0 else "") + dinero(cambio), Idioma.t("%s a %s") % [dinero(antes), dinero(despues)]]
 	var unidad: String = " " + UNIDAD[recurso] if UNIDAD.has(recurso) else ""
-	return [nombre, con_signo(cambio) + unidad, "%s a %s" % [num(antes), cantidad(recurso, despues)]]
+	return [nombre, con_signo(cambio) + unidad, Idioma.t("%s a %s") % [num(antes), cantidad(recurso, despues)]]
 
 
 static func texto_recompensa(recompensa: Dictionary) -> String:
 	var partes: PackedStringArray = []
 	for clave: String in recompensa:
-		var nombre: String = Enums.NOMBRE_RECURSO.get(clave, "Investigación")
+		var nombre: String = Idioma.t(Enums.NOMBRE_RECURSO.get(clave, "Investigación"))
 		partes.append("+%s %s" % [cantidad(clave, recompensa[clave]), nombre])
 	return ", ".join(partes)

@@ -51,7 +51,7 @@ func construir() -> void:
 
 	var filtros := UI.fila(6)
 	for categoria: int in [TODAS] + Enums.Categoria.values():
-		var texto: String = "Todas" if categoria == TODAS else Enums.NOMBRE_CATEGORIA[categoria]
+		var texto: String = Idioma.t("Todas") if categoria == TODAS else Idioma.t(Enums.NOMBRE_CATEGORIA[categoria])
 		var b := Cabina.boton_opcion("%s  %d" % [texto, cuentas[categoria]], func() -> void:
 			filtro = categoria
 			_pedir_reconstruccion(), filtro == categoria)
@@ -64,7 +64,7 @@ func construir() -> void:
 	var rango := ""
 	if not entradas.is_empty():
 		rango = "Sol %d - Sol %d" % [entradas[0]["sol"], entradas[-1]["sol"]]
-	contenido.add_child(Cabina.encabezado("Registro", entradas.size(), rango))
+	contenido.add_child(Cabina.encabezado(Idioma.t("Registro"), entradas.size(), rango))
 	var pantalla := Cabina.pantalla()
 	contenido.add_child(pantalla)
 	var lista := UI.columna(4)
@@ -80,8 +80,8 @@ func construir() -> void:
 		if resaltada != "" and str(entrada.get("dato", {}).get("id", "")) == resaltada:
 			marcada = fila
 	if entradas.is_empty():
-		var vacio := "Todavía no hay datos curiosos: aparecen al jugar." if filtro == Enums.Categoria.CURIOSIDAD \
-			else "Todavía no hay registros."
+		var vacio := Idioma.t("Todavía no hay datos curiosos: aparecen al jugar.") if filtro == Enums.Categoria.CURIOSIDAD \
+			else Idioma.t("Todavía no hay registros.")
 		lista.add_child(Cabina.vacio(vacio))
 	var scroll := vista_con_scroll(Cabina.con_margen_scroll(lista))
 	pantalla.add_child(scroll)
@@ -107,7 +107,7 @@ func _fila(entrada: Dictionary) -> Control:
 	var tarjeta := Cabina.tarjeta(color, 5)
 	var f := UI.fila(10)
 	tarjeta.add_child(f)
-	var etiqueta := Cabina.pildora(Cabina.mayus(Enums.NOMBRE_CATEGORIA[entrada["categoria"]]), color, false)
+	var etiqueta := Cabina.pildora(Cabina.mayus(Idioma.t(Enums.NOMBRE_CATEGORIA[entrada["categoria"]])), color, false)
 	etiqueta.custom_minimum_size = Vector2(96, 0)
 	(etiqueta.get_child(0) as Label).horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	f.add_child(etiqueta)
@@ -129,15 +129,16 @@ func _fila_curiosidad(entrada: Dictionary) -> Control:
 	tarjeta.add_theme_stylebox_override("panel", caja)
 	var f := UI.fila(10)
 	tarjeta.add_child(f)
-	var etiqueta := Cabina.pildora(Cabina.mayus(Enums.NOMBRE_CATEGORIA[Enums.Categoria.CURIOSIDAD]), color, false)
+	var etiqueta := Cabina.pildora(Cabina.mayus(Idioma.t(Enums.NOMBRE_CATEGORIA[Enums.Categoria.CURIOSIDAD])), color, false)
 	etiqueta.custom_minimum_size = Vector2(96, 0)
 	etiqueta.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	(etiqueta.get_child(0) as Label).horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	f.add_child(etiqueta)
 	var c := UI.columna(4)
-	c.add_child(UI.etiqueta_simple(str(dato["titulo"]), 14, UI.ADVERTENCIA))
-	var bbcode := EstadoJuego.glosario.resaltar(str(dato["texto"]))
-	var texto := UI.texto_glosario(bbcode if bbcode != "" else str(dato["texto"]).replace("[", "[lb]"), 13, UI.TEXTO)
+	c.add_child(UI.etiqueta_simple(Idioma.t(str(dato["titulo"])), 14, UI.ADVERTENCIA))
+	var traducido := Idioma.t(str(dato["texto"]))
+	var bbcode := EstadoJuego.glosario.resaltar(traducido)
+	var texto := UI.texto_glosario(bbcode if bbcode != "" else traducido.replace("[", "[lb]"), 13, UI.TEXTO)
 	texto.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	texto.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	c.add_child(texto)

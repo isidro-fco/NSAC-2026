@@ -48,25 +48,25 @@ func _barra_superior() -> Control:
 	var almacen := EstadoJuego.almacen
 	var datos := EstadoJuego.datos_balance
 	var f := UI.fila(6)
-	f.add_child(Cabina.celda_metrica("Víveres", "%s / %s kg" % [UI.num(economia.viveres()), UI.num(almacen.capacidad())],
+	f.add_child(Cabina.celda_metrica(Idioma.t("Víveres"), "%s / %s kg" % [UI.num(economia.viveres()), UI.num(almacen.capacidad())],
 		economia.viveres(), almacen.capacidad()))
 	var materiales: float = economia.recursos["materiales"]
-	f.add_child(Cabina.celda_metrica("Materiales", "%s / %s" % [UI.num(materiales), UI.num(almacen.capacidad_materiales())],
+	f.add_child(Cabina.celda_metrica(Idioma.t("Materiales"), "%s / %s" % [UI.num(materiales), UI.num(almacen.capacidad_materiales())],
 		materiales, almacen.capacidad_materiales()))
-	f.add_child(Cabina.celda_metrica("Presupuesto", UI.dinero(economia.recursos["presupuesto"])))
+	f.add_child(Cabina.celda_metrica(Idioma.t("Presupuesto"), UI.dinero(economia.recursos["presupuesto"])))
 	var nivel: Array = Cabina.celda(130)
-	nivel[1].add_child(Cabina.centrada("DEPOSITO %d/%d" % [almacen.nivel, datos.nivel_almacen_max]))
+	nivel[1].add_child(Cabina.centrada(Idioma.t("DEPOSITO %d/%d") % [almacen.nivel, datos.nivel_almacen_max]))
 	nivel[1].add_child(Cabina.marcas(almacen.nivel, datos.nivel_almacen_max))
 	f.add_child(nivel[0])
 
-	var titulo := "Depósito al máximo"
-	var detalle := "Nivel %d: no se puede ampliar más" % almacen.nivel
+	var titulo := Idioma.t("Depósito al máximo")
+	var detalle := Idioma.t("Nivel %d: no se puede ampliar más") % almacen.nivel
 	if almacen.nivel < datos.nivel_almacen_max:
-		titulo = "Expandir depósito"
-		detalle = "+%d kg  ·  %s  ·  %d mat." % [int(datos.cap_almacen_por_nivel),
+		titulo = Idioma.t("Expandir depósito")
+		detalle = Idioma.t("+%d kg  ·  %s  ·  %d mat.") % [int(datos.cap_almacen_por_nivel),
 			UI.dinero(datos.expandir_almacen_dinero), datos.expandir_almacen_materiales]
 	var puede := almacen.puede_expandir()
-	var motivo := "No alcanzan el presupuesto o los materiales" \
+	var motivo := Idioma.t("No alcanzan el presupuesto o los materiales") \
 		if not puede and almacen.nivel < datos.nivel_almacen_max else ""
 	var boton := Cabina.boton_grande(titulo, detalle, _pedir_expansion, puede, motivo)
 	f.add_child(UI.expandir(boton))
@@ -75,8 +75,8 @@ func _barra_superior() -> Control:
 
 func _pedir_expansion() -> void:
 	var datos := EstadoJuego.datos_balance
-	var texto := "Ampliar el depósito por %s y %d materiales" % [UI.dinero(datos.expandir_almacen_dinero), datos.expandir_almacen_materiales]
-	interfaz.confirmar("Expandir depósito", texto, EstadoJuego.almacen.expandir)
+	var texto := Idioma.t("Ampliar el depósito por %s y %d materiales") % [UI.dinero(datos.expandir_almacen_dinero), datos.expandir_almacen_materiales]
+	interfaz.confirmar(Idioma.t("Expandir depósito"), texto, EstadoJuego.almacen.expandir)
 
 
 # --- Reservas -------------------------------------------------------------
@@ -87,7 +87,7 @@ func _reservas() -> Control:
 	var colonos := maxi(EstadoJuego.tripulacion.activos(), 1)
 	var c := UI.columna(6)
 	c.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	c.add_child(Cabina.encabezado("Reservas", -1, "%d colono%s" % [colonos, "" if colonos == 1 else "s"]))
+	c.add_child(Cabina.encabezado(Idioma.t("Reservas"), -1, Idioma.t("%d colono%s") % [colonos, "" if colonos == 1 else "s"]))
 	var pantalla := Cabina.pantalla()
 	c.add_child(pantalla)
 	var lista := UI.columna(6)
@@ -95,13 +95,13 @@ func _reservas() -> Control:
 	var hambre := economia.consumo("comida")
 	var de_raciones := minf(hambre, recursos["raciones"])
 	var soles_raciones: float = INF if hambre <= 0.0 else recursos["raciones"] / hambre
-	lista.add_child(_linea("Comida cruda", recursos["comida"], hambre - de_raciones, colonos, economia.soles_restantes("comida"), "kg"))
-	lista.add_child(_linea("Raciones preparadas", recursos["raciones"], de_raciones, colonos, soles_raciones, "kg"))
-	lista.add_child(_linea("Agua potable", recursos["agua"], economia.consumo("agua"), colonos, economia.soles_restantes("agua"), "L"))
+	lista.add_child(_linea(Idioma.t("Comida cruda"), recursos["comida"], hambre - de_raciones, colonos, economia.soles_restantes("comida"), "kg"))
+	lista.add_child(_linea(Idioma.t("Raciones preparadas"), recursos["raciones"], de_raciones, colonos, soles_raciones, "kg"))
+	lista.add_child(_linea(Idioma.t("Agua potable"), recursos["agua"], economia.consumo("agua"), colonos, economia.soles_restantes("agua"), "L"))
 	var reciclada := economia.agua_reciclada()
 	if reciclada > 0.0:
-		lista.add_child(UI.parrafo("El soporte vital recicla %s L de agua por sol (el 80 %% de lo que se usa)." % UI.num(reciclada), 12))
-	lista.add_child(_linea("Materiales", recursos["materiales"], 0.0, colonos, INF))
+		lista.add_child(UI.parrafo(Idioma.t("El soporte vital recicla %s L de agua por sol (el 80 %% de lo que se usa).") % UI.num(reciclada), 12))
+	lista.add_child(_linea(Idioma.t("Materiales"), recursos["materiales"], 0.0, colonos, INF))
 	pantalla.add_child(vista_con_scroll(Cabina.con_margen_scroll(lista)))
 	return c
 
@@ -111,9 +111,9 @@ func _reservas() -> Control:
 func _linea(nombre: String, valor: float, gasto: float, colonos: int, soles: float, unidad := "") -> Control:
 	var u := " " + unidad if unidad != "" else ""
 	var color := Cabina.VERDE
-	var restante := "NO SE AGOTA"
+	var restante := Idioma.t("NO SE AGOTA")
 	if not is_inf(soles):
-		restante = "%s SOLES" % UI.num(soles)
+		restante = Idioma.t("%s SOLES") % UI.num(soles)
 		color = UI.CRITICO if soles < 3.0 else UI.ADVERTENCIA if soles < 10.0 else Cabina.VERDE
 	if is_inf(soles) and gasto <= 0.0:
 		color = UI.TEXTO_SUAVE
@@ -123,9 +123,9 @@ func _linea(nombre: String, valor: float, gasto: float, colonos: int, soles: flo
 	var c := UI.columna(4)
 	f.add_child(UI.expandir(c))
 	c.add_child(UI.etiqueta_pixel(Cabina.mayus(nombre), UI.T_TEXTO))
-	var detalle := "GASTO %s%s/SOL" % [UI.num(gasto), Cabina.mayus(u)]
+	var detalle := Idioma.t("GASTO %s%s/SOL") % [UI.num(gasto), Cabina.mayus(u)]
 	if gasto > 0.0:
-		detalle += " · %s POR COLONO" % UI.num(gasto / colonos)
+		detalle += Idioma.t(" · %s POR COLONO") % UI.num(gasto / colonos)
 	c.add_child(UI.etiqueta_pixel(detalle, UI.T_DETALLE, UI.TEXTO_SUAVE))
 	var cantidad := UI.etiqueta_pixel("%s%s" % [UI.num(valor), u], UI.T_TEXTO)
 	cantidad.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -144,12 +144,12 @@ func _racionamiento() -> Control:
 	var racion := EstadoJuego.almacen.racion
 	var aviso := ""
 	if EstadoJuego.almacen.racion_debilita():
-		aviso = "Tripulación debilitada"
-	c.add_child(Cabina.encabezado("Racionamiento", -1, aviso))
+		aviso = Idioma.t("Tripulación debilitada")
+	c.add_child(Cabina.encabezado(Idioma.t("Racionamiento"), -1, aviso))
 	var f := UI.fila(6)
 	c.add_child(f)
 	for nivel: Enums.Racion in [Enums.Racion.ABUNDANTE, Enums.Racion.NORMAL, Enums.Racion.ESTRICTA]:
-		var b := Cabina.boton_opcion(Enums.NOMBRE_RACION[nivel], EstadoJuego.almacen.fijar_racion.bind(nivel), racion == nivel)
+		var b := Cabina.boton_opcion(Idioma.t(Enums.NOMBRE_RACION[nivel]), EstadoJuego.almacen.fijar_racion.bind(nivel), racion == nivel)
 		b.tooltip_text = DESCRIPCION_RACION[nivel]
 		f.add_child(UI.expandir(b))
 	var color := UI.ADVERTENCIA if racion == Enums.Racion.ESTRICTA else UI.TEXTO_SUAVE
@@ -163,7 +163,7 @@ func _cocina() -> Control:
 	var recetas: Array = EstadoJuego.datos_balance.recetas
 	var c := UI.columna(6)
 	var listas := recetas.filter(func(r: Dictionary) -> bool: return EstadoJuego.almacen.falta_para_receta(r) == "").size()
-	c.add_child(Cabina.encabezado("Cocina", recetas.size(), "%d se pueden cocinar" % listas))
+	c.add_child(Cabina.encabezado(Idioma.t("Cocina"), recetas.size(), Idioma.t("%d se pueden cocinar") % listas))
 	# Sin scroll y sin estirarse: mide lo que sus recetas, y el resto del alto
 	# queda para los pedidos.
 	var pantalla := Cabina.pantalla()
@@ -189,7 +189,7 @@ func _tarjeta_receta(receta: Dictionary) -> Control:
 	var nombre := Cabina.recortada(Cabina.mayus(receta["nombre"]))
 	nombre.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	cabecera.add_child(UI.expandir(nombre))
-	var boton := Cabina.boton("Cocinar" if falta == "" else falta,
+	var boton := Cabina.boton(Idioma.t("Cocinar") if falta == "" else falta,
 		func() -> void: EstadoJuego.almacen.cocinar(receta), falta == "")
 	boton.custom_minimum_size = Vector2(90, 0)
 	cabecera.add_child(boton)
@@ -197,12 +197,12 @@ func _tarjeta_receta(receta: Dictionary) -> Control:
 	var ingredientes := HFlowContainer.new()
 	ingredientes.add_theme_constant_override("h_separation", 6)
 	ingredientes.add_theme_constant_override("v_separation", 4)
-	ingredientes.add_child(Cabina.pildora("%s KG COMIDA" % UI.num(receta["comida"]), UI.TEXTO_SUAVE, false))
-	ingredientes.add_child(Cabina.pildora("%s L AGUA" % UI.num(receta["agua"]), UI.TEXTO_SUAVE, false))
+	ingredientes.add_child(Cabina.pildora(Idioma.t("%s KG COMIDA") % UI.num(receta["comida"]), UI.TEXTO_SUAVE, false))
+	ingredientes.add_child(Cabina.pildora(Idioma.t("%s L AGUA") % UI.num(receta["agua"]), UI.TEXTO_SUAVE, false))
 	var flecha := UI.etiqueta_pixel(">", UI.T_DETALLE, UI.TEXTO_SUAVE)
 	flecha.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	ingredientes.add_child(flecha)
-	ingredientes.add_child(Cabina.pildora("%s KG RACIONES" % UI.num(receta["raciones"]), Cabina.VERDE, false))
+	ingredientes.add_child(Cabina.pildora(Idioma.t("%s KG RACIONES") % UI.num(receta["raciones"]), Cabina.VERDE, false))
 	c.add_child(ingredientes)
 	return tarjeta
 
@@ -214,15 +214,15 @@ func _pedidos() -> Control:
 	var envios := EstadoJuego.tierra.envios
 	var c := UI.columna(6)
 	c.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	c.add_child(Cabina.encabezado("Pedidos a la Tierra", pedidos.size(),
-		"%d en camino" % envios.size() if not envios.is_empty() else ""))
+	c.add_child(Cabina.encabezado(Idioma.t("Pedidos a la Tierra"), pedidos.size(),
+		Idioma.t("%d en camino") % envios.size() if not envios.is_empty() else ""))
 	var pantalla := Cabina.pantalla()
 	c.add_child(pantalla)
 	var lista := UI.columna(6)
 	for pedido: Dictionary in pedidos:
 		lista.add_child(_tarjeta_pedido(pedido))
 	if not envios.is_empty():
-		lista.add_child(Cabina.separador("En camino", envios.size()))
+		lista.add_child(Cabina.separador(Idioma.t("En camino"), envios.size()))
 		for envio: Dictionary in envios:
 			lista.add_child(_fila_envio(envio))
 	pantalla.add_child(vista_con_scroll(Cabina.con_margen_scroll(lista)))
@@ -232,7 +232,7 @@ func _pedidos() -> Control:
 func _texto_contenido(contenido_envio: Dictionary) -> String:
 	var partes := PackedStringArray()
 	for recurso: String in contenido_envio:
-		partes.append("%s %s" % [UI.cantidad(recurso, contenido_envio[recurso]), Enums.NOMBRE_RECURSO[recurso]])
+		partes.append("%s %s" % [UI.cantidad(recurso, contenido_envio[recurso]), Idioma.t(Enums.NOMBRE_RECURSO[recurso])])
 	return ", ".join(partes)
 
 
@@ -245,18 +245,18 @@ func _tarjeta_pedido(pedido: Dictionary) -> Control:
 	f.add_child(UI.expandir(c))
 	c.add_child(Cabina.recortada(Cabina.mayus(pedido["nombre"])))
 	c.add_child(UI.parrafo(_texto_contenido(pedido["contenido"]), 12, Cabina.VERDE))
-	var boton := Cabina.boton("Pedir %s" % UI.dinero(pedido["dinero"]), func() -> void:
-		interfaz.confirmar("Pedido a la Tierra", "%s por %s.\nPor la latencia del viaje llegará en %d soles." % [
-			pedido["nombre"], UI.dinero(pedido["dinero"]), pedido["soles"]], EstadoJuego.tierra.pedir.bind(pedido)),
+	var boton := Cabina.boton(Idioma.t("Pedir %s") % UI.dinero(pedido["dinero"]), func() -> void:
+		interfaz.confirmar(Idioma.t("Pedido a la Tierra"), Idioma.t("%s por %s.\nPor la latencia del viaje llegará en %d soles.") % [
+			Idioma.t(pedido["nombre"]), UI.dinero(pedido["dinero"]), pedido["soles"]], EstadoJuego.tierra.pedir.bind(pedido)),
 		alcanza)
 	boton.custom_minimum_size = Vector2(110, 0)
 	if not alcanza:
-		boton.tooltip_text = "No alcanza el presupuesto"
+		boton.tooltip_text = Idioma.t("No alcanza el presupuesto")
 		boton.mouse_filter = Control.MOUSE_FILTER_PASS
 	var derecha := UI.columna(4)
 	derecha.alignment = BoxContainer.ALIGNMENT_CENTER
 	derecha.add_child(boton)
-	derecha.add_child(Cabina.centrada("LLEGA EN %s" % Cabina.mayus(UI.soles(pedido["soles"])), UI.TEXTO_SUAVE, UI.T_DETALLE))
+	derecha.add_child(Cabina.centrada(Idioma.t("LLEGA EN %s") % Cabina.mayus(UI.soles(pedido["soles"])), UI.TEXTO_SUAVE, UI.T_DETALLE))
 	f.add_child(derecha)
 	return tarjeta
 

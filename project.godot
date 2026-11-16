@@ -35,6 +35,11 @@ window/size/mode=2
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://traducciones/en.po")
+locale/fallback="es"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

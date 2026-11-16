@@ -127,9 +127,9 @@ func _reloj() -> Control:
 	Tooltips.registrar(c, func() -> Dictionary:
 		var segundos: float = (1.0 - GestorTiempo.progreso_sol) * EstadoJuego.datos_balance.segundos_por_sol
 		return { "titulo": "Sol %d" % GestorTiempo.sol_actual,
-			"texto": "Un sol es un día marciano: en Marte dura 24 horas y 39 minutos; en el juego, %d segundos de juego.\nEste sol termina en %d segundos de juego%s.\nAl terminar cada sol se consume, se produce y avanzan las tareas." % [
+			"texto": Idioma.t("Un sol es un día marciano: en Marte dura 24 horas y 39 minutos; en el juego, %d segundos de juego.\nEste sol termina en %d segundos de juego%s.\nAl terminar cada sol se consume, se produce y avanzan las tareas.") % [
 				int(EstadoJuego.datos_balance.segundos_por_sol), ceili(segundos),
-				" (vas a x%d)" % GestorTiempo.velocidad if GestorTiempo.velocidad > 1 else ""] })
+				Idioma.t(" (vas a x%d)") % GestorTiempo.velocidad if GestorTiempo.velocidad > 1 else ""] })
 	return c
 
 
@@ -139,13 +139,13 @@ func _controles_tiempo() -> Control:
 	var f := UI.fila(6)
 	f.alignment = BoxContainer.ALIGNMENT_CENTER
 	boton_pausa = UI.boton_pixel("II", func() -> void: GestorTiempo.en_pausa = true, false, UI.T_TEXTO)
-	boton_pausa.tooltip_text = "Pausar (Espacio)"
+	boton_pausa.tooltip_text = Idioma.t("Pausar (Espacio)")
 	boton_reanudar = UI.boton_pixel("▶", func() -> void: GestorTiempo.en_pausa = false, false, UI.T_TEXTO)
-	boton_reanudar.tooltip_text = "Reanudar (Espacio)"
+	boton_reanudar.tooltip_text = Idioma.t("Reanudar (Espacio)")
 	for v: int in [2, 4]:
 		var b := UI.boton_pixel("x%d" % v, func() -> void:
 			GestorTiempo.velocidad = 1 if GestorTiempo.velocidad == v else v, false, UI.T_TEXTO)
-		b.tooltip_text = "Doble velocidad" if v == 2 else "Velocidad x4"
+		b.tooltip_text = Idioma.t("Doble velocidad") if v == 2 else Idioma.t("Velocidad x4")
 		botones_velocidad[v] = b
 	for b: Button in [boton_pausa, boton_reanudar] + botones_velocidad.values():
 		b.custom_minimum_size = Vector2(30, 30)
@@ -216,10 +216,10 @@ func _crear_panel_donki() -> void:
 
 ## Tooltip del indicador DONKI: de dónde salen los datos y qué es DONKI.
 func _contenido_donki() -> Dictionary:
-	var texto := "Datos del Sol: %s.\nLos eventos del Sol del juego (llamaradas, nubes de plasma, lluvias de partículas y tormentas magnéticas) son reales y vienen de NASA DONKI." % ServicioNasa.texto_origen()
+	var texto := Idioma.t("Datos del Sol: %s.\nLos eventos del Sol del juego (llamaradas, nubes de plasma, lluvias de partículas y tormentas magnéticas) son reales y vienen de NASA DONKI.") % ServicioNasa.texto_origen()
 	if not ServicioNasa.en_vivo():
-		texto += "\nAhora no hay conexión con la NASA: se usan los últimos datos guardados o el archivo del juego."
-	return { "titulo": "NASA DONKI", "texto": texto, "pie": "Clic en > para ver el estado" }
+		texto += Idioma.t("\nAhora no hay conexión con la NASA: se usan los últimos datos guardados o el archivo del juego.")
+	return { "titulo": "NASA DONKI", "texto": texto, "pie": Idioma.t("Clic en > para ver el estado") }
 
 
 func _alternar_donki() -> void:
@@ -249,8 +249,8 @@ func mostrar_modo_normal(normal: bool) -> void:
 		b.disabled = not normal
 		b.mouse_filter = Control.MOUSE_FILTER_STOP if normal else Control.MOUSE_FILTER_IGNORE
 	# En modo construcción el mismo botón sirve para salir: dice Cancelar.
-	etiqueta_construir.text = "Construir" if normal else "Cancelar"
-	botones["construir"].tooltip_text = "Construir (B)" if normal else "Salir del modo construcción (B o Esc)"
+	etiqueta_construir.text = Idioma.t("Construir") if normal else Idioma.t("Cancelar")
+	botones["construir"].tooltip_text = Idioma.t("Construir (B)") if normal else Idioma.t("Salir del modo construcción (B o Esc)")
 
 
 ## HU-08 y HU-09: arriba a la derecha, el clima espacial (tormenta solar en
@@ -261,14 +261,14 @@ func _actualizar_panel_tierra() -> void:
 		hijo.queue_free()
 	var lineas: Array[Label] = []
 	if EstadoJuego.eventos.tormenta_activa():
-		lineas.append(UI.etiqueta_pixel("TORMENTA SOLAR: " + UI.soles(EstadoJuego.eventos.tormenta_soles), 8, UI.CRITICO))
+		lineas.append(UI.etiqueta_pixel(Idioma.t("TORMENTA SOLAR: ") + UI.soles(EstadoJuego.eventos.tormenta_soles), 8, UI.CRITICO))
 	var nube := EstadoJuego.clima.tormenta_pendiente
 	if not nube.is_empty():
-		lineas.append(UI.etiqueta_pixel("NUBE DEL SOL: llega en " + UI.soles(nube["soles"]), 8, UI.ADVERTENCIA))
+		lineas.append(UI.etiqueta_pixel(Idioma.t("NUBE DEL SOL: llega en ") + UI.soles(nube["soles"]), 8, UI.ADVERTENCIA))
 	if not EstadoJuego.tierra.envios.is_empty():
-		lineas.append(UI.etiqueta_pixel("DESDE LA TIERRA", 8, UI.TEXTO_SUAVE))
+		lineas.append(UI.etiqueta_pixel(Idioma.t("DESDE LA TIERRA"), 8, UI.TEXTO_SUAVE))
 	for envio: Dictionary in EstadoJuego.tierra.envios:
-		lineas.append(UI.etiqueta_pixel("%s · %s" % [envio["nombre"], UI.soles(envio["soles"])]))
+		lineas.append(UI.etiqueta_pixel("%s · %s" % [Idioma.t(envio["nombre"]), UI.soles(envio["soles"])]))
 	for linea in lineas:
 		panel_tierra.add_child(linea)
 	panel_tierra.get_parent().visible = not lineas.is_empty()

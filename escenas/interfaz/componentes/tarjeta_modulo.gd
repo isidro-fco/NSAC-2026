@@ -76,16 +76,16 @@ const DESCRIPCION := {
 func contenido_tooltip() -> Dictionary:
 	var lineas := PackedStringArray()
 	if DESCRIPCION.has(datos.id):
-		lineas.append(DESCRIPCION[datos.id])
-	lineas.append("Ocupa %dx%d casillas. Cuesta %s y %d materiales." % [datos.tam.x, datos.tam.y,
+		lineas.append(Idioma.t(DESCRIPCION[datos.id]))
+	lineas.append(Idioma.t("Ocupa %dx%d casillas. Cuesta %s y %d materiales.") % [datos.tam.x, datos.tam.y,
 		UI.dinero(datos.dinero), datos.materiales])
 	for linea: Array in lineas_energia_y_produccion(datos):
 		lineas.append(linea[0])
 	var e := EstadoJuego.economia
 	var despues: float = e.balance("energia") + datos.produce.get("energia", 0.0) - datos.consumo_kw
 	if datos.consumo_kw > 0.0 or datos.produce.has("energia"):
-		lineas.append("Con él, la energía quedaría en %s." % UI.kw(despues, true))
-	var falta := "" if not disabled else "No alcanza el presupuesto o los materiales."
+		lineas.append(Idioma.t("Con él, la energía quedaría en %s.") % UI.kw(despues, true))
+	var falta := "" if not disabled else Idioma.t("No alcanza el presupuesto o los materiales.")
 	return { "titulo": datos.nombre, "texto": "\n".join(lineas), "sugerencia": falta }
 
 
@@ -95,15 +95,15 @@ static func lineas_energia_y_produccion(d: DatosModulo) -> Array:
 	var lineas := []
 	var produce_kw: float = d.produce.get("energia", 0.0)
 	if produce_kw > 0.0:
-		lineas.append(["Produce %s" % UI.kw(produce_kw), UI.BIEN])
+		lineas.append([Idioma.t("Produce %s") % UI.kw(produce_kw), UI.BIEN])
 	elif d.consumo_kw > 0.0:
-		lineas.append(["Consume %s" % UI.kw(d.consumo_kw), UI.ADVERTENCIA])
+		lineas.append([Idioma.t("Consume %s") % UI.kw(d.consumo_kw), UI.ADVERTENCIA])
 	const CORTO := { "oxigeno": "O2", "agua": "agua", "comida": "comida", "materiales": "mat." }
 	for recurso: String in d.produce:
 		if recurso != "energia":
 			var unidad: String = UI.UNIDAD.get(recurso, "")
 			lineas.append(["+%s%s %s/sol" % [UI.num(d.produce[recurso]), " " + unidad if unidad != "" else "",
-				CORTO.get(recurso, recurso)], UI.TEXTO_SUAVE])
+				Idioma.t(CORTO.get(recurso, recurso))], UI.TEXTO_SUAVE])
 	if d.nota_produccion != "":
 		lineas.append([d.nota_produccion, UI.TEXTO_SUAVE])
 	return lineas

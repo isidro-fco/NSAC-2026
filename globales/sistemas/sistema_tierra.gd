@@ -26,7 +26,7 @@ func pedir(pedido: Dictionary) -> void:
 	if EstadoJuego.economia.puede_pagar(pedido["dinero"], 0):
 		EstadoJuego.economia.pagar(pedido["dinero"], 0)
 		enviar(pedido["nombre"], pedido["soles"], pedido["contenido"])
-		EstadoJuego.registrar(Enums.Categoria.ACCION, "Pedido a la Tierra: %s (llega en %d soles)" % [pedido["nombre"], pedido["soles"]])
+		EstadoJuego.registrar(Enums.Categoria.ACCION, Idioma.t("Pedido a la Tierra: %s (llega en %d soles)") % [Idioma.t(pedido["nombre"]), pedido["soles"]])
 		EstadoJuego.curiosidades.disparar("pedido:enviado")
 
 
@@ -37,7 +37,7 @@ func retrasar(soles: int) -> void:
 		if envio["colono"] != null:
 			envio["colono"].soles_restantes = envio["soles"]
 	if not envios.is_empty():
-		EstadoJuego.registrar(Enums.Categoria.EVENTO, "Los envíos de la Tierra se retrasan %s" % UI.soles(soles), false)
+		EstadoJuego.registrar(Enums.Categoria.EVENTO, Idioma.t("Los envíos de la Tierra se retrasan %s") % UI.soles(soles), false)
 
 
 ## Se llama una vez por sol: acerca los envíos, entrega los que llegan y
@@ -53,8 +53,8 @@ func avanzar() -> void:
 	soles_para_transferencia -= 1
 	if soles_para_transferencia <= 0:
 		soles_para_transferencia = datos.transferencia_cada
-		enviar("Transferencia de fondos", datos.transferencia_soles, { "presupuesto": datos.transferencia_dinero })
-		EstadoJuego.registrar(Enums.Categoria.EVENTO, "La Tierra aprobó una transferencia de %s (llegará en %d soles)" % [
+		enviar(Idioma.t("Transferencia de fondos"), datos.transferencia_soles, { "presupuesto": datos.transferencia_dinero })
+		EstadoJuego.registrar(Enums.Categoria.EVENTO, Idioma.t("La Tierra aprobó una transferencia de %s (llegará en %d soles)") % [
 			UI.dinero(datos.transferencia_dinero), datos.transferencia_soles])
 
 
@@ -66,11 +66,11 @@ func _entregar(envio: Dictionary) -> void:
 	for recurso: String in envio["contenido"]:
 		var cantidad: float = envio["contenido"][recurso]
 		var entra := EstadoJuego.economia.sumar(recurso, cantidad)
-		var texto := "+%s %s" % [UI.cantidad(recurso, entra), Enums.NOMBRE_RECURSO[recurso]]
+		var texto := "+%s %s" % [UI.cantidad(recurso, entra), Idioma.t(Enums.NOMBRE_RECURSO[recurso])]
 		if entra < cantidad:
-			texto += " (%s no cupieron en el almacén)" % UI.cantidad(recurso, cantidad - entra)
+			texto += Idioma.t(" (%s no cupieron en el almacén)") % UI.cantidad(recurso, cantidad - entra)
 		partes.append(texto)
-	EstadoJuego.registrar(Enums.Categoria.EVENTO, "Llegó desde la Tierra: %s: %s" % [envio["nombre"], ", ".join(partes)])
+	EstadoJuego.registrar(Enums.Categoria.EVENTO, Idioma.t("Llegó desde la Tierra: %s: %s") % [Idioma.t(envio["nombre"]), ", ".join(partes)])
 	# El dinero llega por transferencia; lo demás baja en una nave de carga.
 	if envio["contenido"].keys().any(func(recurso: String) -> bool: return recurso != "presupuesto"):
 		EstadoJuego.suministros_recibidos.emit(envio["nombre"], envio["contenido"])

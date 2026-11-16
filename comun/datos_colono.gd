@@ -27,7 +27,7 @@ const TONOS_PIEL: Array[Color] = [
 
 
 func _init(nombre_inicial: String, rol_inicial: Enums.Rol, retrato_inicial := "") -> void:
-	nombre = nombre_inicial
+	nombre = Idioma.t(nombre_inicial)     # en inglés, su nombre estadounidense (ver en.po)
 	rol = rol_inicial
 	retrato = retrato_inicial
 

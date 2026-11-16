@@ -33,7 +33,7 @@ func es_crater() -> bool:
 
 
 func nombre() -> String:
-	return "Obstáculo natural"
+	return Idioma.t("Obstáculo natural")
 
 
 func _draw() -> void:

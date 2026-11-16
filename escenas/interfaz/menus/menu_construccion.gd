@@ -43,11 +43,11 @@ func actualizar() -> void:
 	var demoliendo := mapa.modo == Enums.ModoMapa.DEMOLICION
 	var economia := EstadoJuego.economia
 
-	var titulo := UI.etiqueta_pixel("CONSTRUCCION", UI.T_TEXTO + 4)
+	var titulo := UI.etiqueta_pixel(Idioma.t("CONSTRUCCION"), UI.T_TEXTO + 4)
 	titulo.custom_minimum_size = Vector2(0, 24)
 	titulo.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	contenido.add_child(titulo)
-	var opciones: Array[String] = ["CONSTRUIR", "DEMOLER"]
+	var opciones: Array[String] = [Idioma.t("CONSTRUIR"), Idioma.t("DEMOLER")]
 	var colores: Array[Color] = [UI.ACENTO, UI.CRITICO]
 	var interruptor := InterruptorPixel.new(opciones, colores, 1 if demoliendo else 0)
 	interruptor.cambiado.connect(func(i: int) -> void:
@@ -55,14 +55,14 @@ func actualizar() -> void:
 	contenido.add_child(interruptor)
 
 	if demoliendo:
-		contenido.add_child(Cabina.encabezado("Demolición"))
+		contenido.add_child(Cabina.encabezado(Idioma.t("Demolición")))
 		var pantalla := Cabina.pantalla(10)
 		var ayuda := UI.columna(14)
-		var aviso := Cabina.pildora("MODO DEMOLICION", UI.CRITICO)
+		var aviso := Cabina.pildora(Idioma.t("MODO DEMOLICION"), UI.CRITICO)
 		aviso.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		ayuda.add_child(aviso)
 		for texto: String in ["Señala un módulo construido o un obstáculo y haz clic para demolerlo.",
-				"Los módulos iniciales no se pueden demoler."]:
+				Idioma.t("Los módulos iniciales no se pueden demoler.")]:
 			var linea := UI.etiqueta_pixel(Cabina.mayus(texto), UI.T_DETALLE, UI.TEXTO_SUAVE)
 			linea.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			linea.add_theme_constant_override("line_spacing", 4)
@@ -74,7 +74,7 @@ func actualizar() -> void:
 		var alcanzables := catalogo.filter(func(id: String) -> bool:
 			var d := DatosModulo.obtener(id)
 			return economia.puede_pagar(d.dinero, d.materiales)).size()
-		contenido.add_child(Cabina.encabezado("Módulos", catalogo.size(), "%d al alcance" % alcanzables))
+		contenido.add_child(Cabina.encabezado(Idioma.t("Módulos"), catalogo.size(), Idioma.t("%d al alcance") % alcanzables))
 		var pantalla := Cabina.pantalla(4)
 		var lista := UI.columna(6)
 		for id: String in catalogo:

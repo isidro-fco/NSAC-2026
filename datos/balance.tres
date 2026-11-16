@@ -175,6 +175,74 @@ tareas = [{
 "rol": 3,
 "soles": 2,
 "titulo": "Enviar informe a la Tierra"
+}, {
+"exterior": false,
+"id": "calibrar_oxigeno",
+"modulo": "soporte_vital",
+"radiacion": 0.0,
+"recompensa": {
+"oxigeno": 30.0
+},
+"rol": 2,
+"soles": 2,
+"titulo": "Calibrar el generador de oxígeno"
+}, {
+"exterior": false,
+"id": "mantener_perforadora",
+"modulo": "perforadora",
+"radiacion": 0.0,
+"recompensa": {
+"agua": 40.0
+},
+"rol": 0,
+"soles": 2,
+"titulo": "Dar mantenimiento a la perforadora"
+}, {
+"exterior": false,
+"id": "nucleos_hielo",
+"modulo": "perforadora",
+"radiacion": 0.0,
+"recompensa": {
+"investigacion": 20.0,
+"presupuesto": 120.0
+},
+"rol": 3,
+"soles": 3,
+"titulo": "Analizar núcleos de hielo"
+}, {
+"exterior": false,
+"id": "imprimir_repuestos",
+"modulo": "taller",
+"radiacion": 0.0,
+"recompensa": {
+"materiales": 15.0
+},
+"rol": 0,
+"soles": 2,
+"titulo": "Imprimir repuestos en 3D"
+}, {
+"exterior": false,
+"id": "sembrar_bandejas",
+"modulo": "agricultura",
+"radiacion": 0.0,
+"recompensa": {
+"comida": 26.0
+},
+"rol": 1,
+"soles": 3,
+"titulo": "Sembrar nuevas bandejas"
+}, {
+"exterior": false,
+"id": "medir_blindaje",
+"modulo": "refugio",
+"radiacion": 0.0,
+"recompensa": {
+"investigacion": 15.0,
+"presupuesto": 100.0
+},
+"rol": 3,
+"soles": 2,
+"titulo": "Medir la radiación dentro del refugio"
 }]
 fraccion_coste_demoler = 0.25
 catalogo = ["soporte_vital", "agricultura", "energia", "perforadora", "taller", "refugio", "pasillo"]

@@ -435,17 +435,17 @@ func _pedir_construccion(origen: Vector2i) -> void:
 	origen_fijado = origen
 	capa.queue_redraw()
 	var filas := [
-		UI.fila_cambio("Presupuesto", "presupuesto", -d.dinero),
-		UI.fila_cambio("Materiales", "materiales", -d.materiales),
+		UI.fila_cambio(Idioma.t("Presupuesto"), "presupuesto", -d.dinero),
+		UI.fila_cambio(Idioma.t("Materiales"), "materiales", -d.materiales),
 	]
 	var economia := EstadoJuego.economia
 	var cambio_kw: float = d.produce.get("energia", 0.0) - d.consumo_kw
 	if cambio_kw != 0.0:
 		var antes := economia.balance("energia")
-		filas.append([("Energía producida" if cambio_kw > 0.0 else "Energía que gasta"), UI.kw(cambio_kw, true),
-			"balance %s a %s" % [UI.kw(antes, true), UI.kw(antes + cambio_kw, true)]])
-	confirmacion_pedida.emit("¿Construir %s?" % d.nombre, "Ocupa %dx%d casillas" % [d.tam.x, d.tam.y],
-		construir.bind(d, origen), filas, "Construir", false)
+		filas.append([(Idioma.t("Energía producida") if cambio_kw > 0.0 else Idioma.t("Energía que gasta")), UI.kw(cambio_kw, true),
+			Idioma.t("balance %s a %s") % [UI.kw(antes, true), UI.kw(antes + cambio_kw, true)]])
+	confirmacion_pedida.emit(Idioma.t("¿Construir %s?") % d.nombre, Idioma.t("Ocupa %dx%d casillas") % [d.tam.x, d.tam.y],
+		construir.bind(d, origen), filas, Idioma.t("Construir"), false)
 
 
 func construir(d: DatosModulo, origen: Vector2i) -> void:
@@ -457,7 +457,7 @@ func construir(d: DatosModulo, origen: Vector2i) -> void:
 	GestorAudio.reproducir("poner_modulo")
 	EstadoJuego.modulos_construidos += 1
 	if not d.es_pasillo():
-		EstadoJuego.registrar(Enums.Categoria.ACCION, "Construido: %s" % d.nombre, false)
+		EstadoJuego.registrar(Enums.Categoria.ACCION, Idioma.t("Construido: %s") % d.nombre, false)
 	_mapa_modificado()
 	# Los pasillos se trazan por tramos: se sigue colocando mientras alcance.
 	if modo == Enums.ModoMapa.COLOCANDO \
@@ -468,18 +468,18 @@ func construir(d: DatosModulo, origen: Vector2i) -> void:
 func _pedir_demolicion(objetivo: ElementoMapa) -> void:
 	var coste := objetivo.coste_demoler()
 	if not EstadoJuego.economia.puede_pagar(coste, 0):
-		aviso_pedido.emit("No hay dinero para la demolición")
+		aviso_pedido.emit(Idioma.t("No hay dinero para la demolición"))
 		return
-	var filas := [UI.fila_cambio("Costo del trabajo", "presupuesto", -coste)]
+	var filas := [UI.fila_cambio(Idioma.t("Costo del trabajo"), "presupuesto", -coste)]
 	if objetivo.materiales_al_demoler() > 0:
-		filas.append(UI.fila_cambio("Materiales obtenidos", "materiales", objetivo.materiales_al_demoler()))
-	confirmacion_pedida.emit(_titulo_demolicion(objetivo), objetivo.nombre(), demoler.bind(objetivo), filas, "Demoler", true)
+		filas.append(UI.fila_cambio(Idioma.t("Materiales obtenidos"), "materiales", objetivo.materiales_al_demoler()))
+	confirmacion_pedida.emit(_titulo_demolicion(objetivo), objetivo.nombre(), demoler.bind(objetivo), filas, Idioma.t("Demoler"), true)
 
 
 func _titulo_demolicion(objetivo: ElementoMapa) -> String:
 	if objetivo is Obstaculo:
-		return "¿Allanar este cráter?" if (objetivo as Obstaculo).es_crater() else "¿Excavar esta roca?"
-	return "¿Demoler este módulo?"
+		return Idioma.t("¿Allanar este cráter?") if (objetivo as Obstaculo).es_crater() else Idioma.t("¿Excavar esta roca?")
+	return Idioma.t("¿Demoler este módulo?")
 
 
 func demoler(objetivo: ElementoMapa) -> void:
@@ -487,7 +487,7 @@ func demoler(objetivo: ElementoMapa) -> void:
 		return
 	EstadoJuego.economia.pagar(objetivo.coste_demoler(), 0)
 	GestorAudio.reproducir("quitar_piedra" if objetivo is Obstaculo else "quitar_modulo")
-	EstadoJuego.registrar(Enums.Categoria.ACCION, "Demolido: %s" % objetivo.nombre(), false)
+	EstadoJuego.registrar(Enums.Categoria.ACCION, Idioma.t("Demolido: %s") % objetivo.nombre(), false)
 	cuadricula.liberar(objetivo.origen, objetivo.tam_celdas())
 	if objetivo is Modulo:
 		EstadoJuego.economia.quitar_modulo((objetivo as Modulo).datos.id)
@@ -557,7 +557,7 @@ func _actualizar_objetivo_demoler() -> void:
 		var extra := ""
 		if objetivo.materiales_al_demoler() > 0:
 			extra = "  +%d mat." % objetivo.materiales_al_demoler()
-		etiqueta_demolicion.emit("Demoler: %s%s" % [UI.dinero(objetivo.coste_demoler()), extra])
+		etiqueta_demolicion.emit(Idioma.t("Demoler: %s%s") % [UI.dinero(objetivo.coste_demoler()), extra])
 	if objetivo != objetivo_demoler:
 		objetivo_demoler = objetivo
 		capa.queue_redraw()

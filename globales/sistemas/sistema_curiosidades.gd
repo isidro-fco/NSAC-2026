@@ -25,5 +25,5 @@ func disparar(disparador: String) -> void:
 			mostradas[dato["id"]] = true
 			EstadoJuego.curiosidad_nueva.emit(dato)
 			# Queda en la página "Curiosidad" de la bitácora (clic en la tarjeta lleva ahí).
-			EstadoJuego.registrar(Enums.Categoria.CURIOSIDAD, "%s: %s" % [dato["titulo"], dato["texto"]], false, { "dato": dato })
+			EstadoJuego.registrar(Enums.Categoria.CURIOSIDAD, "%s: %s" % [Idioma.t(dato["titulo"]), Idioma.t(dato["texto"])], false, { "dato": dato })
 			return

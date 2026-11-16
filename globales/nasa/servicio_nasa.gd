@@ -35,7 +35,8 @@ const PAGINA_DONKI := "https://ccmc.gsfc.nasa.gov/DONKI/"
 
 var origen := Origen.ARCHIVO
 var eventos: Array[Dictionary] = []
-var nombre_archivo := ""              # p. ej. "Tormentas solares de mayo de 2024"
+var nombre_archivo := ""              # p. ej. "Tormentas solares de mayo de 2024" (archivo curado)
+var rango_archivo: Array[String] = [] # [desde, hasta] (AAAA-MM-DD) del archivo descargado de DONKI
 var fecha_datos := ""                 # día de la consulta o de la descarga (AAAA-MM-DD)
 var archivo_de_donki := false         # false: archivo curado a mano (no viene de DONKI)
 var consultando := false
@@ -52,23 +53,24 @@ func _ready() -> void:
 func texto_origen() -> String:
 	match origen:
 		Origen.EN_VIVO:
-			return "NASA DONKI · en vivo (consultado hoy)"
+			return Idioma.t("NASA DONKI · en vivo (consultado hoy)")
 		Origen.GUARDADO:
-			return "NASA DONKI · guardado el %s" % Donki.fecha_texto(fecha_datos)
+			return Idioma.t("NASA DONKI · guardado el %s") % Donki.fecha_texto(fecha_datos)
 	if archivo_de_donki:
-		return "NASA DONKI · archivo: %s" % nombre_archivo
-	return "Eventos reales · archivo: %s" % nombre_archivo
+		return Idioma.t("NASA DONKI · archivo: %s") % (Idioma.t("%s a %s") % [
+			Donki.fecha_texto(rango_archivo[0]), Donki.fecha_texto(rango_archivo[1])])
+	return Idioma.t("Eventos reales · archivo: %s") % Idioma.t(nombre_archivo)
 
 
 ## Versión corta para el indicador plegable de abajo a la izquierda.
 func texto_corto() -> String:
 	match origen:
 		Origen.EN_VIVO:
-			return "en vivo · consultado hoy"
+			return Idioma.t("en vivo · consultado hoy")
 		Origen.GUARDADO:
 			var p := fecha_datos.split("-")
-			return "guardado el %s/%s/%s" % [p[2], p[1], p[0]] if p.size() == 3 else "guardado"
-	return "sin conexión · archivo"
+			return Idioma.t("guardado el %s/%s/%s") % [p[2], p[1], p[0]] if p.size() == 3 else Idioma.t("guardado")
+	return Idioma.t("sin conexión · archivo")
 
 
 func en_vivo() -> bool:
@@ -180,7 +182,7 @@ func _cargar_archivo() -> void:
 			eventos.append_array(Donki.normalizar(tipo, descargado.get(tipo, [])))
 		var meta: Dictionary = descargado.get("meta", {})
 		fecha_datos = str(meta.get("descargado", ""))
-		nombre_archivo = "%s a %s" % [Donki.fecha_texto(str(meta.get("desde", ""))), Donki.fecha_texto(str(meta.get("hasta", "")))]
+		rango_archivo = [str(meta.get("desde", "")), str(meta.get("hasta", ""))]
 		return
 	archivo_de_donki = false
 	var curado := _leer_json(ARCHIVO_CURADO)

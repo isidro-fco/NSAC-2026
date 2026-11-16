@@ -128,11 +128,12 @@ func _crear(dato: Dictionary) -> Dictionary:
 	panel.mouse_exited.connect(func() -> void: panel.add_theme_stylebox_override("panel", normal))
 	var c := UI.columna(6)
 	panel.add_child(c)
-	c.add_child(UI.etiqueta_pixel("¿SABIAS QUE...?", UI.T_DETALLE, UI.BIEN))
-	c.add_child(UI.etiqueta_pixel(dato["titulo"], UI.T_TEXTO, UI.ADVERTENCIA))
+	c.add_child(UI.etiqueta_pixel(Idioma.t("¿SABIAS QUE...?"), UI.T_DETALLE, UI.BIEN))
+	c.add_child(UI.etiqueta_pixel(Idioma.t(dato["titulo"]), UI.T_TEXTO, UI.ADVERTENCIA))
 	# resaltar() devuelve "" si el texto no tiene palabras del glosario.
-	var bbcode := EstadoJuego.glosario.resaltar(dato["texto"])
-	var texto := UI.texto_glosario(bbcode if bbcode != "" else str(dato["texto"]).replace("[", "[lb]"), 13, UI.TEXTO)
+	var traducido := Idioma.t(str(dato["texto"]))
+	var bbcode := EstadoJuego.glosario.resaltar(traducido)
+	var texto := UI.texto_glosario(bbcode if bbcode != "" else traducido.replace("[", "[lb]"), 13, UI.TEXTO)
 	texto.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	texto.custom_minimum_size.x = ANCHO - 28.0
 	texto.meta_clicked.connect(func(_id: Variant) -> void: _glosario_ms = Time.get_ticks_msec())
@@ -140,7 +141,7 @@ func _crear(dato: Dictionary) -> Dictionary:
 	var fuente := UI.enlace_fuente(str(dato["fuente"]), str(dato.get("enlace", "")))
 	fuente.custom_minimum_size.x = ANCHO - 28.0
 	c.add_child(fuente)
-	var pie := UI.etiqueta_simple("Clic: ver en la bitácora  ·  Clic derecho: cerrar", 11, Color(UI.BIEN, 0.85))
+	var pie := UI.etiqueta_simple(Idioma.t("Clic: ver en la bitácora  ·  Clic derecho: cerrar"), 11, Color(UI.BIEN, 0.85))
 	pie.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	c.add_child(pie)
 	var barra := ColorRect.new()

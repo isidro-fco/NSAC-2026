@@ -57,7 +57,7 @@ func _init(c: DatosColono, al_enviar_a_tierra := Callable(), inspector := false,
 	for control: Control in [estado_label, radiacion_label, barra]:
 		datos.add_child(control)
 	if al_enviar_a_tierra.is_valid():
-		var enviar := UI.boton("Enviar a la Tierra", al_enviar_a_tierra.bind(c), true, UI.PELIGRO)
+		var enviar := UI.boton(Idioma.t("Enviar a la Tierra"), al_enviar_a_tierra.bind(c), true, UI.PELIGRO)
 		enviar.add_theme_font_size_override("font_size", UI.T_DETALLE)
 		enviar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		f.add_child(enviar)
@@ -81,13 +81,13 @@ func _process(_delta: float) -> void:
 
 
 func _actualizar() -> void:
-	var estado := "%s · %s" % [Enums.NOMBRE_ROL[colono.rol], Enums.NOMBRE_ESTADO_COLONO[colono.estado]]
+	var estado := "%s · %s" % [Idioma.t(Enums.NOMBRE_ROL[colono.rol]), Idioma.t(Enums.NOMBRE_ESTADO_COLONO[colono.estado])]
 	if colono.estado == Enums.EstadoColono.EN_VIAJE:
-		estado += " (llega en %s)" % UI.soles(colono.soles_restantes)
+		estado += Idioma.t(" (llega en %s)") % UI.soles(colono.soles_restantes)
 	elif con_mision and colono.estado == Enums.EstadoColono.EN_MISION:
 		estado += " (%s)" % UI.soles(colono.soles_restantes)
 	if es_inspector:
-		estado += " · %s\n%s" % [colono.actividad, NOMBRE_UBICACION[colono.ubicacion]]
+		estado += " · %s\n%s" % [Idioma.t(colono.actividad), Idioma.t(NOMBRE_UBICACION[colono.ubicacion])]
 	UI.fijar_texto(estado_label, estado)
-	UI.fijar_texto(radiacion_label, "Radiación: %s / %d" % [UI.num(colono.radiacion), int(EstadoJuego.datos_balance.radiacion_max)])
+	UI.fijar_texto(radiacion_label, Idioma.t("Radiación: %s / %d") % [UI.num(colono.radiacion), int(EstadoJuego.datos_balance.radiacion_max)])
 	barra.value = colono.radiacion

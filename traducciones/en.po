@@ -1,0 +1,2492 @@
+# Traducción al inglés de Little Big Steps.
+# msgid: el texto en español tal como está en el código o en los datos; msgstr: el inglés.
+msgid ""
+msgstr ""
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Descansando"
+msgstr "Resting"
+
+msgid "Refugiado"
+msgstr "Sheltered"
+
+msgid "Trabajando"
+msgstr "Working"
+
+msgid "Comiendo"
+msgstr "Eating"
+
+msgid "En tránsito"
+msgstr "In transit"
+
+msgid "+50 % de consumo. Mejora la productividad y acelera la recuperación."
+msgstr "+50 % consumption. Improves productivity and speeds up recovery."
+
+msgid "Consumo balanceado por colono."
+msgstr "Balanced consumption per colonist."
+
+msgid "Mitad de consumo. Tras 3 soles seguidos: debilidad, enfermedad y peor productividad."
+msgstr "Half consumption. After 3 sols in a row: weakness, illness and lower productivity."
+
+msgid "Víveres"
+msgstr "Provisions"
+
+msgid "Materiales"
+msgstr "Materials"
+
+msgid "Presupuesto"
+msgstr "Budget"
+
+msgid "DEPOSITO %d/%d"
+msgstr "STORAGE %d/%d"
+
+msgid "Depósito al máximo"
+msgstr "Storage at maximum"
+
+msgid "Nivel %d: no se puede ampliar más"
+msgstr "Level %d: cannot be expanded further"
+
+msgid "Expandir depósito"
+msgstr "Expand storage"
+
+msgid "+%d kg  ·  %s  ·  %d mat."
+msgstr "+%d kg  ·  %s  ·  %d mat."
+
+msgid "No alcanzan el presupuesto o los materiales"
+msgstr "Not enough budget or materials"
+
+msgid "Ampliar el depósito por %s y %d materiales"
+msgstr "Expand the storage for %s and %d materials"
+
+msgid "Reservas"
+msgstr "Reserves"
+
+msgid "%d colono%s"
+msgstr "%d colonist%s"
+
+msgid "Comida cruda"
+msgstr "Raw food"
+
+msgid "Raciones preparadas"
+msgstr "Prepared rations"
+
+msgid "Agua potable"
+msgstr "Drinking water"
+
+msgid "El soporte vital recicla %s L de agua por sol (el 80 %% de lo que se usa)."
+msgstr "Life support recycles %s L of water per sol (80 %% of what is used)."
+
+msgid "NO SE AGOTA"
+msgstr "NEVER RUNS OUT"
+
+msgid "%s SOLES"
+msgstr "%s SOLS"
+
+msgid "GASTO %s%s/SOL"
+msgstr "USES %s%s/SOL"
+
+msgid " · %s POR COLONO"
+msgstr " · %s PER COLONIST"
+
+msgid "Tripulación debilitada"
+msgstr "Crew weakened"
+
+msgid "Racionamiento"
+msgstr "Rationing"
+
+msgid "Cocina"
+msgstr "Kitchen"
+
+msgid "%d se pueden cocinar"
+msgstr "%d can be cooked"
+
+msgid "Cocinar"
+msgstr "Cook"
+
+msgid "%s KG COMIDA"
+msgstr "%s KG FOOD"
+
+msgid "%s L AGUA"
+msgstr "%s L WATER"
+
+msgid "%s KG RACIONES"
+msgstr "%s KG RATIONS"
+
+msgid "Pedidos a la Tierra"
+msgstr "Orders from Earth"
+
+msgid "%d en camino"
+msgstr "%d on the way"
+
+msgid "En camino"
+msgstr "On the way"
+
+msgid "Pedir %s"
+msgstr "Order %s"
+
+msgid "Pedido a la Tierra"
+msgstr "Order from Earth"
+
+msgid "%s por %s.\nPor la latencia del viaje llegará en %d soles."
+msgstr "%s for %s.\nBecause of travel latency it will arrive in %d sols."
+
+msgid "No alcanza el presupuesto"
+msgstr "Not enough budget"
+
+msgid "LLEGA EN %s"
+msgstr "ARRIVES IN %s"
+
+msgid "Todas"
+msgstr "All"
+
+msgid "Registro"
+msgstr "Log"
+
+msgid "Todavía no hay datos curiosos: aparecen al jugar."
+msgstr "No fun facts yet: they show up as you play."
+
+msgid "Todavía no hay registros."
+msgstr "No entries yet."
+
+msgid "Ver historial de %d soles"
+msgstr "View %d-sol history"
+
+msgid "%s de %s\n%s"
+msgstr "%s of %s\n%s"
+
+msgid "NIVEL %d/%d"
+msgstr "LEVEL %d/%d"
+
+msgid "PRODUCCION x%s"
+msgstr "PRODUCTION x%s"
+
+msgid "SIGUIENTE x%s"
+msgstr "NEXT x%s"
+
+msgid "MAXIMA"
+msgstr "MAXIMUM"
+
+msgid "NIVEL MAXIMO ALCANZADO"
+msgstr "MAXIMUM LEVEL REACHED"
+
+msgid "EL MODULO DE COMANDO YA NO SE PUEDE MEJORAR"
+msgstr "THE COMMAND MODULE CANNOT BE UPGRADED ANY FURTHER"
+
+msgid "MEJORANDO A NIVEL %d"
+msgstr "UPGRADING TO LEVEL %d"
+
+msgid "FALTAN %s"
+msgstr "%s LEFT"
+
+msgid "MEJORAR MODULO DE COMANDO"
+msgstr "UPGRADE COMMAND MODULE"
+
+msgid "%s  ·  %d MATERIALES  ·  %s DE OBRA"
+msgstr "%s  ·  %d MATERIALS  ·  %s TO BUILD"
+
+msgid "Subir al nivel %d por %s y %d materiales.\nLa obra tarda %d soles; al terminar, la producción pasa a x%s (salvo la energía de los paneles)."
+msgstr "Upgrade to level %d for %s and %d materials.\nThe work takes %d sols; when it is done, production goes to x%s (except energy from the panels)."
+
+msgid "Mejorar Módulo de Comando"
+msgstr "Upgrade Command Module"
+
+msgid "%s: últimos %d soles"
+msgstr "%s: last %d sols"
+
+msgid "Reserva al final de cada sol"
+msgstr "Reserve at the end of each sol"
+
+msgid "Ganancia o pérdida por sol"
+msgstr "Gain or loss per sol"
+
+msgid "Se necesitan 2 soles de datos para trazar la línea."
+msgstr "2 sols of data are needed to draw the line."
+
+msgid "TRIPULACION"
+msgstr "CREW"
+
+msgid "No hay colonos. Recluta desde el módulo de descanso."
+msgstr "There are no colonists. Recruit from the rest module."
+
+msgid "Clic en un tripulante libre para ver sus tareas"
+msgstr "Click a free crew member to see their tasks"
+
+msgid "\nClic: ver solo las tareas de %s"
+msgstr "\nClick: show only the tasks for %s"
+
+msgid "%d SE PUEDEN ASIGNAR"
+msgstr "%d CAN BE ASSIGNED"
+
+msgid "TAREAS DISPONIBLES"
+msgstr "AVAILABLE TASKS"
+
+msgid "Para %s  x"
+msgstr "For %s  x"
+
+msgid "Quitar el filtro y ver todas las tareas"
+msgstr "Remove the filter and show all tasks"
+
+msgid "SIN TRIPULANTE LIBRE"
+msgstr "NO FREE CREW MEMBER"
+
+msgid "No hay tareas disponibles: toda la tripulación está ocupada en ellas."
+msgstr "No tasks available: the whole crew is busy with them."
+
+msgid "No quedan tareas de %s disponibles."
+msgstr "No %s tasks available."
+
+msgid "EXTERIOR +%s RAD"
+msgstr "OUTDOORS +%s RAD"
+
+msgid "INTERIOR"
+msgstr "INDOORS"
+
+msgid "RECOMPENSA"
+msgstr "REWARD"
+
+msgid "%sAsignar a %s"
+msgstr "%sAssign to %s"
+
+msgid "Asignar a %s"
+msgstr "Assign to %s"
+
+msgid "\nRadiación: %s → %s / %d"
+msgstr "\nRadiation: %s → %s / %d"
+
+msgid "\n¡Enfermaría por radiación!"
+msgstr "\nWould get sick from radiation!"
+
+msgid "\nQuedaría cerca del umbral de enfermedad"
+msgstr "\nWould end up close to the sickness threshold"
+
+msgid "REQUIERE\n%s"
+msgstr "REQUIRES\n%s"
+
+msgid "Ningún colono libre tiene el rol %s"
+msgstr "No free colonist has the %s role"
+
+msgid "%s\nAsignar a %s durante %d soles"
+msgstr "%s\nAssign to %s for %d sols"
+
+msgid "Confirmar asignación"
+msgstr "Confirm assignment"
+
+msgid "CONSTRUCCION"
+msgstr "CONSTRUCTION"
+
+msgid "CONSTRUIR"
+msgstr "BUILD"
+
+msgid "DEMOLER"
+msgstr "DEMOLISH"
+
+msgid "Demolición"
+msgstr "Demolition"
+
+msgid "MODO DEMOLICION"
+msgstr "DEMOLITION MODE"
+
+msgid "Señala un módulo construido o un obstáculo y haz clic para demolerlo."
+msgstr "Point at a built module or an obstacle and click to demolish it."
+
+msgid "Los módulos iniciales no se pueden demoler."
+msgstr "The starting modules cannot be demolished."
+
+msgid "Módulos"
+msgstr "Modules"
+
+msgid "%d al alcance"
+msgstr "%d affordable"
+
+msgid "CUARTOS %d/%d"
+msgstr "ROOMS %d/%d"
+
+msgid "Sin cuartos libres"
+msgstr "No free rooms"
+
+msgid "Reclutar colono"
+msgstr "Recruit colonist"
+
+msgid "Hace falta un cuarto libre"
+msgstr "A free room is needed"
+
+msgid "Ver tripulación"
+msgstr "View crew"
+
+msgid "Volver a la lista"
+msgstr "Back to the list"
+
+msgid "Construir cuarto"
+msgstr "Build room"
+
+msgid "%s  ·  %d materiales"
+msgstr "%s  ·  %d materials"
+
+msgid "Capacidad máxima"
+msgstr "Maximum capacity"
+
+msgid "%d/%d cuartos"
+msgstr "%d/%d rooms"
+
+msgid "Añadir 1 cuarto por %s y %d materiales"
+msgstr "Add 1 room for %s and %d materials"
+
+msgid "Expandir módulo"
+msgstr "Expand module"
+
+msgid "%d en viaje"
+msgstr "%d traveling"
+
+msgid "Tripulación"
+msgstr "Crew"
+
+msgid "A la Tierra"
+msgstr "To Earth"
+
+msgid "%s vuelve a la Tierra y deja libre su cuarto"
+msgstr "%s returns to Earth and frees their room"
+
+msgid "No hay colonos. Recluta uno para empezar."
+msgstr "There are no colonists. Recruit one to get started."
+
+msgid "Candidatos disponibles"
+msgstr "Available candidates"
+
+msgid "Llegan en %s"
+msgstr "Arriving in %s"
+
+msgid "No quedan candidatos. Habrá nuevos en unos soles."
+msgstr "No candidates left. There will be new ones in a few sols."
+
+msgid "Contratar %s"
+msgstr "Hire %s"
+
+msgid "Contratar a %s por %s.\nViajará desde la Tierra y llegará a la plataforma de aterrizaje en %d soles; su cuarto queda reservado."
+msgstr "Hire %s for %s.\nThey will travel from Earth and reach the landing pad in %d sols; their room is reserved."
+
+msgid "Confirmar contratación"
+msgstr "Confirm hiring"
+
+msgid "> Archivo de datos"
+msgstr "> Data archive"
+
+msgid "de %d"
+msgstr "of %d"
+
+msgid "No se han encontrado palabras. Aparecen al leerlas en la interfaz."
+msgstr "No words found yet. They appear when you read them in the interface."
+
+msgid "> Ficha"
+msgstr "> Entry"
+
+msgid "Tiempo en pausa"
+msgstr "Time paused"
+
+msgid "Elige un término del archivo."
+msgstr "Choose a term from the archive."
+
+msgid "< Volver"
+msgstr "< Back"
+
+msgid "Mover la cámara"
+msgstr "Move the camera"
+
+msgid "CLIC DER."
+msgstr "R. CLICK"
+
+msgid "Arrastrar la cámara"
+msgstr "Drag the camera"
+
+msgid "RUEDA"
+msgstr "WHEEL"
+
+msgid "Acercar o alejar"
+msgstr "Zoom in or out"
+
+msgid "ESPACIO"
+msgstr "SPACE"
+
+msgid "Pausar o reanudar"
+msgstr "Pause or resume"
+
+msgid "Construir o cancelar"
+msgstr "Build or cancel"
+
+msgid "Glosario"
+msgstr "Glossary"
+
+msgid "Bitácora"
+msgstr "Logbook"
+
+msgid "Cerrar o abrir opciones"
+msgstr "Close or open options"
+
+msgid "Girar el pasillo"
+msgstr "Rotate the corridor"
+
+msgid "FLECHAS"
+msgstr "ARROWS"
+
+msgid "Moverse en los paneles"
+msgstr "Move through the panels"
+
+msgid "Elegir en los paneles"
+msgstr "Select in the panels"
+
+msgid "Sonido"
+msgstr "Sound"
+
+msgid "Efectos"
+msgstr "Effects"
+
+msgid "Ambiente"
+msgstr "Ambience"
+
+msgid "Pantalla"
+msgstr "Display"
+
+msgid "VENTANA"
+msgstr "WINDOW"
+
+msgid "COMPLETA"
+msgstr "FULL"
+
+msgid "Controles"
+msgstr "Controls"
+
+msgid "Volver"
+msgstr "Back"
+
+msgid "Al menú de inicio"
+msgstr "To the main menu"
+
+msgid "LOS AJUSTES SE GUARDAN SOLOS"
+msgstr "SETTINGS ARE SAVED AUTOMATICALLY"
+
+msgid "ESC PARA VOLVER"
+msgstr "ESC TO GO BACK"
+
+msgid "Partida"
+msgstr "Game"
+
+msgid "Continuar"
+msgstr "Continue"
+
+msgid "Volver a la colonia"
+msgstr "Back to the colony"
+
+msgid "Ver tutorial"
+msgstr "View tutorial"
+
+msgid "Repasar cómo se juega"
+msgstr "Review how to play"
+
+msgid "Nueva partida"
+msgstr "New game"
+
+msgid "Se pierde la colonia actual"
+msgstr "The current colony will be lost"
+
+msgid "Menu de inicio"
+msgstr "Main menu"
+
+msgid "Salir del juego"
+msgstr "Quit game"
+
+msgid "Cerrar Little Big Steps"
+msgstr "Close Little Big Steps"
+
+msgid "TIEMPO EN PAUSA"
+msgstr "TIME PAUSED"
+
+msgid "SILENCIO"
+msgstr "MUTED"
+
+msgid "La colonia actual se perderá y empezarás de nuevo en el sol 1."
+msgstr "The current colony will be lost and you will start again on sol 1."
+
+msgid "Empezar de nuevo"
+msgstr "Start over"
+
+msgid "Volver al menú de inicio"
+msgstr "Back to the main menu"
+
+msgid "La partida no se guarda: se pierde la colonia actual."
+msgstr "The game is not saved: the current colony will be lost."
+
+msgid "Ir al menú"
+msgstr "Go to menu"
+
+msgid "La partida no se guarda: al salir se pierde la colonia actual."
+msgstr "The game is not saved: if you quit, the current colony will be lost."
+
+msgid "Salir"
+msgstr "Quit"
+
+msgid "TORMENTA SOLAR"
+msgstr "SOLAR STORM"
+
+msgid "SIN TORMENTA"
+msgstr "NO STORM"
+
+msgid "QUEDAN %s"
+msgstr "%s LEFT"
+
+msgid "REFUGIO EN RESERVA"
+msgstr "SHELTER ON STANDBY"
+
+msgid "OCUPACION %d/%d"
+msgstr "OCCUPANCY %d/%d"
+
+msgid "SIN REFUGIOS CONSTRUIDOS"
+msgstr "NO SHELTERS BUILT"
+
+msgid "Tormenta solar en curso: la tripulación se refugia aquí para no recibir radiación."
+msgstr "Solar storm in progress: the crew takes shelter here to avoid radiation."
+
+msgid "Sin tormenta solar: el refugio está en reserva. Cuando llegue una, la tripulación vendrá aquí."
+msgstr "No solar storm: the shelter is on standby. When one arrives, the crew will come here."
+
+msgid "Refugiados"
+msgstr "Sheltered"
+
+msgid "No hay nadie dentro del refugio."
+msgstr "There is nobody inside the shelter."
+
+msgid "Fuera del refugio"
+msgstr "Outside the shelter"
+
+msgid "Confirmar"
+msgstr "Confirm"
+
+msgid "Cancelar"
+msgstr "Cancel"
+
+msgid "Recurso"
+msgstr "Resource"
+
+msgid "Cambio"
+msgstr "Change"
+
+msgid "Quedará"
+msgstr "Remaining"
+
+msgid " de "
+msgstr " of "
+
+msgid "Baterías: "
+msgstr "Batteries: "
+
+msgid "Hay: "
+msgstr "In stock: "
+
+msgid "Producción: %s"
+msgstr "Production: %s"
+
+msgid "  Base: 2 reactores de fisión de 40 kW y 1 panel solar de 20 kW"
+msgstr "  Base: 2 fission reactors of 40 kW and 1 solar panel of 20 kW"
+
+msgid "Consumo de los módulos: %s"
+msgstr "Module consumption: %s"
+
+msgid "Balance: %s, o sea %s kWh por sol en las baterías."
+msgstr "Balance: %s, that is %s kWh per sol into the batteries."
+
+msgid "Llega cada sol: %s (fondos de la misión)"
+msgstr "Arrives each sol: %s (mission funds)"
+
+msgid "Producción por sol: %s%s"
+msgstr "Production per sol: %s%s"
+
+msgid "  Base inicial: %s%s"
+msgstr "  Starting base: %s%s"
+
+msgid "  Reciclaje del soporte vital (80 %%): %s L"
+msgstr "  Life support recycling (80 %%): %s L"
+
+msgid "Consumo por sol: %s%s (%d colonos x %s%s%s)"
+msgstr "Consumption per sol: %s%s (%d colonists x %s%s%s)"
+
+msgid ", según la ración"
+msgstr ", depending on the ration"
+
+msgid "El Módulo de Comando multiplica la producción x%s."
+msgstr "The Command Module multiplies production by x%s."
+
+msgid "Al ritmo de ahora se acaba en %s soles."
+msgstr "At the current rate it runs out in %s sols."
+
+msgid "Clic: cambiar a %s"
+msgstr "Click: switch to %s"
+
+msgid "A la intemperie"
+msgstr "Out in the open"
+
+msgid "Dentro de la base"
+msgstr "Inside the base"
+
+msgid "En el refugio blindado"
+msgstr "In the shielded shelter"
+
+msgid "Enviar a la Tierra"
+msgstr "Send to Earth"
+
+msgid " (llega en %s)"
+msgstr " (arrives in %s)"
+
+msgid "Radiación: %s / %d"
+msgstr "Radiation: %s / %d"
+
+msgid "Mantiene el aire y el agua de la base: produce oxígeno y recicla el agua que usa la tripulación. Sin soporte vital, nadie aguanta mucho en Marte."
+msgstr "Keeps the base's air and water going: it produces oxygen and recycles the water the crew uses. Without life support, nobody lasts long on Mars."
+
+msgid "Invernadero con luces LED donde se cultiva comida. Así la colonia no depende tanto de los envíos de la Tierra (astroagronomía)."
+msgstr "Greenhouse with LED lights where food is grown. This way the colony depends less on shipments from Earth (astroagronomy)."
+
+msgid "Paneles solares: convierten la luz del Sol en electricidad. En Marte llega menos luz que en la Tierra y el polvo los cubre."
+msgstr "Solar panels: they turn sunlight into electricity. Mars gets less light than Earth, and dust covers them."
+
+msgid "Perfora el suelo hasta el hielo de Marte, lo derrite y saca agua."
+msgstr "Drills down to the ice of Mars, melts it and pumps out water."
+
+msgid "Fabrica materiales para construir con el regolito y con impresión 3D."
+msgstr "Makes building materials from regolith and with 3D printing."
+
+msgid "Módulo con paredes muy gruesas. Durante una tormenta solar, los colonos que estén adentro no reciben radiación."
+msgstr "Module with very thick walls. During a solar storm, colonists inside it receive no radiation."
+
+msgid "Conecta los módulos para que los colonos pasen de uno a otro sin salir al exterior. Con Q lo giras al colocarlo."
+msgstr "Connects modules so colonists can go from one to another without stepping outside. Press Q to rotate it while placing it."
+
+msgid "Ocupa %dx%d casillas. Cuesta %s y %d materiales."
+msgstr "Takes up %dx%d tiles. Costs %s and %d materials."
+
+msgid "Con él, la energía quedaría en %s."
+msgstr "With it, energy would be at %s."
+
+msgid "No alcanza el presupuesto o los materiales."
+msgstr "Not enough budget or materials."
+
+msgid "Produce %s"
+msgstr "Produces %s"
+
+msgid "Consume %s"
+msgstr "Uses %s"
+
+msgid "Volver a ver el tutorial (F1)"
+msgstr "Watch the tutorial again (F1)"
+
+msgid "> OBJETIVO: "
+msgstr "> GOAL: "
+
+msgid "Empezar a jugar"
+msgstr "Start playing"
+
+msgid "Omitir paso"
+msgstr "Skip step"
+
+msgid "Siguiente"
+msgstr "Next"
+
+msgid "Pasa al siguiente paso sin hacer el objetivo"
+msgstr "Go to the next step without completing the goal"
+
+msgid "Anterior"
+msgstr "Previous"
+
+msgid "Saltar tutorial"
+msgstr "Skip tutorial"
+
+msgid "Cierra el tutorial. Puedes volver a verlo con F1."
+msgstr "Closes the tutorial. You can watch it again with F1."
+
+msgid "Bienvenida a Marte"
+msgstr "Welcome to Mars"
+
+msgid "Diriges una colonia en Marte. Tu meta: que sea autosuficiente, mejorando el Módulo de Comando hasta el nivel %d. Pierdes si la energía se agota o si la tripulación pasa %d soles seguidos sin oxígeno, agua o comida. Este tutorial te enseña todo; el tiempo está en pausa mientras lo sigues."
+msgstr "You run a colony on Mars. Your goal: make it self-sufficient by upgrading the Command Module to level %d. You lose if the energy runs out or if the crew goes %d sols in a row without oxygen, water or food. This tutorial teaches you everything; time is paused while you follow it."
+
+msgid "Mueve la vista con WASD o las flechas, o arrastrando con el botón derecho del ratón. La rueda acerca y aleja el mapa."
+msgstr "Move the view with WASD or the arrow keys, or by dragging with the right mouse button. The wheel zooms the map in and out."
+
+msgid "mueve la cámara o cambia el zoom"
+msgstr "move the camera or change the zoom"
+
+msgid "Los recursos"
+msgstr "Resources"
+
+msgid "Arriba ves las reservas: oxígeno, energía, agua, comida, materiales y presupuesto (en millones). Cada sol la tripulación consume oxígeno, agua y comida, y los módulos gastan energía. Un número en rojo avisa de que ese recurso se acaba. Deja el ratón sobre cualquiera para ver su detalle."
+msgstr "At the top you see the reserves: oxygen, energy, water, food, materials and budget (in millions). Each sol the crew uses up oxygen, water and food, and the modules use energy. A red number warns that the resource is running out. Hover over any of them to see the details."
+
+msgid "El tiempo"
+msgstr "Time"
+
+msgid "Un sol es un día marciano. En Marte dura 24 horas y 39 minutos; en el juego, %d segundos de juego. Al terminar cada sol se consume, se produce y avanzan las tareas. Con Espacio pausas y reanudas; x2 y x4 aceleran. Al cumplir este paso volveremos a pausar para seguir con calma."
+msgstr "A sol is a Martian day. On Mars it lasts 24 hours and 39 minutes; in the game, %d game seconds. At the end of each sol resources are used and produced, and tasks move forward. Space pauses and resumes; x2 and x4 speed things up. When you complete this step we will pause again so you can go on calmly."
+
+msgid "pulsa Espacio (o el botón ▶) para reanudar el tiempo"
+msgstr "press Space (or the ▶ button) to resume time"
+
+msgid "El Módulo de Comando"
+msgstr "The Command Module"
+
+msgid "Es el centro de la base. Desde ahí ves las métricas, diriges a la tripulación y mejoras la colonia. Los módulos con ventana propia se abren con un clic en el mapa."
+msgstr "It is the heart of the base. From there you see the metrics, direct the crew and upgrade the colony. Modules that have their own window open with a click on the map."
+
+msgid "haz clic en el Módulo de Comando"
+msgstr "click the Command Module"
+
+msgid "Asignar tareas"
+msgstr "Assigning tasks"
+
+msgid "A la izquierda está la tripulación y a la derecha las tareas. Cada tarea pide un rol, tarda unos soles y da una recompensa. Las de exterior suman radiación al colono. Un clic en un tripulante libre muestra solo sus tareas."
+msgstr "The crew is on the left and the tasks on the right. Each task needs a role, takes a few sols and gives a reward. Outdoor tasks add radiation to the colonist. Clicking a free crew member shows only their tasks."
+
+msgid "pulsa «Asignar a...» en una tarea y confirma"
+msgstr "press \"Assign to...\" on a task and confirm"
+
+msgid "Métricas y mejora"
+msgstr "Metrics and upgrades"
+
+msgid "Un clic en cualquier recurso de arriba de esta ventana abre su historial de %d soles. El botón naranja «Mejorar Módulo de Comando» cuesta presupuesto y materiales, tarda unos soles y multiplica la producción de toda la base. Llegar al nivel %d es ganar la partida."
+msgstr "Clicking any resource at the top of this window opens its %d-sol history. The orange \"Upgrade Command Module\" button costs budget and materials, takes a few sols and multiplies the production of the whole base. Reaching level %d wins the game."
+
+msgid "Almacén y Cocina"
+msgstr "Storage and Kitchen"
+
+msgid "Cierra esta ventana con Esc o con la X. Después abre el Almacén y Cocina: ahí se guardan los víveres y los materiales."
+msgstr "Close this window with Esc or the X. Then open the Storage and Kitchen: provisions and materials are kept there."
+
+msgid "haz clic en el Almacén y Cocina del mapa"
+msgstr "click the Storage and Kitchen on the map"
+
+msgid "Cocinar raciones"
+msgstr "Cooking rations"
+
+msgid "En «Reservas» ves cuántos soles alcanza cada cosa. En «Cocina» conviertes comida cruda y agua en raciones preparadas, que rinden más; la tripulación se las come primero."
+msgstr "\"Reserves\" shows how many sols each thing will last. In \"Kitchen\" you turn raw food and water into prepared rations, which go further; the crew eats those first."
+
+msgid "pulsa «Cocinar» en una receta"
+msgstr "press \"Cook\" on a recipe"
+
+msgid "Raciones y pedidos"
+msgstr "Rations and orders"
+
+msgid "«Racionamiento» decide cuánto come la tripulación: Abundante gasta más y mejora el trabajo; Estricta ahorra, pero tras %d soles debilita y enferma. «Pedidos a la Tierra» compra víveres, materiales u oxígeno que tardan varios soles en llegar en nave. «Expandir depósito» aumenta la capacidad."
+msgstr "\"Rationing\" decides how much the crew eats: Generous uses more and improves work; Strict saves, but after %d sols it weakens the crew and makes them sick. \"Orders from Earth\" buys provisions, materials or oxygen that take several sols to arrive by ship. \"Expand storage\" increases capacity."
+
+msgid "Módulo de Descanso"
+msgstr "Rest Module"
+
+msgid "Cierra el almacén (Esc) y abre el Módulo de Descanso, donde vive la tripulación."
+msgstr "Close the storage (Esc) and open the Rest Module, where the crew lives."
+
+msgid "haz clic en el Módulo de Descanso del mapa"
+msgstr "click the Rest Module on the map"
+
+msgid "Reclutar y relevar"
+msgstr "Recruiting and relieving"
+
+msgid "Cada colono ocupa un cuarto. «Reclutar colono» contrata candidatos que llegan en %d soles a la plataforma de aterrizaje; «Construir cuarto» hace sitio para más (hasta %d). «A la Tierra» retira a un colono para siempre: úsalo cuando acumule demasiada radiación."
+msgstr "Each colonist takes up a room. \"Recruit colonist\" hires candidates who arrive at the landing pad in %d sols; \"Build room\" makes space for more (up to %d). \"To Earth\" retires a colonist for good: use it when they build up too much radiation."
+
+msgid "Construir"
+msgstr "Build"
+
+msgid "La base crece con módulos nuevos: soporte vital (oxígeno y reciclaje de agua), agricultura (comida), panel solar (energía), perforadora (agua), taller (materiales) y refugio. Cierra esta ventana y entra al modo construcción."
+msgstr "The base grows with new modules: life support (oxygen and water recycling), agriculture (food), solar panel (energy), ice drill (water), workshop (materials) and shelter. Close this window and enter build mode."
+
+msgid "pulsa el botón Construir (tecla B)"
+msgstr "press the Build button (B key)"
+
+msgid "Colocar un módulo"
+msgstr "Placing a module"
+
+msgid "Cada tarjeta muestra el costo, la energía que gasta o produce y lo que da por sol. Elige una (el panel solar es barato) y llévala al mapa: en verde se puede colocar. Debe quedar una casilla libre entre módulos. Clic derecho cancela."
+msgstr "Each card shows the cost, the energy it uses or produces and what it gives per sol. Pick one (the solar panel is cheap) and take it to the map: green means it can be placed. There must be one free tile between modules. Right click cancels."
+
+msgid "elige un módulo, colócalo en el mapa y confirma"
+msgstr "pick a module, place it on the map and confirm"
+
+msgid "Pasillos"
+msgstr "Corridors"
+
+msgid "Los colonos caminan entre módulos. Si no hay camino techado salen al exterior y reciben radiación: une los módulos con «Pasillo» (se colocan uno tras otro, casilla a casilla). Vigila el balance de energía: si un módulo gasta más de lo que produces, las baterías se vacían."
+msgstr "Colonists walk between modules. If there is no covered path they go outside and receive radiation: join the modules with \"Corridor\" (placed one after another, tile by tile). Watch the energy balance: if a module uses more than you produce, the batteries drain."
+
+msgid "Demoler"
+msgstr "Demolish"
+
+msgid "El interruptor de arriba del panel cambia entre construir y demoler. Demoliendo quitas rocas y cráteres que estorban (cuesta %s y devuelve %d materiales) o módulos que construiste. Los módulos iniciales no se pueden demoler."
+msgstr "The switch at the top of the panel toggles between building and demolishing. Demolishing removes rocks and craters that are in the way (it costs %s and gives back %d materials) or modules you built. The starting modules cannot be demolished."
+
+msgid "mueve el interruptor a DEMOLER"
+msgstr "flip the switch to DEMOLISH"
+
+msgid "Salir de construcción"
+msgstr "Leaving build mode"
+
+msgid "En modo demolición, señala una roca o un módulo para ver lo que cuesta y haz clic para quitarlo. Para volver al juego normal, el botón de abajo ahora dice Cancelar."
+msgstr "In demolition mode, point at a rock or a module to see what it costs and click to remove it. To go back to the normal game, the button at the bottom now says Cancel."
+
+msgid "pulsa Cancelar (B o Esc) para salir"
+msgstr "press Cancel (B or Esc) to leave"
+
+msgid "La tripulación"
+msgstr "The crew"
+
+msgid "Este panel dice dónde está cada colono; un clic lo resalta en el mapa, y un clic sobre un colono en el mapa abre su ficha. Vigila su radiación: a los %d enferma y deja de trabajar unos soles. Dentro de los módulos están protegidos."
+msgstr "This panel shows where each colonist is; a click highlights them on the map, and clicking a colonist on the map opens their card. Watch their radiation: at %d they get sick and stop working for a few sols. Inside the modules they are protected."
+
+msgid "Alertas y eventos"
+msgstr "Alerts and events"
+
+msgid "Abajo a la derecha aparecen las alertas: pasa el ratón para ver qué ocurre y haz clic para ir a resolverlo. Cada varios soles surge un evento con dos opciones; algunos son tormentas solares reales registradas por la NASA. Durante una tormenta solar la radiación se dispara: construye un Refugio blindado (%d plazas) para proteger a la tripulación."
+msgstr "Alerts appear at the bottom right: hover to see what is happening and click to go fix it. Every few sols an event comes up with two options; some are real solar storms recorded by NASA. During a solar storm radiation shoots up: build a Shielded shelter (%d spots) to protect the crew."
+
+msgid "Glosario y bitácora"
+msgstr "Glossary and logbook"
+
+msgid "Las palabras subrayadas son términos técnicos: deja el ratón encima para leer qué significan. Todos los que descubras se guardan en el Glosario (G). La Bitácora (L) registra todo lo ocurrido en la misión, sol a sol."
+msgstr "Underlined words are technical terms: hover over them to read what they mean. Every one you discover is saved in the Glossary (G). The Logbook (L) records everything that happens in the mission, sol by sol."
+
+msgid "¡A colonizar!"
+msgstr "Time to colonize!"
+
+msgid "Resumen: mantén oxígeno, agua, comida y energía en positivo; da tareas a la tripulación; construye para producir más; cuida la radiación; y mejora el Módulo de Comando hasta el nivel %d. La Tierra envía fondos cada %d soles. Puedes volver a este tutorial con F1."
+msgstr "Summary: keep oxygen, water, food and energy positive; give the crew tasks; build to produce more; watch the radiation; and upgrade the Command Module to level %d. Earth sends funds every %d sols. You can come back to this tutorial with F1."
+
+msgid "Un sol es un día marciano: en Marte dura 24 horas y 39 minutos; en el juego, %d segundos de juego.\nEste sol termina en %d segundos de juego%s.\nAl terminar cada sol se consume, se produce y avanzan las tareas."
+msgstr "A sol is a Martian day: on Mars it lasts 24 hours and 39 minutes; in the game, %d game seconds.\nThis sol ends in %d game seconds%s.\nAt the end of each sol resources are used and produced, and tasks move forward."
+
+msgid " (vas a x%d)"
+msgstr " (running at x%d)"
+
+msgid "Pausar (Espacio)"
+msgstr "Pause (Space)"
+
+msgid "Reanudar (Espacio)"
+msgstr "Resume (Space)"
+
+msgid "Doble velocidad"
+msgstr "Double speed"
+
+msgid "Velocidad x4"
+msgstr "Speed x4"
+
+msgid "Datos del Sol: %s.\nLos eventos del Sol del juego (llamaradas, nubes de plasma, lluvias de partículas y tormentas magnéticas) son reales y vienen de NASA DONKI."
+msgstr "Sun data: %s.\nThe Sun events in the game (flares, plasma clouds, particle showers and magnetic storms) are real and come from NASA DONKI."
+
+msgid "\nAhora no hay conexión con la NASA: se usan los últimos datos guardados o el archivo del juego."
+msgstr "\nThere is no connection to NASA right now: the last saved data or the game's archive is being used."
+
+msgid "Clic en > para ver el estado"
+msgstr "Click > to see the status"
+
+msgid "Construir (B)"
+msgstr "Build (B)"
+
+msgid "Salir del modo construcción (B o Esc)"
+msgstr "Leave build mode (B or Esc)"
+
+msgid "TORMENTA SOLAR: "
+msgstr "SOLAR STORM: "
+
+msgid "NUBE DEL SOL: llega en "
+msgstr "SUN CLOUD: arrives in "
+
+msgid "DESDE LA TIERRA"
+msgstr "FROM EARTH"
+
+msgid "el oxígeno"
+msgstr "oxygen"
+
+msgid "el agua"
+msgstr "water"
+
+msgid "la comida"
+msgstr "food"
+
+msgid "¡Sin oxígeno!"
+msgstr "Out of oxygen!"
+
+msgid "¡Sin agua!"
+msgstr "Out of water!"
+
+msgid "¡Sin comida!"
+msgstr "Out of food!"
+
+msgid "Construye un soporte vital, pon a alguien de Soporte vital a «Recargar reservas de oxígeno» o pide tanques a la Tierra."
+msgstr "Build a life support module, have someone from Life Support do \"Refill oxygen reserves\" or order tanks from Earth."
+
+msgid "Construye un soporte vital (recicla el 80 % del agua) y una perforadora de hielo, o pide víveres a la Tierra."
+msgstr "Build a life support module (it recycles 80 % of the water) and an ice drill, or order provisions from Earth."
+
+msgid "Construye agricultura, pon a alguien a «Cuidar cultivos», cocina raciones o pide víveres a la Tierra."
+msgstr "Build agriculture, have someone do \"Tend the crops\", cook rations or order provisions from Earth."
+
+msgid "Clic: ir a resolverlo"
+msgstr "Click: go fix it"
+
+msgid "Se gastan %s %s y se producen %s %s por sol."
+msgstr "%s %s are used and %s %s are produced per sol."
+
+msgid "La colonia se quedó sin %s. Llevan %s sin soporte vital: a los %d se pierde la partida."
+msgstr "The colony ran out of %s. It has been %s without life support: at %d the game is lost."
+
+msgid "¡Se acaba %s!"
+msgstr "Running out of %s!"
+
+msgid "Quedan %s. %s Alcanza para %s."
+msgstr "%s left. %s Enough for %s."
+
+msgid "%s baja cada sol"
+msgstr "%s drops every sol"
+
+msgid "%s Al ritmo de ahora alcanza para %s."
+msgstr "%s At the current rate there is enough for %s."
+
+msgid "Los módulos gastan %s y se producen %s (%s). Las baterías bajan %s kWh por sol: duran %s. Si se vacían, la base se apaga y se pierde la partida."
+msgstr "The modules use %s and %s are produced (%s). The batteries drop %s kWh per sol: they last %s. If they run empty, the base shuts down and the game is lost."
+
+msgid "¡Baterías casi vacías!"
+msgstr "Batteries almost empty!"
+
+msgid "Se gasta más energía de la que hay"
+msgstr "More energy is used than produced"
+
+msgid "Construye paneles solares (20 kW cada uno) o demuele un módulo que gaste mucho."
+msgstr "Build solar panels (20 kW each) or demolish a module that uses a lot."
+
+msgid "Manda a los colonos al refugio blindado: ahí no reciben radiación."
+msgstr "Send the colonists to the shielded shelter: they receive no radiation there."
+
+msgid "Construye un refugio blindado: ahí los colonos no reciben radiación."
+msgstr "Build a shielded shelter: colonists receive no radiation there."
+
+msgid "¡Tormenta solar!"
+msgstr "Solar storm!"
+
+msgid "La radiación está muy alta durante %s: %d por sol afuera, %d dentro de los módulos y 0 en el refugio. Hay %d colonos fuera del refugio."
+msgstr "Radiation is very high for %s: %d per sol outside, %d inside the modules and 0 in the shelter. There are %d colonists outside the shelter."
+
+msgid "La nube del Sol llega en %s"
+msgstr "The cloud from the Sun arrives in %s"
+
+msgid "Una eyección de masa coronal viene hacia Marte. Cuando llegue habrá una tormenta solar de %s."
+msgstr "A coronal mass ejection is heading for Mars. When it arrives there will be a solar storm lasting %s."
+
+msgid "Radiación peligrosa: %s"
+msgstr "Dangerous radiation: %s"
+
+msgid "%s tiene %s de dosis (a partir de %d enferma)."
+msgstr "%s has a dose of %s (from %d they get sick)."
+
+msgid "Que descanse dentro de la base. Si no baja, puedes mandarlo de regreso a la Tierra, como hace la NASA."
+msgstr "Have them rest inside the base. If it does not go down, you can send them back to Earth, as NASA does."
+
+msgid "Mucha radiación: %s"
+msgstr "High radiation: %s"
+
+msgid "%s tiene %s de dosis; a los %d enferma."
+msgstr "%s has a dose of %s; at %d they get sick."
+
+msgid "Dale tareas dentro de la base y no en el exterior."
+msgstr "Give them tasks inside the base, not outdoors."
+
+msgid "%s está enfermo"
+msgstr "%s is sick"
+
+msgid "Un colono enfermo no puede hacer tareas."
+msgstr "A sick colonist cannot do tasks."
+
+msgid "Con ración abundante se recupera en 2 soles en vez de 3. Que no falten oxígeno, agua ni comida."
+msgstr "With the generous ration they recover in 2 sols instead of 3. Make sure oxygen, water and food do not run out."
+
+msgid "%s sin tarea"
+msgstr "%s without a task"
+
+msgid "%d colonos"
+msgstr "%d colonists"
+
+msgid "Sin tarea: %s. Hay tareas que pueden hacer."
+msgstr "Without a task: %s. There are tasks they can do."
+
+msgid "Abre el Módulo de Comando y asígnales una tarea: cada tarea da recursos."
+msgstr "Open the Command Module and assign them a task: every task gives resources."
+
+msgid "Ración estricta"
+msgstr "Strict ration"
+
+msgid "Llevan %s con ración estricta. Desde el sol %d los colonos se debilitan y pueden enfermar."
+msgstr "The crew has been on the strict ration for %s. From sol %d on, colonists weaken and may get sick."
+
+msgid "Vuelve a la ración normal en cuanto haya comida y agua suficientes."
+msgstr "Go back to the normal ration as soon as there is enough food and water."
+
+msgid "Almacén casi lleno"
+msgstr "Storage almost full"
+
+msgid "Hay %s kg de víveres en un almacén de %s kg. Lo que no cabe se pierde."
+msgstr "There are %s kg of provisions in a %s kg storage. Whatever does not fit is lost."
+
+msgid "Amplía el depósito en el Almacén y cocina."
+msgstr "Expand the storage in the Storage and kitchen."
+
+msgid "Poco presupuesto"
+msgstr "Low budget"
+
+msgid "Quedan %s."
+msgstr "%s left."
+
+msgid "Pon a un científico a «Enviar informe a la Tierra» para conseguir fondos."
+msgstr "Have a scientist do \"Send a report to Earth\" to get funds."
+
+msgid "¿SABIAS QUE...?"
+msgstr "DID YOU KNOW...?"
+
+msgid "Clic: ver en la bitácora  ·  Clic derecho: cerrar"
+msgstr "Click: see it in the logbook  ·  Right click: close"
+
+msgid "TRIPULACIÓN  %d"
+msgstr "CREW  %d"
+
+msgid "Rol: %s"
+msgstr "Role: %s"
+
+msgid "Estado: %s"
+msgstr "Status: %s"
+
+msgid "Tarea: %s (le faltan %s)"
+msgstr "Task: %s (%s left)"
+
+msgid "Está en: %s"
+msgstr "Location: %s"
+
+msgid "Radiación: %s de %d. A los %d enferma."
+msgstr "Radiation: %s of %d. At %d they get sick."
+
+msgid "Se recupera en %s si no le faltan oxígeno, agua ni comida."
+msgstr "Recovers in %s if oxygen, water and food do not run out."
+
+msgid "Clic: señalarlo en el mapa"
+msgstr "Click: point them out on the map"
+
+msgid "Exterior"
+msgstr "Outside"
+
+msgid "Sugerencia: "
+msgstr "Tip: "
+
+msgid "Clic en la palabra: abrir en el glosario"
+msgstr "Click the word: open it in the glossary"
+
+msgid "LIBRE"
+msgstr "FREE"
+
+msgid "EN MISION"
+msgstr "ON MISSION"
+
+msgid "EN VIAJE"
+msgstr "TRAVELING"
+
+msgid "Radiación: %s / %d (enferma a partir de %d)"
+msgstr "Radiation: %s / %d (gets sick from %d)"
+
+msgid "Fuente: [color=#%s][url=%s]%s[/url][/color]"
+msgstr "Source: [color=#%s][url=%s]%s[/url][/color]"
+
+msgid "Abrir la fuente en el navegador"
+msgstr "Open the source in the browser"
+
+msgid "Fuente: "
+msgstr "Source: "
+
+msgid "Cerrar (Esc)"
+msgstr "Close (Esc)"
+
+msgid "Investigación"
+msgstr "Research"
+
+msgid "Módulo de Comando"
+msgstr "Command Module"
+
+msgid "Refugio Blindado"
+msgstr "Shielded Shelter"
+
+msgid "Bitácora de la misión"
+msgstr "Mission logbook"
+
+msgid "Glosario técnico"
+msgstr "Technical glossary"
+
+msgid "Opciones"
+msgstr "Options"
+
+msgid "Clic: colocar   ·   Clic derecho o Esc: cancelar"
+msgstr "Click: place   ·   Right click or Esc: cancel"
+
+msgid "Clic: colocar   ·   Q: girar   ·   Clic derecho o Esc: cancelar"
+msgstr "Click: place   ·   Q: rotate   ·   Right click or Esc: cancel"
+
+msgid "Opción %d: %s"
+msgstr "Option %d: %s"
+
+msgid "ELEGIR >"
+msgstr "CHOOSE >"
+
+msgid "Efecto"
+msgstr "Effect"
+
+msgid "DATO REAL DE LA NASA"
+msgstr "REAL NASA DATA"
+
+msgid "DATO REAL"
+msgstr "REAL DATA"
+
+msgid "Ocultar lo que pasó de verdad"
+msgstr "Hide what really happened"
+
+msgid "Ver lo que pasó de verdad"
+msgstr "See what really happened"
+
+msgid "LO QUE PASÓ DE VERDAD · %s"
+msgstr "WHAT REALLY HAPPENED · %s"
+
+msgid "Fuente: %s"
+msgstr "Source: %s"
+
+msgid "Datos: %s"
+msgstr "Data: %s"
+
+msgid "Ver la fuente en internet"
+msgstr "Open the source online"
+
+msgid "Radiación por colono"
+msgstr "Radiation per colonist"
+
+msgid "Riesgo de enfermar"
+msgstr "Risk of getting sick"
+
+msgid "por colono"
+msgstr "per colonist"
+
+msgid "La nube llega en"
+msgstr "The cloud arrives in"
+
+msgid "Tormenta solar"
+msgstr "Solar storm"
+
+msgid "Envíos de la Tierra"
+msgstr "Shipments from Earth"
+
+msgid "de retraso"
+msgstr "of delay"
+
+msgid "Dosis en los módulos"
+msgstr "Dose inside the modules"
+
+msgid "Sin consecuencias"
+msgstr "No consequences"
+
+msgid "%s dejará la colonia para siempre y liberará su cuarto."
+msgstr "%s will leave the colony for good and free up their room."
+
+msgid "%s\nSobreviviste hasta el sol %d."
+msgstr "%s\nYou survived until sol %d."
+
+msgid "Fin de la partida"
+msgstr "Game over"
+
+msgid "La colonia es autosuficiente: el Módulo de Comando alcanzó el nivel %d."
+msgstr "The colony is self-sufficient: the Command Module reached level %d."
+
+msgid "Soles transcurridos: %d"
+msgstr "Sols elapsed: %d"
+
+msgid "Colonos en activo: %d · retornados a la Tierra: %d"
+msgstr "Active colonists: %d · returned to Earth: %d"
+
+msgid "Módulos construidos: %d"
+msgstr "Modules built: %d"
+
+msgid "Reservas finales (producido en toda la misión):"
+msgstr "Final reserves (produced over the whole mission):"
+
+msgid "Misión Cumplida"
+msgstr "Mission Accomplished"
+
+msgid "Modo Libre"
+msgstr "Free Play"
+
+msgid "Nueva Partida"
+msgstr "New Game"
+
+msgid "COLONIA EN MARTE"
+msgstr "MARS COLONY"
+
+msgid "Jugar"
+msgstr "Play"
+
+msgid "Fundar una colonia nueva"
+msgstr "Found a new colony"
+
+msgid "Sonido, pantalla y controles"
+msgstr "Sound, display and controls"
+
+msgid "Cerrar el juego"
+msgstr "Close the game"
+
+msgid "ESC: OPCIONES  ·  FLECHAS Y ENTER: ELEGIR"
+msgstr "ESC: OPTIONS  ·  ARROWS AND ENTER: SELECT"
+
+msgid "Energía producida"
+msgstr "Energy produced"
+
+msgid "Energía que gasta"
+msgstr "Energy used"
+
+msgid "balance %s a %s"
+msgstr "balance %s to %s"
+
+msgid "¿Construir %s?"
+msgstr "Build %s?"
+
+msgid "Ocupa %dx%d casillas"
+msgstr "Takes up %dx%d tiles"
+
+msgid "Construido: %s"
+msgstr "Built: %s"
+
+msgid "No hay dinero para la demolición"
+msgstr "Not enough money for the demolition"
+
+msgid "Costo del trabajo"
+msgstr "Cost of the work"
+
+msgid "Materiales obtenidos"
+msgstr "Materials recovered"
+
+msgid "¿Allanar este cráter?"
+msgstr "Level this crater?"
+
+msgid "¿Excavar esta roca?"
+msgstr "Dig out this rock?"
+
+msgid "¿Demoler este módulo?"
+msgstr "Demolish this module?"
+
+msgid "Demolido: %s"
+msgstr "Demolished: %s"
+
+msgid "Demoler: %s%s"
+msgstr "Demolish: %s%s"
+
+msgid "Obstáculo natural"
+msgstr "Natural obstacle"
+
+msgid "Misión cumplida: la colonia es autosuficiente"
+msgstr "Mission accomplished: the colony is self-sufficient"
+
+msgid "La energía se agotó: la base ha quedado a oscuras."
+msgstr "The energy ran out: the base has gone dark."
+
+msgid "%d soles sin soporte vital: la colonia se ha perdido."
+msgstr "%d sols without life support: the colony has been lost."
+
+msgid "Falta comida"
+msgstr "No food"
+
+msgid "Falta agua"
+msgstr "No water"
+
+msgid "Falta espacio en el almacén"
+msgstr "Storage is full"
+
+msgid "Almacén ampliado al nivel %d"
+msgstr "Storage expanded to level %d"
+
+msgid "¡Llegó la nube del Sol! Tormenta solar durante %s"
+msgstr "The cloud from the Sun has arrived! Solar storm for %s"
+
+msgid "Dato real NASA (%s): %s"
+msgstr "Real NASA data (%s): %s"
+
+msgid " a las %s (hora universal)"
+msgstr " at %s (universal time)"
+
+msgid "NASA DONKI (Centro de Modelado Coordinado de la Comunidad, CCMC)"
+msgstr "NASA DONKI (Community Coordinated Modeling Center, CCMC)"
+
+msgid "La NASA"
+msgstr "NASA"
+
+msgid "Un observatorio"
+msgstr "An observatory"
+
+msgid "%s registró esta llamarada de clase %s."
+msgstr "%s recorded this class %s flare."
+
+msgid "¡Llamarada solar clase %s!"
+msgstr "Class %s solar flare!"
+
+msgid "Una llamarada solar es un destello gigante en el Sol. Las de clase X son las más fuertes que existen. Su luz llega a Marte en unos 13 minutos y estorba las antenas de la base."
+msgstr "A solar flare is a giant flash on the Sun. Class X flares are the strongest there are. Their light reaches Mars in about 13 minutes and disrupts the base's antennas."
+
+msgid "Llamarada solar (FLR)"
+msgstr "Solar flare (FLR)"
+
+msgid "Esperar a que pase la interferencia"
+msgstr "Wait for the interference to pass"
+
+msgid "Gastar energía en reforzar la señal"
+msgstr "Spend energy to boost the signal"
+
+msgid "%s vio salir del Sol esta nube"
+msgstr "%s saw this cloud leave the Sun"
+
+msgid " a %d km/s."
+msgstr " at %d km/s."
+
+msgid "\nLa simulación WSA-ENLIL de la NASA calculó que esta nube también llegaría a Marte."
+msgstr "\nNASA's WSA-ENLIL simulation calculated that this cloud would also reach Mars."
+
+msgid "\nEn el juego imaginamos que viaja hacia nuestra base en Marte."
+msgstr "\nIn the game we imagine it is heading toward our base on Mars."
+
+msgid "¡Una nube del Sol viene en camino!"
+msgstr "A cloud from the Sun is on its way!"
+
+msgid "El Sol lanzó una eyección de masa coronal (CME): una nube enorme de plasma. Cuando llegue a Marte, la radiación subirá durante %s."
+msgstr "The Sun launched a coronal mass ejection (CME): a huge cloud of plasma. When it reaches Mars, radiation will rise for %s."
+
+msgid "Eyección de masa coronal (CME)"
+msgstr "Coronal mass ejection (CME)"
+
+msgid "Preparar el blindaje desde ya"
+msgstr "Start preparing the shielding now"
+
+msgid "Seguir trabajando y refugiarse al llegar"
+msgstr "Keep working and take shelter when it arrives"
+
+msgid "%s registró partículas energéticas solares (SEP)."
+msgstr "%s recorded solar energetic particles (SEP)."
+
+msgid "\nLas midieron naves que vigilan el Sol, no en Marte. En el juego imaginamos que también llegan a Marte."
+msgstr "\nThey were measured by spacecraft that watch the Sun, not on Mars. In the game we imagine they reach Mars too."
+
+msgid "¡Lluvia de partículas del Sol!"
+msgstr "Particle shower from the Sun!"
+
+msgid "Partículas del Sol llegaron a Marte casi a la velocidad de la luz. Marte no tiene un escudo magnético como la Tierra, así que la radiación sube de golpe. ¡Al refugio blindado!"
+msgstr "Particles from the Sun reached Mars at nearly the speed of light. Mars has no magnetic shield like Earth's, so radiation spikes suddenly. To the shielded shelter!"
+
+msgid "Partículas energéticas solares (SEP)"
+msgstr "Solar energetic particles (SEP)"
+
+msgid "Reforzar el blindaje de los módulos"
+msgstr "Reinforce the module shielding"
+
+msgid "Mantener la operación normal"
+msgstr "Keep operating as normal"
+
+msgid "%s registró esta tormenta geomagnética con índice Kp %s (la escala va de 0 a 9)."
+msgstr "%s recorded this geomagnetic storm with a Kp index of %s (the scale goes from 0 to 9)."
+
+msgid "Tormenta magnética en la Tierra (Kp %s)"
+msgstr "Magnetic storm on Earth (Kp %s)"
+
+msgid "El viento del Sol sacudió el escudo magnético de la Tierra y se vieron auroras. Marte no tiene ese escudo: por eso la colonia necesita refugios. Los satélites de la Tierra están ocupados y los envíos pueden tardar."
+msgstr "The solar wind shook Earth's magnetic shield and auroras were seen. Mars has no such shield: that is why the colony needs shelters. Earth's satellites are busy and shipments may be delayed."
+
+msgid "Tormenta geomagnética (GST)"
+msgstr "Geomagnetic storm (GST)"
+
+msgid "Esperar a que se calmen los satélites"
+msgstr "Wait for the satellites to settle down"
+
+msgid "Pagar un canal de emergencia"
+msgstr "Pay for an emergency channel"
+
+msgid "Según la simulación, tardaría unas %d horas en llegar a Marte."
+msgstr "According to the simulation, it would take about %d hours to reach Mars."
+
+msgid "Cuenta: 228 millones de km ÷ %d km/s ≈ %d horas de viaje hasta Marte."
+msgstr "The math: 228 million km ÷ %d km/s ≈ %d hours of travel to Mars."
+
+msgid "Tardó %d %s en llegar a la Tierra. Marte está 1.5 veces más lejos del Sol: %d × 1.5 ≈ %d horas."
+msgstr "It took %d %s to reach Earth. Mars is 1.5 times farther from the Sun: %d × 1.5 ≈ %d hours."
+
+msgid "día"
+msgstr "day"
+
+msgid "días"
+msgstr "days"
+
+msgid "No se midió su velocidad; en el juego tarda unas 48 horas."
+msgstr "Its speed was not measured; in the game it takes about 48 hours."
+
+msgid " Eso es %s en Marte."
+msgstr " That is %s on Mars."
+
+msgid "llamarada solar clase %s. Más débil que una X, pero igual brilla muchísimo."
+msgstr "class %s solar flare. Weaker than an X, but still incredibly bright."
+
+msgid "salió del Sol una nube de plasma a %d km/s."
+msgstr "a plasma cloud left the Sun at %d km/s."
+
+msgid "tormenta magnética en la Tierra con Kp %s. Hubo auroras."
+msgstr "magnetic storm on Earth with Kp %s. There were auroras."
+
+msgid "una onda de choque del viento solar pasó por %s."
+msgstr "a solar wind shock wave passed by %s."
+
+msgid "el espacio"
+msgstr "space"
+
+msgid "viento solar muy rápido salió de un agujero coronal del Sol."
+msgstr "very fast solar wind streamed out of a coronal hole on the Sun."
+
+msgid "el viento solar empujó el escudo magnético de la Tierra y algunos satélites quedaron fuera de él."
+msgstr "the solar wind pushed Earth's magnetic shield and some satellites ended up outside it."
+
+msgid "los cinturones de radiación que rodean la Tierra se llenaron de partículas."
+msgstr "the radiation belts around Earth filled up with particles."
+
+msgid "actividad en el Sol."
+msgstr "activity on the Sun."
+
+msgid "Mejora del Módulo de Comando al nivel %d iniciada (%d soles)"
+msgstr "Command Module upgrade to level %d started (%d sols)"
+
+msgid "Módulo de Comando mejorado a nivel %d (x%s producción)"
+msgstr "Command Module upgraded to level %d (x%s production)"
+
+msgid "La tormenta solar ha terminado"
+msgstr "The solar storm is over"
+
+msgid "Tarea asignada: %s a %s"
+msgstr "Task assigned: %s to %s"
+
+msgid "Pago: %s"
+msgstr "Payment: %s"
+
+msgid "%s completó: %s"
+msgstr "%s completed: %s"
+
+msgid "Pedido a la Tierra: %s (llega en %d soles)"
+msgstr "Order from Earth: %s (arrives in %d sols)"
+
+msgid "Los envíos de la Tierra se retrasan %s"
+msgstr "Shipments from Earth are delayed %s"
+
+msgid "Transferencia de fondos"
+msgstr "Funds transfer"
+
+msgid "La Tierra aprobó una transferencia de %s (llegará en %d soles)"
+msgstr "Earth approved a transfer of %s (arriving in %d sols)"
+
+msgid " (%s no cupieron en el almacén)"
+msgstr " (%s did not fit in storage)"
+
+msgid "Llegó desde la Tierra: %s: %s"
+msgstr "Arrived from Earth: %s: %s"
+
+msgid "%s se ha recuperado"
+msgstr "%s has recovered"
+
+msgid "Diagnóstico: %s enfermó y abandonó %s"
+msgstr "Diagnosis: %s got sick and abandoned %s"
+
+msgid "Diagnóstico: %s ha enfermado"
+msgstr "Diagnosis: %s has gotten sick"
+
+msgid "Pico de radiación: %s supera %d de dosis"
+msgstr "Radiation spike: %s exceeds a dose of %d"
+
+msgid "%s regresó a la Tierra"
+msgstr "%s returned to Earth"
+
+msgid "Contratado: %s (llegará en %d soles)"
+msgstr "Hired: %s (arriving in %d sols)"
+
+msgid "%s llegó a la plataforma de aterrizaje"
+msgstr "%s arrived at the landing pad"
+
+msgid "Módulo de descanso ampliado a %d cuartos"
+msgstr "Rest module expanded to %d rooms"
+
+msgid "Región activa %s"
+msgstr "Active region %s"
+
+msgid "Lo midió: %s."
+msgstr "Measured by: %s."
+
+msgid "NASA DONKI · en vivo (consultado hoy)"
+msgstr "NASA DONKI · live (checked today)"
+
+msgid "NASA DONKI · guardado el %s"
+msgstr "NASA DONKI · saved on %s"
+
+msgid "NASA DONKI · archivo: %s"
+msgstr "NASA DONKI · archive: %s"
+
+msgid "Eventos reales · archivo: %s"
+msgstr "Real events · archive: %s"
+
+msgid "en vivo · consultado hoy"
+msgstr "live · checked today"
+
+msgid "guardado el %s/%s/%s"
+msgstr "saved on %s/%s/%s"
+
+msgid "sin conexión · archivo"
+msgstr "offline · archive"
+
+msgid "eventos reales"
+msgstr "real events"
+
+msgid "Acción"
+msgstr "Action"
+
+msgid "Evento"
+msgstr "Event"
+
+msgid "Curiosidad"
+msgstr "Fun fact"
+
+msgid "Ingeniería"
+msgstr "Engineering"
+
+msgid "Astroagronomía"
+msgstr "Astroagronomy"
+
+msgid "Soporte Vital"
+msgstr "Life Support"
+
+msgid "Ciencia"
+msgstr "Science"
+
+msgid "Disponible"
+msgstr "Available"
+
+msgid "En misión"
+msgstr "On mission"
+
+msgid "Enfermo"
+msgstr "Sick"
+
+msgid "Retirado"
+msgstr "Retired"
+
+msgid "En viaje"
+msgstr "Traveling"
+
+msgid "Abundante"
+msgstr "Generous"
+
+msgid "Estricta"
+msgstr "Strict"
+
+msgid "Oxígeno"
+msgstr "Oxygen"
+
+msgid "Energía"
+msgstr "Energy"
+
+msgid "Agua"
+msgstr "Water"
+
+msgid "Comida"
+msgstr "Food"
+
+msgid "Ración básica"
+msgstr "Basic ration"
+
+msgid "Guiso de invernadero"
+msgstr "Greenhouse stew"
+
+msgid "Limpiar paneles solares"
+msgstr "Clean the solar panels"
+
+msgid "Revisar red eléctrica"
+msgstr "Check the power grid"
+
+msgid "Extraer regolito"
+msgstr "Mine regolith"
+
+msgid "Cuidar cultivos"
+msgstr "Tend the crops"
+
+msgid "Analizar suelo para cultivo"
+msgstr "Analyze soil for farming"
+
+msgid "Reciclar agua de la base"
+msgstr "Recycle the base's water"
+
+msgid "Recargar reservas de oxígeno"
+msgstr "Refill oxygen reserves"
+
+msgid "Estudiar la atmósfera"
+msgstr "Study the atmosphere"
+
+msgid "Enviar informe a la Tierra"
+msgstr "Send a report to Earth"
+
+msgid "Fuga en el reciclador de agua"
+msgstr "Leak in the water recycler"
+
+msgid "Una junta del soporte vital se ha agrietado y el reciclador pierde agua sin parar."
+msgstr "A life support seal has cracked and the recycler keeps losing water."
+
+msgid "Pagar una reparación urgente"
+msgstr "Pay for an urgent repair"
+
+msgid "Vaciar el depósito hasta poder repararlo"
+msgstr "Drain the tank until it can be fixed"
+
+msgid "Polvo sobre los paneles solares"
+msgstr "Dust on the solar panels"
+
+msgid "Una capa de polvo fino cubre los paneles solares y la producción eléctrica cae en picado."
+msgstr "A layer of fine dust covers the solar panels and power production plummets."
+
+msgid "Enviar a la tripulación a limpiarlos"
+msgstr "Send the crew to clean them"
+
+msgid "Forzar las baterías hasta que el viento los limpie"
+msgstr "Push the batteries until the wind cleans them"
+
+msgid "Tormenta de polvo regional"
+msgstr "Regional dust storm"
+
+msgid "Una tormenta de polvo envuelve la base y el regolito en suspensión se cuela por las juntas de los módulos."
+msgstr "A dust storm wraps around the base and airborne regolith seeps through the module seals."
+
+msgid "Sellar los módulos con materiales de reserva"
+msgstr "Seal the modules with spare materials"
+
+msgid "Filtrar el aire a costa de energía"
+msgstr "Filter the air at the cost of energy"
+
+msgid "Plaga en los cultivos"
+msgstr "Crop blight"
+
+msgid "Un hongo se extiende por las bandejas de astroagronomía."
+msgstr "A fungus is spreading through the astroagronomy trays."
+
+msgid "Fumigar y desinfectar las bandejas"
+msgstr "Spray and disinfect the trays"
+
+msgid "Desechar la cosecha afectada"
+msgstr "Throw away the affected harvest"
+
+msgid "Brote vírico en la tripulación"
+msgstr "Virus outbreak among the crew"
+
+msgid "Varios colonos tienen fiebre. El equipo médico propone aislar a toda la tripulación."
+msgstr "Several colonists have a fever. The medical team suggests isolating the whole crew."
+
+msgid "Cuarentena con medicamentos urgentes"
+msgstr "Quarantine with urgent medicine"
+
+msgid "Seguir trabajando con normalidad"
+msgstr "Keep working as usual"
+
+msgid "Percloratos en el agua"
+msgstr "Perchlorates in the water"
+
+msgid "Los análisis detectan percloratos del regolito en el depósito de agua potable."
+msgstr "Tests detect perchlorates from the regolith in the drinking water tank."
+
+msgid "Tratar el agua con filtros especiales"
+msgstr "Treat the water with special filters"
+
+msgid "Desechar el agua contaminada"
+msgstr "Throw away the contaminated water"
+
+msgid "Fallo del generador MOXIE"
+msgstr "MOXIE generator failure"
+
+msgid "El generador de oxígeno MOXIE se ha sobrecalentado y está fuera de servicio."
+msgstr "The MOXIE oxygen generator has overheated and is out of service."
+
+msgid "Repararlo con piezas del taller"
+msgstr "Fix it with parts from the workshop"
+
+msgid "Racionar el oxígeno hasta que se enfríe"
+msgstr "Ration oxygen until it cools down"
+
+msgid "Impacto de meteorito cercano"
+msgstr "Meteorite impact nearby"
+
+msgid "Un pequeño meteorito ha caído a pocos kilómetros y ha dejado fragmentos metálicos aprovechables."
+msgstr "A small meteorite has fallen a few kilometers away and left usable metal fragments."
+
+msgid "Salir a recoger los fragmentos"
+msgstr "Go out and collect the fragments"
+
+msgid "Ignorarlo y seguir con el plan"
+msgstr "Ignore it and stick to the plan"
+
+msgid "El Sol ha lanzado una eyección de partículas. Durante 2 soles la radiación exterior será extrema y penetrará en los módulos; quien esté en un refugio blindado no recibirá dosis."
+msgstr "The Sun has launched a burst of particles. For 2 sols the radiation outside will be extreme and will get into the modules; anyone inside a shielded shelter will receive no dose."
+
+msgid "Materiales de construcción"
+msgstr "Building materials"
+
+msgid "Tanques de oxígeno"
+msgstr "Oxygen tanks"
+
+msgid "Agricultura"
+msgstr "Agriculture"
+
+msgid "Almacén y cocina"
+msgstr "Storage and kitchen"
+
+msgid "Módulo de comando"
+msgstr "Command module"
+
+msgid "Módulo de descanso"
+msgstr "Rest module"
+
+msgid "Panel solar"
+msgstr "Solar panel"
+
+msgid "Pasillo"
+msgstr "Corridor"
+
+msgid "Perforadora de hielo"
+msgstr "Ice drill"
+
+msgid "Plataforma de aterrizaje"
+msgstr "Landing pad"
+
+msgid "Refugio blindado"
+msgstr "Shielded shelter"
+
+msgid "Soporte vital"
+msgstr "Life support"
+
+msgid "Recicla el 80 % del agua"
+msgstr "Recycles 80 % of the water"
+
+msgid "Taller"
+msgstr "Workshop"
+
+msgid "Partículas de alta energía que dañan las células. Marte no tiene un campo magnético global ni una atmósfera densa que la frene."
+msgstr "High-energy particles that damage cells. Mars has no global magnetic field and no thick atmosphere to stop them."
+
+msgid "En la superficie de Marte llegan dos tipos de radiación: los rayos cósmicos galácticos, partículas muy energéticas que vienen de fuera del sistema solar, y las partículas solares, que el Sol lanza en ráfagas.\n\nEl instrumento RAD del rover Curiosity midió en la superficie una dosis media de unos 0,7 milisieverts al día: en un año, varias veces el límite anual para trabajadores expuestos en la Tierra. La dosis acumulada aumenta el riesgo de cáncer y de daños en el sistema nervioso.\n\nLa NASA no deja que sus astronautas pasen de 600 milisieverts en toda su carrera (norma NASA-STD-3001): al llegar al límite ya no vuelan. Por eso en el juego un colono con mucha radiación tiene que volver a la Tierra.\n\nEn el juego, cada colono acumula radiación al trabajar en el exterior; a partir de 100 enferma."
+msgstr "Two kinds of radiation reach the surface of Mars: galactic cosmic rays, very energetic particles that come from outside the solar system, and solar particles, which the Sun throws out in bursts.\n\nThe RAD instrument on the Curiosity rover measured an average dose of about 0.7 millisieverts per day on the surface: in one year, several times the yearly limit for exposed workers on Earth. The accumulated dose raises the risk of cancer and of damage to the nervous system.\n\nNASA does not let its astronauts go over 600 millisieverts in their whole career (standard NASA-STD-3001): once they reach the limit they no longer fly. That is why in the game a colonist with a lot of radiation has to go back to Earth.\n\nIn the game, each colonist builds up radiation when working outdoors; from 100 on they get sick."
+
+msgid "Radiación espacial"
+msgstr "Space radiation"
+
+msgid "Ráfaga de partículas cargadas que el Sol lanza al espacio. En Marte puede multiplicar la dosis de radiación en pocas horas."
+msgstr "A burst of charged particles that the Sun throws into space. On Mars it can multiply the radiation dose within a few hours."
+
+msgid "Las tormentas solares (eventos de partículas solares y eyecciones de masa coronal) lanzan protones y otras partículas a gran velocidad. La Tierra está protegida por su magnetosfera; Marte no.\n\nEn septiembre de 2017 una tormenta solar alcanzó Marte: el rover Curiosity registró en la superficie el doble de radiación de lo normal, y la sonda MAVEN vio auroras en todo el planeta.\n\nLa protección principal es refugiarse tras una capa gruesa de material: agua, regolito o plástico rico en hidrógeno."
+msgstr "Solar storms (solar particle events and coronal mass ejections) throw out protons and other particles at great speed. Earth is protected by its magnetosphere; Mars is not.\n\nIn September 2017 a solar storm reached Mars: the Curiosity rover recorded twice the normal radiation on the surface, and the MAVEN probe saw auroras all over the planet.\n\nThe main protection is to take shelter behind a thick layer of material: water, regolith or hydrogen-rich plastic."
+
+msgid "Zona de la base con paredes muy gruesas donde la tripulación se protege durante una tormenta solar."
+msgstr "Area of the base with very thick walls where the crew takes cover during a solar storm."
+
+msgid "Los diseños de bases y naves tripuladas incluyen un refugio contra tormentas: un espacio pequeño rodeado de la mayor masa posible. Los materiales ricos en hidrógeno, como el agua o el polietileno, frenan especialmente bien las partículas solares.\n\nLa nave Orion de la NASA, por ejemplo, prevé que la tripulación se refugie en su zona central rodeada de bolsas y suministros durante una tormenta solar.\n\nEn el juego, cada refugio protege por completo a 5 colonos."
+msgstr "Designs for crewed bases and spacecraft include a storm shelter: a small space surrounded by as much mass as possible. Hydrogen-rich materials, such as water or polyethylene, are especially good at stopping solar particles.\n\nNASA's Orion spacecraft, for example, plans for the crew to shelter in its central area surrounded by bags and supplies during a solar storm.\n\nIn the game, each shelter fully protects 5 colonists."
+
+msgid "Capa de polvo, arena y roca suelta que cubre la superficie de Marte."
+msgstr "Layer of dust, sand and loose rock that covers the surface of Mars."
+
+msgid "El regolito marciano se formó por impactos de meteoritos y erosión durante miles de millones de años. Su color rojizo se debe a óxidos de hierro.\n\nEs un recurso valioso: puede usarse para construir (ladrillos, impresión 3D) o apilarse sobre los módulos como blindaje contra la radiación. Pero también es un problema: es muy fino, abrasivo y contiene percloratos tóxicos."
+msgstr "Martian regolith was formed by meteorite impacts and erosion over billions of years. Its reddish color comes from iron oxides.\n\nIt is a valuable resource: it can be used for building (bricks, 3D printing) or piled on top of modules as shielding against radiation. But it is also a problem: it is very fine, abrasive and contains toxic perchlorates."
+
+msgid "Regolito"
+msgstr "Regolith"
+
+msgid "Sales tóxicas presentes en el suelo marciano que afectan a la tiroides."
+msgstr "Toxic salts found in Martian soil that affect the thyroid."
+
+msgid "La sonda Phoenix descubrió en 2008 percloratos en el suelo de Marte, en una concentración de alrededor del 0,5 %. Otras misiones confirmaron que están repartidos por todo el planeta.\n\nSon tóxicos para las personas porque interfieren con la tiroides, así que el agua y el suelo de Marte tendrían que tratarse antes de usarlos para beber o cultivar. Curiosamente, algunas bacterias pueden descomponerlos y liberar oxígeno."
+msgstr "The Phoenix lander discovered perchlorates in the soil of Mars in 2008, at a concentration of around 0.5 %. Other missions confirmed that they are spread all over the planet.\n\nThey are toxic to people because they interfere with the thyroid, so Martian water and soil would have to be treated before being used for drinking or farming. Curiously, some bacteria can break them down and release oxygen."
+
+msgid "Percloratos"
+msgstr "Perchlorates"
+
+msgid "Sistemas que mantienen el aire, el agua y la temperatura necesarios para vivir."
+msgstr "Systems that keep the air, water and temperature needed to live."
+
+msgid "Un sistema de soporte vital controla la presión, retira el dióxido de carbono, produce oxígeno y recicla el agua.\n\nEn la Estación Espacial Internacional, el sistema de recuperación de agua alcanzó en 2023 un reciclaje del 98 %: recupera agua del sudor, la humedad del aire y la orina. Una base en Marte necesitará sistemas así de eficaces, porque cada litro enviado desde la Tierra cuesta muchísimo.\n\nEn el juego, el soporte vital recicla el 80 % del agua que usa la tripulación. El 20 % que falta hay que sacarlo del hielo de Marte o pedirlo a la Tierra."
+msgstr "A life support system controls the pressure, removes carbon dioxide, produces oxygen and recycles water.\n\nOn the International Space Station, the water recovery system reached 98 % recycling in 2023: it recovers water from sweat, air humidity and urine. A base on Mars will need systems that efficient, because every liter sent from Earth costs a fortune.\n\nIn the game, life support recycles 80 % of the water the crew uses. The missing 20 % has to come from the ice of Mars or be ordered from Earth."
+
+msgid "Experimento del rover Perseverance que fabricó oxígeno a partir del dióxido de carbono de Marte."
+msgstr "Experiment on the Perseverance rover that made oxygen from the carbon dioxide of Mars."
+
+msgid "MOXIE (Mars Oxygen In-Situ Resource Utilization Experiment) viajó en el rover Perseverance. Entre 2021 y 2023 funcionó 16 veces y produjo en total unos 122 gramos de oxígeno, separando el dióxido de carbono de la atmósfera marciana.\n\nDemostró que se puede producir oxígeno en Marte, tanto para respirar como para fabricar combustible de cohetes para el viaje de vuelta."
+msgstr "MOXIE (Mars Oxygen In-Situ Resource Utilization Experiment) traveled on the Perseverance rover. Between 2021 and 2023 it ran 16 times and produced about 122 grams of oxygen in total, by splitting the carbon dioxide of the Martian atmosphere.\n\nIt proved that oxygen can be produced on Mars, both for breathing and for making rocket fuel for the trip back."
+
+msgid "Cultivo de plantas fuera de la Tierra: en naves, estaciones o bases en otros mundos."
+msgstr "Growing plants away from Earth: on spacecraft, stations or bases on other worlds."
+
+msgid "Cultivar en Marte exige luz artificial o filtrada, agua reciclada y un suelo sin percloratos. Por eso se usan técnicas como la hidroponía, que cultiva las plantas en agua con nutrientes, sin tierra.\n\nEn la Estación Espacial Internacional, los experimentos Veggie y APH han cultivado lechugas, rábanos y chiles que los astronautas han llegado a comer."
+msgstr "Farming on Mars requires artificial or filtered light, recycled water and soil without perchlorates. That is why techniques such as hydroponics are used, which grows plants in water with nutrients, without soil.\n\nOn the International Space Station, the Veggie and APH experiments have grown lettuce, radishes and chili peppers that the astronauts actually got to eat."
+
+msgid "Fuente de energía de muchas misiones marcianas. Marte recibe menos luz que la Tierra y el polvo los cubre."
+msgstr "Power source of many Mars missions. Mars receives less light than Earth, and dust covers them."
+
+msgid "Marte está más lejos del Sol y recibe alrededor del 43 % de la luz que llega a la Tierra. Además, el polvo se deposita sobre los paneles y reduce la producción.\n\nEl rover Opportunity funcionó con paneles solares casi 15 años, a veces gracias a ráfagas de viento que los limpiaban, hasta que una tormenta de polvo global en 2018 lo dejó sin energía."
+msgstr "Mars is farther from the Sun and receives around 43 % of the light that reaches Earth. On top of that, dust settles on the panels and reduces production.\n\nThe Opportunity rover ran on solar panels for almost 15 years, sometimes thanks to gusts of wind that cleaned them, until a global dust storm in 2018 left it without energy."
+
+msgid "Paneles solares en Marte"
+msgstr "Solar panels on Mars"
+
+msgid "Tormentas que levantan polvo fino durante semanas; algunas cubren todo el planeta."
+msgstr "Storms that lift fine dust for weeks; some cover the whole planet."
+
+msgid "Las tormentas de polvo son frecuentes en Marte. La mayoría son locales, pero cada varios años alguna crece hasta envolver todo el planeta durante semanas o meses.\n\nNo son tan violentas como en las películas, porque la atmósfera es muy fina, pero oscurecen el cielo, reducen la energía solar y meten polvo en los equipos. La tormenta global de 2018 terminó con la misión Opportunity."
+msgstr "Dust storms are common on Mars. Most are local, but every few years one grows until it wraps the whole planet for weeks or months.\n\nThey are not as violent as in the movies, because the atmosphere is very thin, but they darken the sky, reduce solar energy and get dust into equipment. The global storm of 2018 ended the Opportunity mission."
+
+msgid "Tormenta de polvo"
+msgstr "Dust storm"
+
+msgid "Retraso de las señales entre la Tierra y Marte por la distancia: de unos 3 a 22 minutos en cada sentido."
+msgstr "Delay of signals between Earth and Mars because of the distance: about 3 to 22 minutes each way."
+
+msgid "Las señales de radio viajan a la velocidad de la luz, pero la distancia entre la Tierra y Marte varía mucho según la posición de los planetas. Un mensaje tarda entre unos 3 y 22 minutos en llegar, y otro tanto en volver la respuesta.\n\nPor eso una base marciana no podría pedir ayuda inmediata: tendría que tomar decisiones por su cuenta. Y los envíos de personas o suministros solo pueden salir cada unos 26 meses, cuando los planetas están bien alineados."
+msgstr "Radio signals travel at the speed of light, but the distance between Earth and Mars changes a lot depending on where the planets are. A message takes between about 3 and 22 minutes to arrive, and the answer takes just as long to come back.\n\nThat is why a Martian base could not ask for immediate help: it would have to make decisions on its own. And shipments of people or supplies can only leave about every 26 months, when the planets are well aligned."
+
+msgid "Latencia de comunicaciones"
+msgstr "Communications latency"
+
+msgid "Un día solar en Marte: 24 horas y unos 40 minutos."
+msgstr "A solar day on Mars: 24 hours and about 40 minutes."
+
+msgid "Las misiones a Marte cuentan el tiempo en soles. Un sol dura unas 24 horas y 40 minutos, solo un poco más que un día terrestre, y un año marciano tiene unos 668 soles.\n\nEn el juego, un sol dura 60 segundos de juego (menos con x2 y x4).\n\nLos equipos de las misiones en la Tierra a veces trabajan en hora de Marte, desplazando su horario 40 minutos cada día."
+msgstr "Mars missions count time in sols. A sol lasts about 24 hours and 40 minutes, only a little longer than an Earth day, and a Martian year has about 668 sols.\n\nIn the game, a sol lasts 60 game seconds (less with x2 and x4).\n\nMission teams on Earth sometimes work on Mars time, shifting their schedule 40 minutes every day."
+
+msgid "Sol (día marciano)"
+msgstr "Sol (Martian day)"
+
+msgid "Llamarada solar"
+msgstr "Solar flare"
+
+msgid "Un destello gigante en el Sol. Se miden con letras: A, B, C, M y X. Las X son las más fuertes."
+msgstr "A giant flash on the Sun. They are measured with letters: A, B, C, M and X. X flares are the strongest."
+
+msgid "Una llamarada solar es una explosión de luz y energía en el Sol. Cada letra es 10 veces más fuerte que la anterior: una M es 10 veces más fuerte que una C, y una X es 10 veces más fuerte que una M. El número dice cuánto dentro de esa letra: una X8.7 es casi 9 veces una X1.\n\nSu luz viaja a la velocidad de la luz, así que llega a Marte en unos 13 minutos. Puede estorbar las comunicaciones por radio.\n\nEn mayo de 2024 una región del Sol llamada AR3664 lanzó muchas llamaradas X seguidas. Una del 20 de mayo se estimó en X12 y apuntaba a Marte."
+msgstr "A solar flare is an explosion of light and energy on the Sun. Each letter is 10 times stronger than the one before: an M is 10 times stronger than a C, and an X is 10 times stronger than an M. The number says how much within that letter: an X8.7 is almost 9 times an X1.\n\nIts light travels at the speed of light, so it reaches Mars in about 13 minutes. It can disrupt radio communications.\n\nIn May 2024 a region of the Sun called AR3664 fired off many X flares in a row. One on May 20 was estimated at X12 and was pointed at Mars."
+
+msgid "Una nube enorme de plasma que el Sol lanza al espacio. Tarda uno o varios días en llegar a los planetas."
+msgstr "A huge cloud of plasma that the Sun throws into space. It takes one or several days to reach the planets."
+
+msgid "CME son las siglas en inglés de eyección de masa coronal. Es una nube de gas muy caliente (plasma) con campo magnético que sale disparada del Sol a cientos o miles de kilómetros por segundo.\n\nPara saber cuándo llega a Marte se divide la distancia entre la velocidad: Marte está a unos 228 millones de km del Sol. Una nube a 1200 km/s tarda 228 000 000 ÷ 1200 = 190 000 segundos, unas 53 horas.\n\nLa NASA usa una simulación por computadora llamada WSA-ENLIL para predecir a qué planetas llegará cada nube."
+msgstr "CME stands for coronal mass ejection. It is a cloud of very hot gas (plasma) with a magnetic field that shoots out of the Sun at hundreds or thousands of kilometers per second.\n\nTo know when it reaches Mars you divide the distance by the speed: Mars is about 228 million km from the Sun. A cloud at 1200 km/s takes 228 000 000 ÷ 1200 = 190 000 seconds, about 53 hours.\n\nNASA uses a computer simulation called WSA-ENLIL to predict which planets each cloud will reach."
+
+msgid "Partículas del Sol que viajan casi a la velocidad de la luz y suben mucho la radiación."
+msgstr "Particles from the Sun that travel at nearly the speed of light and raise radiation a lot."
+
+msgid "Cuando hay una llamarada o una CME muy fuerte, el Sol acelera protones y electrones a velocidades enormes. Llegan a Marte en minutos u horas.\n\nEl 20 de mayo de 2024 una de estas lluvias llegó a Marte: el detector RAD del rover Curiosity midió 8100 micrograys, como 30 radiografías de tórax, y la sonda MAVEN vio auroras en todo el planeta.\n\nLa mejor protección es un refugio con paredes gruesas, o una cueva o un acantilado."
+msgstr "When there is a very strong flare or CME, the Sun accelerates protons and electrons to enormous speeds. They reach Mars in minutes or hours.\n\nOn May 20, 2024 one of these showers reached Mars: the RAD detector on the Curiosity rover measured 8100 micrograys, like 30 chest X-rays, and the MAVEN probe saw auroras all over the planet.\n\nThe best protection is a shelter with thick walls, or a cave or a cliff."
+
+msgid "Tormenta geomagnética e índice Kp"
+msgstr "Geomagnetic storm and Kp index"
+
+msgid "Cuando el viento del Sol sacude el escudo magnético de la Tierra. Se mide con el índice Kp, de 0 a 9."
+msgstr "When the wind from the Sun shakes Earth's magnetic shield. It is measured with the Kp index, from 0 to 9."
+
+msgid "La Tierra tiene un escudo magnético que desvía casi todo lo que lanza el Sol. Cuando llega una CME, el escudo se sacude: eso es una tormenta geomagnética, y se ven auroras.\n\nEl índice Kp mide qué tan fuerte es, de 0 (calma) a 9 (extrema). El 10 y 11 de mayo de 2024 llegó a Kp 9, la tormenta más fuerte en más de 20 años.\n\nMarte no tiene un escudo magnético global, por eso sus colonos necesitan refugios."
+msgstr "Earth has a magnetic shield that deflects almost everything the Sun throws at it. When a CME arrives, the shield shakes: that is a geomagnetic storm, and auroras are seen.\n\nThe Kp index measures how strong it is, from 0 (calm) to 9 (extreme). On May 10 and 11, 2024 it reached Kp 9, the strongest storm in more than 20 years.\n\nMars has no global magnetic shield, which is why its colonists need shelters."
+
+msgid "Viento solar"
+msgstr "Solar wind"
+
+msgid "Un chorro de partículas que el Sol lanza todo el tiempo en todas direcciones."
+msgstr "A stream of particles that the Sun throws out all the time in every direction."
+
+msgid "El Sol no se queda quieto: siempre está soplando partículas hacia el espacio a unos 400 km/s. A veces, desde zonas oscuras del Sol llamadas agujeros coronales, sale un viento solar mucho más rápido.\n\nNo es como el viento de Marte que mueve el polvo: el viento solar es invisible y viaja por el espacio."
+msgstr "The Sun never sits still: it is always blowing particles into space at about 400 km/s. Sometimes, from dark areas of the Sun called coronal holes, a much faster solar wind comes out.\n\nIt is not like the wind on Mars that moves the dust: the solar wind is invisible and travels through space."
+
+msgid "Escudo magnético (magnetosfera)"
+msgstr "Magnetic shield (magnetosphere)"
+
+msgid "El campo magnético que rodea la Tierra y la protege de casi toda la radiación del Sol. Marte no lo tiene."
+msgstr "The magnetic field that surrounds Earth and protects it from almost all the Sun's radiation. Mars does not have one."
+
+msgid "El centro de la Tierra tiene metal líquido en movimiento que crea un campo magnético. Ese campo forma un escudo invisible, la magnetosfera, que desvía las partículas del Sol.\n\nMarte perdió su escudo global hace miles de millones de años. Por eso en Marte la radiación es mucho más alta y las auroras pueden verse en todo el planeta."
+msgstr "The center of Earth has moving liquid metal that creates a magnetic field. That field forms an invisible shield, the magnetosphere, which deflects particles from the Sun.\n\nMars lost its global shield billions of years ago. That is why radiation on Mars is much higher and auroras can be seen all over the planet."
+
+msgid "La base de datos de la NASA donde se registra todo lo que hace el Sol: llamaradas, nubes de plasma, tormentas y más."
+msgstr "NASA's database that records everything the Sun does: flares, plasma clouds, storms and more."
+
+msgid "DONKI significa, en inglés, base de datos de notificaciones, conocimiento e información del clima espacial. La mantiene el Centro de Modelado Coordinado de la Comunidad (CCMC) de la NASA, en Goddard.\n\nLos eventos del Sol de este juego salen de DONKI: si hay internet, el juego la consulta al empezar; si no, usa lo último que guardó o un archivo con eventos reales. Abajo a la izquierda, el indicador DONKI dice cuál está usando (el punto se pone verde cuando está en vivo)."
+msgstr "DONKI stands for Space Weather Database Of Notifications, Knowledge, Information. It is maintained by NASA's Community Coordinated Modeling Center (CCMC), at Goddard.\n\nThe Sun events in this game come from DONKI: if there is internet, the game checks it at startup; if not, it uses the last data it saved or an archive of real events. At the bottom left, the DONKI indicator says which one is in use (the dot turns green when it is live)."
+
+msgid "Detector RAD del rover Curiosity"
+msgstr "RAD detector on the Curiosity rover"
+
+msgid "Un instrumento del rover Curiosity que mide la radiación en la superficie de Marte desde 2012."
+msgstr "An instrument on the Curiosity rover that has measured radiation on the surface of Mars since 2012."
+
+msgid "RAD (Radiation Assessment Detector) mide cuánta radiación llega al suelo de Marte. Gracias a él sabemos que en la superficie un astronauta recibiría unos 0.64 milisieverts al día, y casi el triple durante el viaje en la nave (1.84 al día).\n\nEn mayo de 2024 midió la subida más grande desde que llegó: 8100 micrograys en un solo evento."
+msgstr "RAD (Radiation Assessment Detector) measures how much radiation reaches the ground on Mars. Thanks to it we know that on the surface an astronaut would receive about 0.64 millisieverts per day, and almost three times that during the trip in the spacecraft (1.84 per day).\n\nIn May 2024 it measured the biggest jump since it arrived: 8100 micrograys in a single event."
+
+msgid "Fuentes de datos reales"
+msgstr "Real data sources"
+
+msgid "Los eventos del Sol y los datos de radiación del juego son reales. Aquí dice de dónde salen."
+msgstr "The Sun events and radiation data in the game are real. This is where they come from."
+
+msgid "Eventos del Sol: NASA DONKI (ccmc.gsfc.nasa.gov/DONKI). En vivo cuando hay internet; si no, el último guardado o el archivo del juego. Nunca se muestra como en vivo algo que no lo es.\n\nArchivo de mayo de 2024: Bureau of Meteorology de Australia (reporte del 9 de mayo de 2024), Wikipedia «May 2024 solar storms» y NASA/JPL «NASA Watches Mars Light Up During Epic Solar Storm».\n\nRadiación en Marte: detector RAD del rover Curiosity (Hassler y otros, revista Science, 2013).\n\nLímite de radiación de los astronautas: 600 milisieverts en toda la carrera, norma NASA-STD-3001.\n\nLo que pasa en la colonia (costos, soles, recursos) es del juego; lo que dice «lo que pasó de verdad» es real."
+msgstr "Sun events: NASA DONKI (ccmc.gsfc.nasa.gov/DONKI). Live when there is internet; if not, the last saved data or the game's archive. Nothing is ever shown as live when it is not.\n\nMay 2024 archive: Australia's Bureau of Meteorology (report of May 9, 2024), Wikipedia \"May 2024 solar storms\" and NASA/JPL \"NASA Watches Mars Light Up During Epic Solar Storm\".\n\nRadiation on Mars: RAD detector on the Curiosity rover (Hassler et al., Science, 2013).\n\nAstronaut radiation limit: 600 millisieverts over a whole career, standard NASA-STD-3001.\n\nWhat happens in the colony (costs, sols, resources) belongs to the game; whatever is labeled \"what really happened\" is real."
+
+msgid "kW y kWh: potencia y energía"
+msgstr "kW and kWh: power and energy"
+
+msgid "Los kW dicen cuánta electricidad se usa o se produce en cada momento. Los kWh dicen cuánta se guardó."
+msgstr "kW tell you how much electricity is being used or produced at each moment. kWh tell you how much was stored."
+
+msgid "Piensa en una llave de agua: los kW (kilovatios) son qué tan fuerte sale el chorro, y los kWh (kilovatios hora) son cuánta agua juntaste en la cubeta.\n\nUn módulo que consume 20 kW durante 1 hora gasta 20 kWh. Un sol en Marte dura unas 24.66 horas, así que un módulo de 20 kW gasta unos 493 kWh por sol.\n\nEn el juego, los paneles y los módulos se miden en kW, y las baterías de la base guardan kWh. Si lo que se gasta es más que lo que se produce, las baterías se van vaciando."
+msgstr "Think of a water tap: kW (kilowatts) are how hard the water comes out, and kWh (kilowatt-hours) are how much water you collected in the bucket.\n\nA module that uses 20 kW for 1 hour spends 20 kWh. A sol on Mars lasts about 24.66 hours, so a 20 kW module spends about 493 kWh per sol.\n\nIn the game, panels and modules are measured in kW, and the base's batteries store kWh. If more is used than produced, the batteries slowly drain."
+
+msgid "Reactor de fisión de superficie"
+msgstr "Fission surface reactor"
+
+msgid "Un reactor nuclear pequeño que la NASA desarrolla para dar electricidad en la Luna y Marte, de día y de noche."
+msgstr "A small nuclear reactor that NASA is developing to provide electricity on the Moon and Mars, day and night."
+
+msgid "El proyecto Fission Surface Power de la NASA busca un reactor de al menos 40 kW: suficiente para mantener encendidas unas 30 casas durante diez años.\n\nA diferencia de los paneles solares, no depende de la luz del Sol ni se cubre de polvo.\n\nEn el juego, la base empieza con 100 kW: dos reactores de 40 kW y un panel solar de 20 kW."
+msgstr "NASA's Fission Surface Power project is aiming for a reactor of at least 40 kW: enough to keep about 30 homes running for ten years.\n\nUnlike solar panels, it does not depend on sunlight and does not get covered in dust.\n\nIn the game, the base starts with 100 kW: two 40 kW fission reactors and one 20 kW solar panel."
+
+msgid "Hielo de Marte"
+msgstr "Ice of Mars"
+
+msgid "Bajo el suelo de Marte hay capas de hielo de agua. Se puede perforar, derretir y usar."
+msgstr "Under the ground of Mars there are layers of water ice. It can be drilled, melted and used."
+
+msgid "Las sondas han encontrado hielo de agua bajo la superficie de Marte, sobre todo lejos del ecuador. Sacarlo permitiría tener agua para beber, para cultivar y para fabricar oxígeno.\n\nUna idea que estudia la NASA es el pozo Rodwell: se perfora el hielo, se calienta para formar una alberca de agua bajo tierra y se bombea hacia arriba. Un estudio de la NASA calculó que unos 10 kW de calor bastan para sacar unos 379 litros al día.\n\nEn el juego, la perforadora de hielo da 5 litros por sol y gasta 10 kW."
+msgstr "Probes have found water ice under the surface of Mars, especially far from the equator. Getting it out would provide water for drinking, for farming and for making oxygen.\n\nOne idea NASA is studying is the Rodwell: you drill into the ice, heat it to form a pool of water underground and pump it up. A NASA study calculated that about 10 kW of heat is enough to get about 379 liters per day.\n\nIn the game, the ice drill gives 5 liters per sol and uses 10 kW."
+
+msgid "Gravedad de Marte"
+msgstr "Gravity of Mars"
+
+msgid "La fuerza que te jala hacia el suelo. En Marte es el 38 % de la de la Tierra."
+msgstr "The force that pulls you toward the ground. On Mars it is 38 % of Earth's."
+
+msgid "La gravedad depende de cuánta masa tiene un planeta. Marte es más pequeño que la Tierra, así que jala menos: el 38 %.\n\nUna mochila de 10 kg en la Tierra se sentiría en Marte como de 3.8 kg (10 x 0.38). Pero ojo: con poca gravedad los músculos y los huesos trabajan menos y se debilitan, por eso los astronautas hacen ejercicio todos los días.\n\nFuente: NASA/JPL, «Mars at a Glance»."
+msgstr "Gravity depends on how much mass a planet has. Mars is smaller than Earth, so it pulls less: 38 %.\n\nA 10 kg backpack on Earth would feel like 3.8 kg on Mars (10 x 0.38). But careful: with low gravity, muscles and bones work less and get weaker, which is why astronauts exercise every day.\n\nSource: NASA/JPL, \"Mars at a Glance\"."
+
+msgid "Atmósfera de Marte"
+msgstr "Atmosphere of Mars"
+
+msgid "El aire de Marte: 95 % dióxido de carbono y muy delgado. No se puede respirar."
+msgstr "The air of Mars: 95 % carbon dioxide and very thin. You cannot breathe it."
+
+msgid "La atmósfera de Marte tiene 95.3 % de dióxido de carbono, 2.7 % de nitrógeno y 1.6 % de argón, y casi nada de oxígeno.\n\nEs tan delgada que su presión es menos de la centésima parte de la de la Tierra. Por eso los colonos necesitan trajes y módulos sellados, y por eso casi no frena la radiación del Sol.\n\nFuente: NASA/JPL, «Mars at a Glance»."
+msgstr "The atmosphere of Mars is 95.3 % carbon dioxide, 2.7 % nitrogen and 1.6 % argon, with almost no oxygen.\n\nIt is so thin that its pressure is less than one hundredth of Earth's. That is why colonists need suits and sealed modules, and why it barely stops the Sun's radiation.\n\nSource: NASA/JPL, \"Mars at a Glance\"."
+
+msgid "Fobos y Deimos"
+msgstr "Phobos and Deimos"
+
+msgid "Las dos lunas de Marte. Son pequeñas y de forma irregular, como papas."
+msgstr "The two moons of Mars. They are small and irregular, like potatoes."
+
+msgid "Marte tiene dos lunas. La más grande se llama Fobos, que significa «miedo», y la más pequeña, Deimos, que significa «terror».\n\nSon mucho más pequeñas que nuestra Luna, y desde Marte se verían como lunas chiquitas en el cielo.\n\nFuente: NASA/JPL, «Mars at a Glance»."
+msgstr "Mars has two moons. The bigger one is called Phobos, which means \"fear\", and the smaller one, Deimos, which means \"terror\".\n\nThey are much smaller than our Moon, and from Mars they would look like tiny moons in the sky.\n\nSource: NASA/JPL, \"Mars at a Glance\"."
+
+msgid "Monte Olimpo"
+msgstr "Olympus Mons"
+
+msgid "Un volcán gigante de Marte, de unos 26 km de alto: casi 3 veces el Everest."
+msgstr "A giant volcano on Mars, about 26 km high: almost 3 times Everest."
+
+msgid "El Monte Olimpo (Olympus Mons) es un volcán en escudo: muy ancho y con laderas suaves. Mide unos 26 km de alto, casi 3 veces el monte Everest (8.8 km), y es el punto más alto de Marte.\n\nFuente: NASA/JPL, «Mars at a Glance»."
+msgstr "Olympus Mons is a shield volcano: very wide and with gentle slopes. It is about 26 km high, almost 3 times Mount Everest (8.8 km), and it is the highest point on Mars.\n\nSource: NASA/JPL, \"Mars at a Glance\"."
+
+msgid "Impresión 3D"
+msgstr "3D printing"
+
+msgid "Fabricar objetos capa por capa con una máquina. Sirve para hacer repuestos lejos de la Tierra."
+msgstr "Making objects layer by layer with a machine. It is used to make spare parts far from Earth."
+
+msgid "Una impresora 3D derrite un material, como plástico, y lo va poniendo capa por capa hasta formar una pieza.\n\nEn el espacio es muy útil: si algo se rompe, en vez de esperar meses a que llegue un repuesto, se imprime. La primera pieza impresa en el espacio se hizo en la Estación Espacial el 24 de noviembre de 2014.\n\nFuente: collectSPACE, noviembre de 2014."
+msgstr "A 3D printer melts a material, such as plastic, and lays it down layer by layer until it forms a part.\n\nIn space it is very useful: if something breaks, instead of waiting months for a spare part to arrive, you print it. The first part printed in space was made on the Space Station on November 24, 2014.\n\nSource: collectSPACE, November 2014."
+
+msgid "Un vehículo robot que recorre otro planeta, tomando fotos y haciendo experimentos."
+msgstr "A robot vehicle that drives around another planet, taking photos and doing experiments."
+
+msgid "Los rovers son laboratorios con ruedas. Se manejan desde la Tierra, pero como los mensajes tardan minutos en llegar (latencia), también saben moverse un poco solos.\n\nEn Marte han trabajado Sojourner, Spirit, Opportunity, Curiosity y Perseverance. Opportunity estaba hecho para 90 soles y funcionó unos 15 años.\n\nFuente: NASA Astrobiology, febrero de 2019."
+msgstr "Rovers are laboratories on wheels. They are driven from Earth, but since messages take minutes to arrive (latency), they also know how to move a little on their own.\n\nSojourner, Spirit, Opportunity, Curiosity and Perseverance have all worked on Mars. Opportunity was built for 90 sols and ran for about 15 years.\n\nSource: NASA Astrobiology, February 2019."
+
+msgid "Huesos en el espacio"
+msgstr "Bones in space"
+
+msgid "Sin gravedad, los huesos pierden entre 1 % y 1.5 % de su densidad cada mes."
+msgstr "Without gravity, bones lose between 1 % and 1.5 % of their density every month."
+
+msgid "En la Tierra, caminar y cargar cosas hace trabajar a los huesos. En el espacio casi no tienen que sostener peso y se van debilitando: pierden entre 1 % y 1.5 % de su densidad cada mes en misiones de 4 a 6 meses.\n\nPor eso los astronautas hacen ejercicio todos los días y les revisan los huesos antes y después del viaje.\n\nFuente: NASA, «Risk of Spaceflight-Induced Bone Changes»."
+msgstr "On Earth, walking and carrying things makes your bones work. In space they hardly have to hold any weight and they slowly weaken: they lose between 1 % and 1.5 % of their density every month on missions of 4 to 6 months.\n\nThat is why astronauts exercise every day and have their bones checked before and after the trip.\n\nSource: NASA, \"Risk of Spaceflight-Induced Bone Changes\"."
+
+msgid "Un día en Marte"
+msgstr "A day on Mars"
+
+msgid "Un día en Marte se llama sol y dura 24 horas, 39 minutos y 35 segundos: casi 40 minutos más que un día en la Tierra."
+msgstr "A day on Mars is called a sol and lasts 24 hours, 39 minutes and 35 seconds: almost 40 minutes longer than a day on Earth."
+
+msgid "Saltos marcianos"
+msgstr "Martian jumps"
+
+msgid "En Marte la gravedad es solo el 38 % de la de la Tierra. Un niño de 30 kg se sentiría como de 11 kg (30 x 0.38 = 11.4) y podría saltar casi 3 veces más alto."
+msgstr "On Mars, gravity is only 38 % of Earth's. A 30 kg child would feel like 11 kg (30 x 0.38 = 11.4) and could jump almost 3 times higher."
+
+msgid "Dos lunas"
+msgstr "Two moons"
+
+msgid "Marte tiene dos lunas pequeñas: Fobos, que significa «miedo», y Deimos, que significa «terror»."
+msgstr "Mars has two small moons: Phobos, which means \"fear\", and Deimos, which means \"terror\"."
+
+msgid "Atardeceres azules"
+msgstr "Blue sunsets"
+
+msgid "En Marte el cielo es anaranjado de día, pero los atardeceres se ven azules. El polvo deja pasar mejor la luz azul cerca del Sol. El rover Curiosity fotografió uno el 15 de abril de 2015."
+msgstr "On Mars the sky is orange during the day, but sunsets look blue. The dust lets blue light through better near the Sun. The Curiosity rover photographed one on April 15, 2015."
+
+msgid "El volcán más alto"
+msgstr "The tallest volcano"
+
+msgid "El Monte Olimpo, en Marte, es un volcán de unos 26 km de alto: casi 3 veces el monte Everest, que mide 8.8 km."
+msgstr "Olympus Mons, on Mars, is a volcano about 26 km high: almost 3 times Mount Everest, which is 8.8 km."
+
+msgid "Un aire muy delgado"
+msgstr "Very thin air"
+
+msgid "El aire de Marte es 95 % dióxido de carbono y es tan delgado que su presión es menos de la centésima parte de la de la Tierra. Sin traje no se podría respirar."
+msgstr "The air of Mars is 95 % carbon dioxide and so thin that its pressure is less than one hundredth of Earth's. Without a suit you could not breathe."
+
+msgid "Agua que se recicla"
+msgstr "Water that gets recycled"
+
+msgid "En la Estación Espacial Internacional se recupera el 98 % del agua, incluso la del sudor y la orina, y se vuelve agua para beber. Lo lograron en 2023."
+msgstr "On the International Space Station 98 % of the water is recovered, even from sweat and urine, and turned back into drinking water. They achieved it in 2023."
+
+msgid "Space.com, «NASA just recycled 98% of all astronaut pee and sweat on the ISS» (junio de 2023)"
+msgstr "Space.com, «NASA just recycled 98% of all astronaut pee and sweat on the ISS» (June 2023)"
+
+msgid "La primera ensalada espacial"
+msgstr "The first space salad"
+
+msgid "En agosto de 2015 los astronautas de la Estación Espacial comieron por primera vez lechuga romana roja cultivada allá arriba, en el invernadero Veggie, con luces LED rojas, azules y verdes."
+msgstr "In August 2015 the astronauts on the Space Station ate, for the first time, red romaine lettuce grown up there in the Veggie greenhouse, under red, blue and green LED lights."
+
+msgid "Phys.org, «First bite of space-grown lettuce is 'awesome'» (agosto de 2015)"
+msgstr "Phys.org, «First bite of space-grown lettuce is 'awesome'» (August 2015)"
+
+msgid "El polvo y los paneles"
+msgstr "Dust and panels"
+
+msgid "La sonda InSight funcionó en Marte más de 4 años con paneles solares y detectó 1319 sismos marcianos. En diciembre de 2022 el polvo cubrió tanto sus paneles que se quedó sin energía."
+msgstr "The InSight lander worked on Mars for more than 4 years on solar panels and detected 1319 marsquakes. In December 2022 dust covered its panels so much that it ran out of energy."
+
+msgid "EarthSky, «InSight falls silent, NASA declares mission end» (diciembre de 2022)"
+msgstr "EarthSky, «InSight falls silent, NASA declares mission end» (December 2022)"
+
+msgid "Hielo que desaparece"
+msgstr "Vanishing ice"
+
+msgid "En 2008 la sonda Phoenix escarbó el suelo de Marte y encontró trocitos blancos. En 4 días desaparecieron: eran hielo de agua que se evaporó al quedar al aire."
+msgstr "In 2008 the Phoenix lander dug into the soil of Mars and found little white chunks. Within 4 days they were gone: they were water ice that evaporated once exposed to the air."
+
+msgid "Space.com, «Proof! Water Ice Found on Mars» (junio de 2008)"
+msgstr "Space.com, «Proof! Water Ice Found on Mars» (June 2008)"
+
+msgid "Fábrica en el espacio"
+msgstr "A factory in space"
+
+msgid "El 24 de noviembre de 2014 se imprimió la primera pieza 3D fuera de la Tierra, en la Estación Espacial: una tapa para la misma impresora."
+msgstr "On November 24, 2014 the first 3D part was printed away from Earth, on the Space Station: a cover for the printer itself."
+
+msgid "collectSPACE, «Made In Space 3D printing» (noviembre de 2014)"
+msgstr "collectSPACE, «Made In Space 3D printing» (November 2014)"
+
+msgid "Radiación del viaje"
+msgstr "Radiation on the trip"
+
+msgid "Solo el viaje de ida y vuelta a Marte daría a un astronauta unos 660 milisieverts de radiación, más que el límite de toda la carrera en la NASA (600). Por eso las naves y las bases necesitan blindaje."
+msgstr "The round trip to Mars alone would give an astronaut about 660 millisieverts of radiation, more than NASA's whole-career limit (600). That is why spacecraft and bases need shielding."
+
+msgid "Southwest Research Institute, mediciones del detector RAD de Curiosity (2013)"
+msgstr "Southwest Research Institute, measurements from Curiosity's RAD detector (2013)"
+
+msgid "El rover que no se rendía"
+msgstr "The rover that would not quit"
+
+msgid "El rover Opportunity estaba hecho para durar 90 soles y funcionó unos 15 años, recorriendo más de 45 km. Una tormenta de polvo que cubrió todo Marte en 2018 lo dejó sin energía."
+msgstr "The Opportunity rover was built to last 90 sols and ran for about 15 years, covering more than 45 km. A dust storm that covered all of Mars in 2018 left it without energy."
+
+msgid "NASA Astrobiology, «Opportunity rover mission comes to an end» (febrero de 2019)"
+msgstr "NASA Astrobiology, «Opportunity rover mission comes to an end» (February 2019)"
+
+msgid "Oxígeno hecho en Marte"
+msgstr "Oxygen made on Mars"
+
+msgid "El experimento MOXIE del rover Perseverance fabricó 122 gramos de oxígeno con el aire de Marte en 16 pruebas: lo que respira un perrito en unas 10 horas."
+msgstr "The MOXIE experiment on the Perseverance rover made 122 grams of oxygen from the air of Mars in 16 runs: what a small dog breathes in about 10 hours."
+
+msgid "Space.com, «Perseverance Mars rover ends MOXIE oxygen experiment» (septiembre de 2023)"
+msgstr "Space.com, «Perseverance Mars rover ends MOXIE oxygen experiment» (September 2023)"
+
+msgid "Menos luz del Sol"
+msgstr "Less sunlight"
+
+msgid "Marte está 1.5 veces más lejos del Sol que la Tierra. La luz se reparte en un área 1.5 x 1.5 = 2.3 veces más grande, así que a Marte le llega solo un 43 % de la luz."
+msgstr "Mars is 1.5 times farther from the Sun than Earth. The light spreads over an area 1.5 x 1.5 = 2.3 times bigger, so Mars gets only 43 % of the light."
+
+msgid "NASA/JPL, «Mars at a Glance» (distancia al Sol) y cálculo"
+msgstr "NASA/JPL, «Mars at a Glance» (distance to the Sun) and calculation"
+
+msgid "Auroras en todo Marte"
+msgstr "Auroras all over Mars"
+
+msgid "En mayo de 2024 una tormenta solar enorme llegó a Marte y la sonda MAVEN vio auroras en todo el planeta. En la Tierra solo se ven cerca de los polos."
+msgstr "In May 2024 a huge solar storm reached Mars and the MAVEN probe saw auroras all over the planet. On Earth they are only seen near the poles."
+
+msgid "NASA/JPL vía Phys.org, «NASA Watches Mars Light Up During Epic Solar Storm» (junio de 2024)"
+msgstr "NASA/JPL via Phys.org, «NASA Watches Mars Light Up During Epic Solar Storm» (June 2024)"
+
+msgid "Más rápido que la nube"
+msgstr "Faster than the cloud"
+
+msgid "La luz del Sol llega a Marte en unos 13 minutos (227.7 millones de km ÷ 300 000 km/s ≈ 760 segundos). Una nube de plasma es mucho más lenta: tarda días."
+msgstr "Sunlight reaches Mars in about 13 minutes (227.7 million km ÷ 300 000 km/s ≈ 760 seconds). A plasma cloud is much slower: it takes days."
+
+msgid "Un viaje largo"
+msgstr "A long trip"
+
+msgid "El rover Perseverance despegó de la Tierra el 30 de julio de 2020 y aterrizó en Marte el 18 de febrero de 2021: casi 7 meses de viaje."
+msgstr "The Perseverance rover lifted off from Earth on July 30, 2020 and landed on Mars on February 18, 2021: almost 7 months of travel."
+
+msgid "Sin la gravedad de la Tierra, los huesos de los astronautas pierden entre 1 % y 1.5 % de su densidad cada mes. Por eso hacen ejercicio todos los días."
+msgstr "Without Earth's gravity, astronauts' bones lose between 1 % and 1.5 % of their density every month. That is why they exercise every day."
+
+msgid "El cañón gigante"
+msgstr "The giant canyon"
+
+msgid "Valles Marineris es un sistema de cañones en Marte de más de 4000 km de largo y hasta 7 km de profundidad: es casi 10 veces más largo que el Gran Cañón del Colorado."
+msgstr "Valles Marineris is a canyon system on Mars more than 4000 km long and up to 7 km deep: it is almost 10 times longer than the Grand Canyon."
+
+msgid "El primer vuelo en otro mundo"
+msgstr "The first flight on another world"
+
+msgid "En abril de 2021 el helicóptero Ingenuity logró el primer vuelo controlado con motor en otro planeta. Estaba diseñado para volar 5 veces y completó 72 vuelos antes de dañar sus rotores en 2024."
+msgstr "In April 2021 the Ingenuity helicopter achieved the first powered, controlled flight on another planet. It was designed to fly 5 times and completed 72 flights before damaging its rotors in 2024."
+
+msgid "NASA/JPL, «After Three Years on Mars, NASA's Ingenuity Helicopter Mission Ends» (enero de 2024)"
+msgstr "NASA/JPL, «After Three Years on Mars, NASA's Ingenuity Helicopter Mission Ends» (January 2024)"
+
+msgid "Frío extremo y cambios bruscos"
+msgstr "Extreme cold and sudden swings"
+
+msgid "La temperatura media en Marte es de unos -60 °C. En el ecuador puede subir a 20 °C al mediodía, pero esa misma noche caer por debajo de los -70 °C porque su aire delgado no retiene el calor."
+msgstr "The average temperature on Mars is about -60 °C. At the equator it can climb to 20 °C at noon, but drop below -70 °C that same night because its thin air does not hold heat."
+
+msgid "Cuidar cada gota de aire"
+msgstr "Guarding every drop of air"
+
+msgid "En las naves y bases espaciales se usan esclusas de aire: cámaras con dos puertas que nunca se abren a la vez, para que los astronautas puedan salir sin que se escape el aire de toda la base."
+msgstr "Spacecraft and space bases use airlocks: chambers with two doors that are never open at the same time, so astronauts can go out without the air of the whole base escaping."
+
+msgid "Un agujero diminuto en órbita"
+msgstr "A tiny hole in orbit"
+
+msgid "En agosto de 2018 se detectó una caída de presión en la Estación Espacial Internacional causada por un agujero de apenas 2 milímetros en una nave acoplada. Los astronautas lo sellaron temporalmente con cinta Kapton y resina."
+msgstr "In August 2018 a pressure drop was detected on the International Space Station, caused by a hole just 2 millimeters wide in a docked spacecraft. The astronauts sealed it temporarily with Kapton tape and resin."
+
+msgid "Space.com, «International Space Station Leak Plugged» (agosto de 2018)"
+msgstr "Space.com, «International Space Station Leak Plugged» (August 2018)"
+
+msgid "Cultivar en suelo marciano"
+msgstr "Farming in Martian soil"
+
+msgid "En 2017 el Centro Internacional de la Papa y la NASA demostraron que las papas pueden crecer en condiciones similares a las de Marte usando tierra del desierto de Atacama, uno de los lugares más secos de la Tierra."
+msgstr "In 2017 the International Potato Center and NASA showed that potatoes can grow in Mars-like conditions using soil from the Atacama Desert, one of the driest places on Earth."
+
+msgid "CIP / NASA, «Indicators show potatoes can grow on Mars» (marzo de 2017)"
+msgstr "CIP / NASA, «Indicators show potatoes can grow on Mars» (March 2017)"
+
+msgid "Cuarentena lunar"
+msgstr "Lunar quarantine"
+
+msgid "Cuando los astronautas del Apolo 11 volvieron de la Luna en 1969, pasaron 21 días encerrados en una caravana sellada por miedo a que trajeran microbios espaciales desconocidos."
+msgstr "When the Apollo 11 astronauts came back from the Moon in 1969, they spent 21 days shut inside a sealed trailer for fear they had brought back unknown space microbes."
+
+msgid "Rocas de Marte en la Tierra"
+msgstr "Mars rocks on Earth"
+
+msgid "En la Tierra se han encontrado cientos de meteoritos que vienen de Marte: impactos gigantes en el planeta rojo lanzaron rocas al espacio que, millones de años después, cayeron aquí."
+msgstr "Hundreds of meteorites that come from Mars have been found on Earth: giant impacts on the red planet threw rocks into space that, millions of years later, fell here."
+
+msgid "El destello más potente"
+msgstr "The most powerful flash"
+
+msgid "En noviembre de 2003 el Sol lanzó una llamarada tan intensa que saturó los sensores de los satélites que la medían; se calculó en clase X28, una de las más fuertes jamás registradas."
+msgstr "In November 2003 the Sun fired off a flare so intense that it saturated the sensors of the satellites measuring it; it was estimated at class X28, one of the strongest ever recorded."
+
+msgid "NASA, «Biggest Solar Flare on Record» (noviembre de 2003)"
+msgstr "NASA, «Biggest Solar Flare on Record» (November 2003)"
+
+msgid "Marte tuvo ríos y lagos"
+msgstr "Mars had rivers and lakes"
+
+msgid "Hace más de 3500 millones de años Marte tuvo ríos, lagos y posiblemente un océano en su hemisferio norte. El rover Perseverance explora el cráter Jezero precisamente porque fue el delta de un antiguo río."
+msgstr "More than 3.5 billion years ago Mars had rivers, lakes and possibly an ocean in its northern hemisphere. The Perseverance rover explores Jezero crater precisely because it was the delta of an ancient river."
+
+msgid "El sonido viaja más lento"
+msgstr "Sound travels slower"
+
+msgid "El micrófono del rover Perseverance grabó por primera vez los sonidos de Marte en 2021. Como el aire es muy frío y tiene mucho dióxido de carbono, el sonido viaja a unos 240 m/s, más lento que en la Tierra (343 m/s)."
+msgstr "The microphone on the Perseverance rover recorded the sounds of Mars for the first time in 2021. Because the air is very cold and has a lot of carbon dioxide, sound travels at about 240 m/s, slower than on Earth (343 m/s)."
+
+msgid "NASA/JPL, «NASA's Perseverance Rover Microphone Captures Sounds of Mars» (abril de 2022)"
+msgstr "NASA/JPL, «NASA's Perseverance Rover Microphone Captures Sounds of Mars» (April 2022)"
+
+msgid "Crecer en el espacio"
+msgstr "Growing in space"
+
+msgid "Sin la gravedad que comprime la columna vertebral, los astronautas se estiran y pueden crecer hasta 5 centímetros durante una misión espacial. Al volver a la Tierra recuperan su estatura normal."
+msgstr "Without gravity squeezing the spine, astronauts stretch and can grow up to 5 centimeters during a space mission. Back on Earth they return to their normal height."
+
+msgid "Cambios en la vista"
+msgstr "Changes in eyesight"
+
+msgid "En gravedad baja los fluidos del cuerpo suben hacia la cabeza, lo que aumenta la presión detrás de los ojos y puede achatar el globo ocular, provocando problemas de vista llamados síndrome SANS."
+msgstr "In low gravity, body fluids move up toward the head, which raises the pressure behind the eyes and can flatten the eyeball, causing vision problems known as SANS."
+
+msgid "Esperar la alineación"
+msgstr "Waiting for the alignment"
+
+msgid "La Tierra y Marte solo se acercan lo suficiente para enviar naves gastando poco combustible cada 26 meses. Si una misión pierde esa ventana de lanzamiento, tiene que esperar más de dos años."
+msgstr "Earth and Mars only get close enough to send spacecraft on little fuel every 26 months. If a mission misses that launch window, it has to wait more than two years."
+
+msgid "Tormentas solares de mayo de 2024"
+msgstr "Solar storms of May 2024"
+
+msgid "Región activa 13664 (AR3664). Fue la primera de una racha de llamaradas X."
+msgstr "Active region 13664 (AR3664). It was the first in a streak of X flares."
+
+msgid "Bureau of Meteorology de Australia, reporte de clima espacial del 9 de mayo de 2024"
+msgstr "Australia's Bureau of Meteorology, space weather report of May 9, 2024"
+
+msgid "Región activa 13664. Lanzó una nube de plasma (CME) hacia la Tierra."
+msgstr "Active region 13664. It launched a plasma cloud (CME) toward Earth."
+
+msgid "Varias nubes de plasma lanzadas el 8 y el 9 de mayo viajaron juntas y llegaron a la Tierra el 10 de mayo."
+msgstr "Several plasma clouds launched on May 8 and 9 traveled together and reached Earth on May 10."
+
+msgid "Bureau of Meteorology de Australia (9 de mayo de 2024) y Wikipedia, «May 2024 solar storms»"
+msgstr "Australia's Bureau of Meteorology (May 9, 2024) and Wikipedia, «May 2024 solar storms»"
+
+msgid "Halo completo"
+msgstr "Full halo"
+
+msgid "Región activa 13664, la segunda llamarada X del día."
+msgstr "Active region 13664, the second X flare of the day."
+
+msgid "Región activa 13664."
+msgstr "Active region 13664."
+
+msgid "Tormenta G5 (extrema), la más intensa en más de 20 años. Se vieron auroras mucho más lejos de los polos de lo normal."
+msgstr "G5 (extreme) storm, the most intense in more than 20 years. Auroras were seen much farther from the poles than usual."
+
+msgid "Magnitud entre X5.4 y X5.7, con otra nube de plasma de halo completo."
+msgstr "Magnitude between X5.4 and X5.7, with another full-halo plasma cloud."
+
+msgid "La más fuerte de toda la racha vista desde la Tierra. Causó apagones de radio fuertes (R3)."
+msgstr "The strongest of the whole streak seen from Earth. It caused strong radio blackouts (R3)."
+
+msgid "Clase estimada con datos de la sonda Solar Orbiter: estaba en el lado del Sol que no se ve desde la Tierra, pero sí apuntaba a Marte."
+msgstr "Class estimated with data from the Solar Orbiter probe: it was on the side of the Sun that cannot be seen from Earth, but it was pointed at Mars."
+
+msgid "NASA/JPL, «NASA Watches Mars Light Up During Epic Solar Storm» (junio de 2024)"
+msgstr "NASA/JPL, «NASA Watches Mars Light Up During Epic Solar Storm» (June 2024)"
+
+msgid "El detector RAD del rover Curiosity midió 8100 micrograys en la superficie de Marte, como 30 radiografías de tórax: la mayor subida que había medido desde que llegó, 12 años antes. La sonda MAVEN vio auroras en todo el planeta."
+msgstr "The RAD detector on the Curiosity rover measured 8100 micrograys on the surface of Mars, like 30 chest X-rays: the biggest jump it had measured since arriving 12 years earlier. The MAVEN probe saw auroras all over the planet."
+
+msgid "Marte"
+msgstr "Mars"
+
+msgid "enero"
+msgstr "January"
+
+msgid "febrero"
+msgstr "February"
+
+msgid "marzo"
+msgstr "March"
+
+msgid "abril"
+msgstr "April"
+
+msgid "mayo"
+msgstr "May"
+
+msgid "junio"
+msgstr "June"
+
+msgid "julio"
+msgstr "July"
+
+msgid "agosto"
+msgstr "August"
+
+msgid "septiembre"
+msgstr "September"
+
+msgid "octubre"
+msgstr "October"
+
+msgid "noviembre"
+msgstr "November"
+
+msgid "diciembre"
+msgstr "December"
+
+msgid "agua"
+msgstr "water"
+
+msgid "comida"
+msgstr "food"
+
+msgid "guardado"
+msgstr "saved"
+
+msgid "%s a %s"
+msgstr "%s to %s"
+
+msgid "%d candidato%s"
+msgstr "%d candidate%s"
+
+msgid "%d libre"
+msgstr "%d free"
+
+msgid "%d libres"
+msgstr "%d free"
+
+msgid "%d plaza libre"
+msgstr "%d free spot"
+
+msgid "%d plazas libres"
+msgstr "%d free spots"
+
+msgid "FALTA %s"
+msgstr "%s LEFT"
+
+msgid "%d sol"
+msgstr "%d sol"
+
+msgid "%d soles"
+msgstr "%d sols"
+
+msgid "Español"
+msgstr "Spanish"
+
+msgid "Idioma"
+msgstr "Language"
+
+msgid "ESPAÑOL"
+msgstr "ESPAÑOL"
+
+msgid "ENGLISH"
+msgstr "ENGLISH"
+
+msgid "El idioma se cambia desde el menú de inicio"
+msgstr "The language is changed from the main menu"
+
+msgid "Idioma: %s"
+msgstr "Language: %s"
+
+msgid "Sonido, pantalla, idioma y controles"
+msgstr "Sound, display, language and controls"
+
+# Nombres de los colonos (datos/candidatos.tres): en inglés, nombres estadounidenses.
+msgid "Elena Vargas Ruiz"
+msgstr "Emily Carter"
+
+msgid "Tomás Ibarra Soto"
+msgstr "Thomas Walker"
+
+msgid "Nadia Rahman Cruz"
+msgstr "Natalie Brooks"
+
+msgid "Lucía Mendoza Paz"
+msgstr "Lucy Anderson"
+
+msgid "Marco Salas Vega"
+msgstr "Mark Sullivan"
+
+msgid "Aiko Tanaka Mora"
+msgstr "Ashley Turner"
+
+msgid "Samuel Okoye Reyes"
+msgstr "Samuel Harris"
+
+msgid "Inés Duarte Luna"
+msgstr "Grace Mitchell"
+
+msgid "Pablo Herrera Gil"
+msgstr "Paul Henderson"
+
+msgid "Sofía Castro Nieto"
+msgstr "Sophia Bennett"
+
+msgid "Omar Haddad Ríos"
+msgstr "Owen Hayes"
+
+msgid "Valeria Campos Ortiz"
+msgstr "Valerie Cooper"
+
+msgid "Diego Fuentes Lara"
+msgstr "Derek Foster"
+
+msgid "Mei Lin Rojas"
+msgstr "Megan Collins"
+
+msgid "Andrés Molina Cano"
+msgstr "Andrew Miller"
+
+msgid "Clara Navarro Peña"
+msgstr "Claire Nelson"
+
+msgid "Iván Paredes Mejía"
+msgstr "Evan Parker"
+
+msgid "Rosa Quispe Flores"
+msgstr "Rose Campbell"
+
+msgid "Hugo Delgado Sanz"
+msgstr "Hunter Davis"
+
+# Tareas que aparecen al construir cada módulo.
+msgid "Calibrar el generador de oxígeno"
+msgstr "Calibrate the oxygen generator"
+
+msgid "Dar mantenimiento a la perforadora"
+msgstr "Service the ice drill"
+
+msgid "Analizar núcleos de hielo"
+msgstr "Analyze ice cores"
+
+msgid "Imprimir repuestos en 3D"
+msgstr "3D print spare parts"
+
+msgid "Sembrar nuevas bandejas"
+msgstr "Plant new trays"
+
+msgid "Medir la radiación dentro del refugio"
+msgstr "Measure radiation inside the shelter"
+
+msgid "Construye más módulos para tener más tareas."
+msgstr "Build more modules to unlock more tasks."
+

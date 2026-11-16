@@ -47,7 +47,7 @@ func mejorar() -> void:
 		var mejora := siguiente_mejora()
 		soles_mejora = mejora["soles"]
 		EstadoJuego.economia.pagar(mejora["dinero"], mejora["materiales"])
-		EstadoJuego.registrar(Enums.Categoria.ACCION, "Mejora del Módulo de Comando al nivel %d iniciada (%d soles)" % [nivel + 1, soles_mejora], false)
+		EstadoJuego.registrar(Enums.Categoria.ACCION, Idioma.t("Mejora del Módulo de Comando al nivel %d iniciada (%d soles)") % [nivel + 1, soles_mejora], false)
 
 
 ## Se llama una vez por sol: avanza la mejora en curso.
@@ -57,4 +57,4 @@ func avanzar_mejora() -> void:
 	soles_mejora -= 1
 	if soles_mejora == 0:
 		nivel += 1
-		EstadoJuego.registrar(Enums.Categoria.ACCION, "Módulo de Comando mejorado a nivel %d (x%s producción)" % [nivel, UI.num(multiplicador())])
+		EstadoJuego.registrar(Enums.Categoria.ACCION, Idioma.t("Módulo de Comando mejorado a nivel %d (x%s producción)") % [nivel, UI.num(multiplicador())])

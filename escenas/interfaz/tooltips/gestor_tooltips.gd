@@ -159,13 +159,13 @@ func _abrir(nivel: int, contenido: Dictionary, origen: Dictionary) -> void:
 	var c := UI.columna(6)
 	panel.add_child(c)
 	if contenido.get("titulo", "") != "":
-		var titulo := UI.etiqueta_pixel(contenido["titulo"], UI.T_TEXTO, contenido.get("color_titulo", UI.ADVERTENCIA))
+		var titulo := UI.etiqueta_pixel(Idioma.t(contenido["titulo"]), UI.T_TEXTO, contenido.get("color_titulo", UI.ADVERTENCIA))
 		titulo.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		titulo.custom_minimum_size.x = ANCHO
 		c.add_child(titulo)
 	c.add_child(_texto(contenido.get("texto", ""), UI.TEXTO))
 	if contenido.get("sugerencia", "") != "":
-		c.add_child(_texto("Sugerencia: " + contenido["sugerencia"], UI.BIEN))
+		c.add_child(_texto(Idioma.t("Sugerencia: ") + contenido["sugerencia"], UI.BIEN))
 	if contenido.get("pie", "") != "":
 		c.add_child(_texto(contenido["pie"], UI.TEXTO_SUAVE, 11))
 	var barra := ColorRect.new()
@@ -184,6 +184,7 @@ func _abrir(nivel: int, contenido: Dictionary, origen: Dictionary) -> void:
 
 ## Texto del tooltip con los términos del glosario resaltados (encadenables).
 func _texto(texto: String, color: Color, tam := 13) -> RichTextLabel:
+	texto = Idioma.t(texto)
 	var bbcode := EstadoJuego.glosario.resaltar(texto)
 	var r := UI.texto_glosario(bbcode if bbcode != "" else texto.replace("[", "[lb]"), tam, color)
 	r.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -280,4 +281,4 @@ func _contenido_termino(id: String) -> Dictionary:
 	var t := EstadoJuego.glosario.termino(id)
 	if t.is_empty():
 		return {}
-	return { "titulo": t["nombre"], "texto": t["corto"], "pie": "Clic en la palabra: abrir en el glosario" }
+	return { "titulo": t["nombre"], "texto": t["corto"], "pie": Idioma.t("Clic en la palabra: abrir en el glosario") }

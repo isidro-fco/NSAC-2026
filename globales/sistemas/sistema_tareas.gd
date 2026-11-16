@@ -15,11 +15,17 @@ func en_curso(id: String) -> bool:
 	return false
 
 
-## Tareas que nadie está haciendo ahora.
+## true si la tarea se puede hacer en esta base: las de exterior siempre; las de
+## interior, solo si el módulo donde se hacen está construido.
+func se_puede_hacer(tarea: Dictionary) -> bool:
+	return tarea["exterior"] or tarea["modulo"] in EstadoJuego.economia.modulos_activos
+
+
+## Tareas de los módulos que tiene la base (y las de exterior) que nadie está haciendo ahora.
 func disponibles() -> Array[Dictionary]:
 	var lista: Array[Dictionary] = []
 	for tarea: Dictionary in datos.tareas:
-		if not en_curso(tarea["id"]):
+		if se_puede_hacer(tarea) and not en_curso(tarea["id"]):
 			lista.append(tarea)
 	return lista
 
@@ -34,12 +40,12 @@ func colonos_para(tarea: Dictionary) -> Array[DatosColono]:
 
 
 func asignar(tarea: Dictionary, c: DatosColono) -> bool:
-	if not colonos_para(tarea).has(c) or en_curso(tarea["id"]):
+	if not colonos_para(tarea).has(c) or en_curso(tarea["id"]) or not se_puede_hacer(tarea):
 		return false
 	c.estado = Enums.EstadoColono.EN_MISION
 	c.tarea = tarea
 	c.soles_restantes = tarea["soles"]
-	EstadoJuego.registrar(Enums.Categoria.ACCION, "Tarea asignada: %s a %s" % [tarea["titulo"], c.nombre], false)
+	EstadoJuego.registrar(Enums.Categoria.ACCION, Idioma.t("Tarea asignada: %s a %s") % [Idioma.t(tarea["titulo"]), c.nombre], false)
 	EstadoJuego.curiosidades.disparar("tarea:%s" % tarea["id"])
 	EstadoJuego.estado_cambiado.emit()
 	return true
@@ -67,9 +73,9 @@ func _completar(c: DatosColono, tarea: Dictionary) -> void:
 			EstadoJuego.economia.investigacion += cantidad
 		elif recurso == "presupuesto":
 			# HU-09: el pago de la Tierra llega con retraso.
-			EstadoJuego.tierra.enviar("Pago: %s" % tarea["titulo"], datos.latencia_fondos, { "presupuesto": cantidad })
+			EstadoJuego.tierra.enviar(Idioma.t("Pago: %s") % Idioma.t(tarea["titulo"]), datos.latencia_fondos, { "presupuesto": cantidad })
 		else:
 			EstadoJuego.economia.sumar(recurso, cantidad)
 	c.estado = Enums.EstadoColono.DISPONIBLE
 	c.tarea = {}
-	EstadoJuego.registrar(Enums.Categoria.TRIPULACION, "%s completó: %s" % [c.nombre, tarea["titulo"]])
+	EstadoJuego.registrar(Enums.Categoria.TRIPULACION, Idioma.t("%s completó: %s") % [c.nombre, Idioma.t(tarea["titulo"])])

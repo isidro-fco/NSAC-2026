@@ -20,12 +20,16 @@ const ANCHO_BOTONES := 300
 const MARGEN := 56
 const ESTRELLAS := 34
 
+## Al cambiar de idioma se recarga la pantalla y se vuelve a abrir Opciones.
+static var _reabrir_opciones := false
+
 var opciones: MenuOpciones
 var _reloj := 0.0
 var _estrellas: Array[Vector3] = []      # x, y (0..1 de la ventana) y desfase del parpadeo
 
 
 func _ready() -> void:
+	Idioma.iniciar()                      # antes de crear textos: inglés la primera vez
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	theme = UI.tema()
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -42,27 +46,30 @@ func _ready() -> void:
 	columna.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	add_child(columna)
 	columna.add_child(_titulo("LITTLE BIG STEPS", 40, UI.TEXTO))
-	columna.add_child(_titulo("COLONIA EN MARTE", 16, UI.ACENTO))
+	columna.add_child(_titulo(Idioma.t("COLONIA EN MARTE"), 16, UI.ACENTO))
 	var hueco := Control.new()
 	hueco.custom_minimum_size = Vector2(0, 22)
 	columna.add_child(hueco)
 	# Los botones no se estiran al ancho del título.
 	for boton: Button in [
-			Cabina.boton_grande("Jugar", "Fundar una colonia nueva", _jugar),
-			MenuOpciones.boton_apagado("Opciones", "Sonido, pantalla y controles", _abrir_opciones),
-			MenuOpciones.boton_apagado("Salir", "Cerrar el juego", get_tree().quit, UI.CRITICO)]:
+			Cabina.boton_grande(Idioma.t("Jugar"), Idioma.t("Fundar una colonia nueva"), _jugar),
+			MenuOpciones.boton_apagado(Idioma.t("Opciones"), Idioma.t("Sonido, pantalla, idioma y controles"), _abrir_opciones),
+			MenuOpciones.boton_apagado(Idioma.t("Salir"), Idioma.t("Cerrar el juego"), get_tree().quit, UI.CRITICO)]:
 		boton.custom_minimum_size.x = ANCHO_BOTONES
 		boton.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		columna.add_child(boton)
 
 	# Flechas + Enter: los botones de la columna, o el menú de opciones si está abierto.
 	add_child(NavegacionTeclado.new(func() -> Control: return opciones if opciones != null else columna))
-	var pie := UI.etiqueta_pixel("ESC: OPCIONES  ·  FLECHAS Y ENTER: ELEGIR", UI.T_DETALLE, UI.TEXTO_SUAVE)
+	var pie := UI.etiqueta_pixel(Idioma.t("ESC: OPCIONES  ·  FLECHAS Y ENTER: ELEGIR"), UI.T_DETALLE, UI.TEXTO_SUAVE)
 	pie.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 16)
 	pie.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	pie.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	_sombrear(pie, 2)
 	add_child(pie)
+	if _reabrir_opciones:
+		_reabrir_opciones = false
+		_abrir_opciones()
 
 
 func _process(delta: float) -> void:
@@ -114,7 +121,10 @@ func _abrir_opciones() -> void:
 	opciones = MenuOpciones.new()
 	add_child(opciones)
 	opciones.tree_exited.connect(func() -> void: opciones = null)
-	opciones.iniciar(null, "Opciones")
+	opciones.iniciar(null, Idioma.t("Opciones"))
+	opciones.idioma_cambiado.connect(func() -> void:
+		_reabrir_opciones = true
+		get_tree().reload_current_scene.call_deferred())
 
 
 static var _imagen: Image

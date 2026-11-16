@@ -11,21 +11,33 @@ var terminos: Array = (load("res://datos/glosario.tres") as DatosGlosario).termi
 var descubiertos := {}                # id -> true, en el orden en que se descubrieron
 var _por_palabra := {}                # palabra en minúsculas -> id
 var _regex := RegEx.new()
+var _clave_palabras := ""              # "palabras" o "palabras_en": con cuál se armó la búsqueda
 
 
 func _init() -> void:
+	_preparar_palabras()
+
+
+func reiniciar() -> void:
+	descubiertos.clear()
+	_preparar_palabras()
+
+
+## Palabras que se resaltan, en el idioma del juego ("palabras" o "palabras_en").
+func _preparar_palabras() -> void:
+	var clave := "palabras_en" if Idioma.en_ingles() else "palabras"
+	if clave == _clave_palabras:
+		return
+	_clave_palabras = clave
+	_por_palabra.clear()
 	var palabras: Array[String] = []
 	for termino: Dictionary in terminos:
-		for palabra: String in termino["palabras"]:
+		for palabra: String in termino.get(clave, termino["palabras"]):
 			_por_palabra[palabra.to_lower()] = termino["id"]
 			palabras.append(palabra.to_lower())
 	# Las más largas primero ("tormenta solar" antes que "tormenta"); sin letras pegadas a los lados.
 	palabras.sort_custom(func(a: String, b: String) -> bool: return a.length() > b.length())
 	_regex.compile("(?<![\\p{L}])(%s)(?![\\p{L}])" % "|".join(palabras))
-
-
-func reiniciar() -> void:
-	descubiertos.clear()
 
 
 func termino(id: String) -> Dictionary:
@@ -38,6 +50,7 @@ func termino(id: String) -> Dictionary:
 ## BBCode del texto con los términos marcados como enlaces (y descubiertos),
 ## o "" si no contiene ninguno.
 func resaltar(texto: String) -> String:
+	_preparar_palabras()
 	# Se busca en minúsculas (la RegEx no pliega tildes: "Ó" ≠ "ó"); la longitud no cambia.
 	var coincidencias := _regex.search_all(texto.to_lower())
 	if coincidencias.is_empty():

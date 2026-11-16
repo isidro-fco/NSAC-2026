@@ -128,7 +128,7 @@ func _alcanzo_nivel_maximo(nivel_antes: int) -> bool:
 
 
 func _ganar() -> void:
-	registrar(Enums.Categoria.EVENTO, "Misión cumplida: la colonia es autosuficiente", false)
+	registrar(Enums.Categoria.EVENTO, Idioma.t("Misión cumplida: la colonia es autosuficiente"), false)
 	GestorTiempo.en_pausa = true
 	victoria.emit()
 
@@ -136,9 +136,9 @@ func _ganar() -> void:
 func _comprobar_derrota() -> void:
 	if economia.recursos["energia"] <= 0.0 and economia.balance("energia") < 0.0:
 		modulos_apagados = true
-		_terminar("La energía se agotó: la base ha quedado a oscuras.")
+		_terminar(Idioma.t("La energía se agotó: la base ha quedado a oscuras."))
 	elif tripulacion.soles_sin_vitales >= datos_balance.soles_sin_vitales_derrota:
-		_terminar("%d soles sin soporte vital: la colonia se ha perdido." % tripulacion.soles_sin_vitales)
+		_terminar(Idioma.t("%d soles sin soporte vital: la colonia se ha perdido.") % tripulacion.soles_sin_vitales)
 
 
 func _terminar(motivo: String) -> void:

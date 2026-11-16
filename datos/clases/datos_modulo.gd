@@ -6,7 +6,10 @@ extends Resource
 ## Definición de un tipo de módulo. Cada uno vive en datos/modulos/<id>.tres.
 
 @export var id := ""
-@export var nombre := ""
+## En el idioma del juego (ver Idioma); el .tres lo guarda en español.
+@export var nombre := "":
+	get:
+		return Idioma.t(nombre)
 @export var tam := Vector2i.ONE
 @export var letra := ""
 @export var color := Color.WHITE
@@ -24,7 +27,9 @@ extends Resource
 ## Potencia eléctrica que consume mientras está construido (kW).
 @export var consumo_kw := 0.0
 ## Línea de producción especial para la tarjeta de construcción (p. ej. el reciclaje de agua).
-@export var nota_produccion := ""
+@export var nota_produccion := "":
+	get:
+		return Idioma.t(nota_produccion)
 
 
 ## Lado del ícono en píxeles del sprite; una región más chica se dibuja a 2x.

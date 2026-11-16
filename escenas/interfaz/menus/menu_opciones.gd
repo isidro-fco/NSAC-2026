@@ -3,6 +3,9 @@
 
 class_name MenuOpciones
 extends MenuModulo
+
+## El jugador eligió otro idioma (solo desde el menú de inicio): hay que rehacer la pantalla.
+signal idioma_cambiado
 ## Menú de opciones. En la partida no tiene botón: se abre con Esc cuando no
 ## hay nada más que cerrar (ver Juego._escape) y se cierra con Esc o la X.
 ## También lo abre el menú de inicio (Inicio); ahí `interfaz` es null y la
@@ -65,17 +68,17 @@ func construir() -> void:
 
 	var izquierda := UI.columna(6)
 	f.add_child(UI.expandir(izquierda))
-	izquierda.add_child(Cabina.encabezado("Sonido"))
+	izquierda.add_child(Cabina.encabezado(Idioma.t("Sonido")))
 	var sonido := Cabina.pantalla()
 	sonido.size_flags_vertical = Control.SIZE_FILL
 	var filas := UI.columna(10)
-	filas.add_child(_fila_volumen("Efectos", GestorAudio.volumen_efectos, GestorAudio.fijar_volumen_efectos, "volumen_efectos"))
-	filas.add_child(_fila_volumen("Ambiente", GestorAudio.volumen_ambiente, GestorAudio.fijar_volumen_ambiente, "volumen_ambiente"))
+	filas.add_child(_fila_volumen(Idioma.t("Efectos"), GestorAudio.volumen_efectos, GestorAudio.fijar_volumen_efectos, "volumen_efectos"))
+	filas.add_child(_fila_volumen(Idioma.t("Ambiente"), GestorAudio.volumen_ambiente, GestorAudio.fijar_volumen_ambiente, "volumen_ambiente"))
 	sonido.add_child(filas)
 	izquierda.add_child(sonido)
 
-	izquierda.add_child(Cabina.encabezado("Pantalla"))
-	var textos: Array[String] = ["VENTANA", "COMPLETA"]
+	izquierda.add_child(Cabina.encabezado(Idioma.t("Pantalla")))
+	var textos: Array[String] = [Idioma.t("VENTANA"), Idioma.t("COMPLETA")]
 	var colores: Array[Color] = [UI.BIEN, UI.ACENTO]
 	var interruptor := InterruptorPixel.new(textos, colores, 1 if pantalla_completa() else 0)
 	interruptor.cambiado.connect(func(indice: int) -> void:
@@ -83,7 +86,21 @@ func construir() -> void:
 		aplicar_pantalla())
 	izquierda.add_child(interruptor)
 
-	izquierda.add_child(Cabina.encabezado("Controles"))
+	# Idioma: se elige desde el menú de inicio. Con una partida en curso solo se
+	# muestra, porque la bitácora y los avisos ya escritos no se traducen.
+	if interfaz == null:
+		izquierda.add_child(Cabina.encabezado(Idioma.t("Idioma")))
+		var idiomas: Array[String] = ["ESPAÑOL", "ENGLISH"]
+		var colores_idioma: Array[Color] = [UI.ACENTO, UI.BIEN]
+		var selector := InterruptorPixel.new(idiomas, colores_idioma, Idioma.CODIGOS.find(Idioma.actual()))
+		selector.cambiado.connect(func(indice: int) -> void:
+			Idioma.fijar(Idioma.CODIGOS[indice])
+			idioma_cambiado.emit())
+		izquierda.add_child(selector)
+	else:
+		izquierda.add_child(Cabina.encabezado(Idioma.t("Idioma"), -1, Idioma.t("El idioma se cambia desde el menú de inicio")))
+
+	izquierda.add_child(Cabina.encabezado(Idioma.t("Controles")))
 	var controles := Cabina.pantalla()
 	var rejilla := GridContainer.new()
 	rejilla.columns = 4
@@ -106,23 +123,23 @@ func construir() -> void:
 	if interfaz == null:
 		# Abierto desde el menú de inicio: no hay partida en curso.
 		derecha.add_child(Cabina.encabezado("Menu"))
-		derecha.add_child(Cabina.boton_grande("Volver", "Al menú de inicio", cerrar))
+		derecha.add_child(Cabina.boton_grande(Idioma.t("Volver"), Idioma.t("Al menú de inicio"), cerrar))
 		derecha.add_child(_relleno())
 		var aviso: Array = Cabina.celda(0, 44)
-		aviso[1].add_child(Cabina.centrada("LOS AJUSTES SE GUARDAN SOLOS", UI.TEXTO_SUAVE, UI.T_DETALLE))
-		aviso[1].add_child(Cabina.centrada("ESC PARA VOLVER", UI.TEXTO_SUAVE, UI.T_DETALLE))
+		aviso[1].add_child(Cabina.centrada(Idioma.t("LOS AJUSTES SE GUARDAN SOLOS"), UI.TEXTO_SUAVE, UI.T_DETALLE))
+		aviso[1].add_child(Cabina.centrada(Idioma.t("ESC PARA VOLVER"), UI.TEXTO_SUAVE, UI.T_DETALLE))
 		derecha.add_child(aviso[0])
 		return
-	derecha.add_child(Cabina.encabezado("Partida", -1, "Sol %d" % GestorTiempo.sol_actual))
-	derecha.add_child(Cabina.boton_grande("Continuar", "Volver a la colonia", cerrar))
-	derecha.add_child(boton_apagado("Ver tutorial", "Repasar cómo se juega", _ver_tutorial))
-	derecha.add_child(boton_apagado("Nueva partida", "Se pierde la colonia actual", _pedir_nueva_partida))
-	derecha.add_child(boton_apagado("Menu de inicio", "Se pierde la colonia actual", _pedir_menu_inicio))
-	derecha.add_child(boton_apagado("Salir del juego", "Cerrar Little Big Steps", _pedir_salir, UI.CRITICO))
+	derecha.add_child(Cabina.encabezado(Idioma.t("Partida"), -1, "Sol %d" % GestorTiempo.sol_actual))
+	derecha.add_child(Cabina.boton_grande(Idioma.t("Continuar"), Idioma.t("Volver a la colonia"), cerrar))
+	derecha.add_child(boton_apagado(Idioma.t("Ver tutorial"), Idioma.t("Repasar cómo se juega"), _ver_tutorial))
+	derecha.add_child(boton_apagado(Idioma.t("Nueva partida"), Idioma.t("Se pierde la colonia actual"), _pedir_nueva_partida))
+	derecha.add_child(boton_apagado(Idioma.t("Menu de inicio"), Idioma.t("Se pierde la colonia actual"), _pedir_menu_inicio))
+	derecha.add_child(boton_apagado(Idioma.t("Salir del juego"), Idioma.t("Cerrar Little Big Steps"), _pedir_salir, UI.CRITICO))
 	derecha.add_child(_relleno())
 	var nota: Array = Cabina.celda(0, 44)
-	nota[1].add_child(Cabina.centrada("TIEMPO EN PAUSA", UI.ADVERTENCIA, UI.T_DETALLE))
-	nota[1].add_child(Cabina.centrada("ESC PARA VOLVER", UI.TEXTO_SUAVE, UI.T_DETALLE))
+	nota[1].add_child(Cabina.centrada(Idioma.t("TIEMPO EN PAUSA"), UI.ADVERTENCIA, UI.T_DETALLE))
+	nota[1].add_child(Cabina.centrada(Idioma.t("ESC PARA VOLVER"), UI.TEXTO_SUAVE, UI.T_DETALLE))
 	derecha.add_child(nota[0])
 
 
@@ -144,7 +161,7 @@ func _fila_volumen(nombre: String, valor: float, fijar: Callable, clave: String)
 	marcas.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	f.add_child(marcas)
 	f.add_child(_boton_paso("+", cambiar.bind(paso + 1), paso < PASOS_VOLUMEN))
-	var porcentaje := UI.etiqueta_pixel("%d%%" % (paso * 10) if paso > 0 else "SILENCIO", UI.T_DETALLE,
+	var porcentaje := UI.etiqueta_pixel("%d%%" % (paso * 10) if paso > 0 else Idioma.t("SILENCIO"), UI.T_DETALLE,
 		UI.TEXTO_SUAVE if paso > 0 else UI.CRITICO)
 	porcentaje.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	f.add_child(porcentaje)
@@ -187,21 +204,21 @@ func _ver_tutorial() -> void:
 
 
 func _pedir_nueva_partida() -> void:
-	interfaz.confirmar("Nueva partida", "La colonia actual se perderá y empezarás de nuevo en el sol 1.", func() -> void:
+	interfaz.confirmar(Idioma.t("Nueva partida"), Idioma.t("La colonia actual se perderá y empezarás de nuevo en el sol 1."), func() -> void:
 		_pausa_restaurada = true     # la partida nueva decide su propia pausa
 		EstadoJuego.nueva_partida()
-		get_tree().reload_current_scene(), [], "Empezar de nuevo", true)
+		get_tree().reload_current_scene(), [], Idioma.t("Empezar de nuevo"), true)
 
 
 func _pedir_menu_inicio() -> void:
-	interfaz.confirmar("Volver al menú de inicio", "La partida no se guarda: se pierde la colonia actual.", func() -> void:
+	interfaz.confirmar(Idioma.t("Volver al menú de inicio"), Idioma.t("La partida no se guarda: se pierde la colonia actual."), func() -> void:
 		_pausa_restaurada = true     # el menú de inicio deja el tiempo en pausa
-		get_tree().change_scene_to_file(ESCENA_INICIO), [], "Ir al menú", true)
+		get_tree().change_scene_to_file(ESCENA_INICIO), [], Idioma.t("Ir al menú"), true)
 
 
 func _pedir_salir() -> void:
-	interfaz.confirmar("Salir del juego", "La partida no se guarda: al salir se pierde la colonia actual.",
-		func() -> void: get_tree().quit(), [], "Salir", true)
+	interfaz.confirmar(Idioma.t("Salir del juego"), Idioma.t("La partida no se guarda: al salir se pierde la colonia actual."),
+		func() -> void: get_tree().quit(), [], Idioma.t("Salir"), true)
 
 
 func _restaurar_pausa() -> void:

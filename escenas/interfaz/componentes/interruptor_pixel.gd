@@ -30,7 +30,7 @@ func _init(textos: Array[String], colores_opcion: Array[Color], inicial := 0, al
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	focus_mode = Control.FOCUS_NONE
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	tooltip_text = "Clic: cambiar a %s" % opciones[1 - indice].capitalize()
+	tooltip_text = Idioma.t("Clic: cambiar a %s") % opciones[1 - indice].capitalize()
 
 
 func _gui_input(evento: InputEvent) -> void:

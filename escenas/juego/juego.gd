@@ -14,13 +14,13 @@ const SEGUNDOS_AVISO := 4.0
 ## id -> [título de la ventana, clase del menú]. Es var y no const porque
 ## GDScript no admite clases globales en una expresión constante.
 var menus := {
-	"comando": ["Módulo de Comando", MenuComando],
-	"descanso": ["Módulo de Descanso", MenuDescanso],
-	"almacen": ["Almacén y Cocina", MenuAlmacen],
-	"refugio": ["Refugio Blindado", MenuRefugio],
-	"bitacora": ["Bitácora de la misión", MenuBitacora],
-	"glosario": ["Glosario técnico", MenuGlosario],
-	"opciones": ["Opciones", MenuOpciones],     # sin botón: solo con Esc (ver _escape)
+	"comando": [Idioma.t("Módulo de Comando"), MenuComando],
+	"descanso": [Idioma.t("Módulo de Descanso"), MenuDescanso],
+	"almacen": [Idioma.t("Almacén y Cocina"), MenuAlmacen],
+	"refugio": [Idioma.t("Refugio Blindado"), MenuRefugio],
+	"bitacora": [Idioma.t("Bitácora de la misión"), MenuBitacora],
+	"glosario": [Idioma.t("Glosario técnico"), MenuGlosario],
+	"opciones": [Idioma.t("Opciones"), MenuOpciones],     # sin botón: solo con Esc (ver _escape)
 }
 ## Atajos de teclado de los botones inferiores del HUD.
 const ACCION_POR_TECLA := { KEY_B: "construir", KEY_G: "glosario", KEY_L: "bitacora" }
@@ -31,7 +31,7 @@ var inspector: TarjetaColono
 var hud := Hud.new()
 var panel_tripulacion: PanelTripulacion
 var avisos := UI.columna(4)
-var ayuda_colocar := UI.etiqueta_pixel("Clic: colocar   ·   Clic derecho o Esc: cancelar")
+var ayuda_colocar := UI.etiqueta_pixel(Idioma.t("Clic: colocar   ·   Clic derecho o Esc: cancelar"))
 const AYUDA_COLOCAR := "Clic: colocar   ·   Clic derecho o Esc: cancelar"
 const AYUDA_PASILLO := "Clic: colocar   ·   Q: girar   ·   Clic derecho o Esc: cancelar"
 var etiqueta_flotante := UI.etiqueta_pixel("")
@@ -228,7 +228,7 @@ func cerrar_menu() -> void:
 
 
 func confirmar(titulo: String, texto: String, al_confirmar: Callable, filas: Array = [],
-		texto_confirmar := "Confirmar", peligro := false) -> void:
+		texto_confirmar := Idioma.t("Confirmar"), peligro := false) -> void:
 	_abrir_dialogo(DialogoConfirmacion.new(titulo, texto, al_confirmar, null, filas, texto_confirmar, peligro))
 
 
@@ -302,13 +302,13 @@ func _opcion_evento(i: int, opcion: Dictionary, elegir: Callable) -> Control:
 	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	recuadro.add_child(c)
 	var cabeza := UI.fila(8)
-	var titulo := UI.etiqueta_pixel("Opción %d: %s" % [i + 1, opcion["texto"]], UI.T_DETALLE, UI.ADVERTENCIA)
+	var titulo := UI.etiqueta_pixel(Idioma.t("Opción %d: %s") % [i + 1, Idioma.t(opcion["texto"])], UI.T_DETALLE, UI.ADVERTENCIA)
 	titulo.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	cabeza.add_child(UI.expandir(titulo))
-	var elegir_etiqueta := UI.etiqueta_pixel("ELEGIR >", UI.T_DETALLE, UI.TEXTO_SUAVE)
+	var elegir_etiqueta := UI.etiqueta_pixel(Idioma.t("ELEGIR >"), UI.T_DETALLE, UI.TEXTO_SUAVE)
 	cabeza.add_child(elegir_etiqueta)
 	c.add_child(cabeza)
-	c.add_child(DialogoConfirmacion.tabla(_filas_evento(opcion), ["Efecto", "Cambio", "Quedará"]))
+	c.add_child(DialogoConfirmacion.tabla(_filas_evento(opcion), [Idioma.t("Efecto"), Idioma.t("Cambio"), Idioma.t("Quedará")]))
 	for hijo: Control in c.find_children("*", "Control", true, false):
 		hijo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var resaltar := func(si: bool) -> void:
@@ -332,7 +332,7 @@ func _opcion_evento(i: int, opcion: Dictionary, elegir: Callable) -> Control:
 ## si está abierto (▼) o cerrado (▶). Hasta que se pulsa la primera vez, se
 ## infla y desinfla suavemente para que se note que se puede picar.
 func _insignia_real(real: Dictionary, bloque: Control) -> Control:
-	var quien := "DATO REAL DE LA NASA" if real.get("de_nasa", true) else "DATO REAL"
+	var quien := Idioma.t("DATO REAL DE LA NASA") if real.get("de_nasa", true) else Idioma.t("DATO REAL")
 	# Nombres largos ("Eyección de masa coronal (CME)") se acortan a la sigla
 	# para que la placa quepa en una línea; el nombre completo va al desplegarla.
 	var tipo: String = real["tipo"]
@@ -353,7 +353,7 @@ func _insignia_real(real: Dictionary, bloque: Control) -> Control:
 		placa.add_theme_color_override(color, UI.BIEN)
 	var pintar := func() -> void:
 		placa.text = ("▼ " if bloque.visible else "▶ ") + texto
-		placa.tooltip_text = "Ocultar lo que pasó de verdad" if bloque.visible else "Ver lo que pasó de verdad"
+		placa.tooltip_text = Idioma.t("Ocultar lo que pasó de verdad") if bloque.visible else Idioma.t("Ver lo que pasó de verdad")
 	pintar.call()
 	# Latido: crece un 4 % y vuelve, en bucle. Se escala desde el centro.
 	placa.resized.connect(func() -> void: placa.pivot_offset = placa.size / 2.0)
@@ -378,17 +378,17 @@ func _insignia_real(real: Dictionary, bloque: Control) -> Control:
 ## y de dónde salen los datos (en vivo, guardados o archivo), con enlace.
 func _bloque_real(real: Dictionary) -> Control:
 	var bloque := UI.columna(6)
-	bloque.add_child(UI.etiqueta_pixel("LO QUE PASÓ DE VERDAD · %s" % real["fecha"], UI.T_DETALLE, UI.BIEN))
+	bloque.add_child(UI.etiqueta_pixel(Idioma.t("LO QUE PASÓ DE VERDAD · %s") % real["fecha"], UI.T_DETALLE, UI.BIEN))
 	bloque.add_child(UI.etiqueta_pixel(real["tipo"], UI.T_DETALLE, UI.TEXTO))
 	var texto := UI.parrafo(real["que_paso"], 13, UI.TEXTO)
 	texto.custom_minimum_size = Vector2(520, 0)
 	bloque.add_child(texto)
-	var fuente := UI.etiqueta_pixel("Fuente: %s" % real["fuente"], UI.T_DETALLE, UI.TEXTO_SUAVE)
+	var fuente := UI.etiqueta_pixel(Idioma.t("Fuente: %s") % Idioma.t(real["fuente"]), UI.T_DETALLE, UI.TEXTO_SUAVE)
 	fuente.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	bloque.add_child(fuente)
-	bloque.add_child(UI.etiqueta_pixel("Datos: %s" % real["origen"], UI.T_DETALLE, UI.TEXTO_SUAVE))
+	bloque.add_child(UI.etiqueta_pixel(Idioma.t("Datos: %s") % real["origen"], UI.T_DETALLE, UI.TEXTO_SUAVE))
 	var enlace := LinkButton.new()
-	enlace.text = "Ver la fuente en internet"
+	enlace.text = Idioma.t("Ver la fuente en internet")
 	enlace.add_theme_font_override("font", UI.fuente_pixel())
 	enlace.add_theme_font_size_override("font_size", UI.T_DETALLE)
 	enlace.add_theme_color_override("font_color", UI.ADVERTENCIA)
@@ -402,51 +402,51 @@ func _bloque_real(real: Dictionary) -> Control:
 func _filas_evento(opcion: Dictionary) -> Array:
 	var filas := []
 	for recurso: String in opcion.get("recursos", {}):
-		filas.append(UI.fila_cambio(Enums.NOMBRE_RECURSO[recurso], recurso, opcion["recursos"][recurso]))
+		filas.append(UI.fila_cambio(Idioma.t(Enums.NOMBRE_RECURSO[recurso]), recurso, opcion["recursos"][recurso]))
 	if opcion.has("radiacion"):
-		filas.append(["Radiación por colono", "+" + UI.num(opcion["radiacion"]), ""])
+		filas.append([Idioma.t("Radiación por colono"), "+" + UI.num(opcion["radiacion"]), ""])
 	if opcion.has("enfermar"):
-		filas.append(["Riesgo de enfermar", "%d %%" % roundi(opcion["enfermar"] * 100), "por colono"])
+		filas.append([Idioma.t("Riesgo de enfermar"), "%d %%" % roundi(opcion["enfermar"] * 100), Idioma.t("por colono")])
 	if opcion.has("tormenta_en"):
-		filas.append(["La nube llega en", UI.soles(opcion["tormenta_en"]), ""])
+		filas.append([Idioma.t("La nube llega en"), UI.soles(opcion["tormenta_en"]), ""])
 	if opcion.has("tormenta"):
-		filas.append(["Tormenta solar", UI.soles(opcion["tormenta"]), ""])
+		filas.append([Idioma.t("Tormenta solar"), UI.soles(opcion["tormenta"]), ""])
 	if opcion.has("retraso_envios"):
-		filas.append(["Envíos de la Tierra", "+" + UI.soles(opcion["retraso_envios"]), "de retraso"])
+		filas.append([Idioma.t("Envíos de la Tierra"), "+" + UI.soles(opcion["retraso_envios"]), Idioma.t("de retraso")])
 	if opcion.get("blindaje", 1.0) < 1.0:
-		filas.append(["Dosis en los módulos", "%d %%" % roundi(opcion["blindaje"] * 100), ""])
+		filas.append([Idioma.t("Dosis en los módulos"), "%d %%" % roundi(opcion["blindaje"] * 100), ""])
 	if filas.is_empty():
-		filas.append(["Sin consecuencias", "", ""])
+		filas.append([Idioma.t("Sin consecuencias"), "", ""])
 	return filas
 
 
 func pedir_regreso(c: DatosColono) -> void:
-	var texto := "%s dejará la colonia para siempre y liberará su cuarto." % c.nombre
-	confirmar("Enviar a la Tierra", texto, EstadoJuego.tripulacion.enviar_a_la_tierra.bind(c))
+	var texto := Idioma.t("%s dejará la colonia para siempre y liberará su cuarto.") % c.nombre
+	confirmar(Idioma.t("Enviar a la Tierra"), texto, EstadoJuego.tripulacion.enviar_a_la_tierra.bind(c))
 
 
 func _fin_de_partida(motivo: String) -> void:
-	var texto := "%s\nSobreviviste hasta el sol %d." % [motivo, GestorTiempo.sol_actual]
-	_dialogo_final("Fin de la partida", texto, false)
+	var texto := Idioma.t("%s\nSobreviviste hasta el sol %d.") % [motivo, GestorTiempo.sol_actual]
+	_dialogo_final(Idioma.t("Fin de la partida"), texto, false)
 
 
 ## HU-11: resumen de la misión con Modo Libre (seguir jugando) o Nueva Partida.
 func _victoria() -> void:
 	var economia := EstadoJuego.economia
 	var lineas := PackedStringArray([
-		"La colonia es autosuficiente: el Módulo de Comando alcanzó el nivel %d." % EstadoJuego.comando.nivel,
+		Idioma.t("La colonia es autosuficiente: el Módulo de Comando alcanzó el nivel %d.") % EstadoJuego.comando.nivel,
 		"",
-		"Soles transcurridos: %d" % (GestorTiempo.sol_actual - 1),
-		"Colonos en activo: %d · retornados a la Tierra: %d" % [
+		Idioma.t("Soles transcurridos: %d") % (GestorTiempo.sol_actual - 1),
+		Idioma.t("Colonos en activo: %d · retornados a la Tierra: %d") % [
 			EstadoJuego.tripulacion.activos(), EstadoJuego.tripulacion.retirados.size()],
-		"Módulos construidos: %d" % EstadoJuego.modulos_construidos,
+		Idioma.t("Módulos construidos: %d") % EstadoJuego.modulos_construidos,
 		"",
-		"Reservas finales (producido en toda la misión):",
+		Idioma.t("Reservas finales (producido en toda la misión):"),
 	])
 	for recurso: String in EstadoJuego.datos_balance.recursos_comando:
-		lineas.append("  %s: %s (%s)" % [Enums.NOMBRE_RECURSO[recurso], UI.cantidad(recurso, economia.valor(recurso)),
+		lineas.append("  %s: %s (%s)" % [Idioma.t(Enums.NOMBRE_RECURSO[recurso]), UI.cantidad(recurso, economia.valor(recurso)),
 			UI.cantidad(recurso, economia.producido.get(recurso, 0.0))])
-	_dialogo_final("Misión Cumplida", "\n".join(lineas), true)
+	_dialogo_final(Idioma.t("Misión Cumplida"), "\n".join(lineas), true)
 
 
 ## Diálogo que no se cierra con Escape. Con `modo_libre` añade el botón para seguir jugando.
@@ -456,10 +456,10 @@ func _dialogo_final(titulo: String, texto: String, modo_libre: bool) -> void:
 	var botones := UI.fila()
 	var final := DialogoConfirmacion.new(titulo, texto, Callable(), botones)
 	if modo_libre:
-		botones.add_child(UI.expandir(DialogoConfirmacion.boton("Modo Libre", func() -> void:
+		botones.add_child(UI.expandir(DialogoConfirmacion.boton(Idioma.t("Modo Libre"), func() -> void:
 			final.cerrar()
 			GestorTiempo.en_pausa = false)))
-	botones.add_child(UI.expandir(DialogoConfirmacion.boton("Nueva Partida", func() -> void:
+	botones.add_child(UI.expandir(DialogoConfirmacion.boton(Idioma.t("Nueva Partida"), func() -> void:
 		EstadoJuego.nueva_partida()
 		get_tree().reload_current_scene(), true)))
 	final.cancelable = false

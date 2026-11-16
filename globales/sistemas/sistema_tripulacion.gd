@@ -68,15 +68,15 @@ func _recuperar(c: DatosColono, sin_vitales: bool) -> void:
 	c.soles_enfermo += 1
 	if c.soles_enfermo >= necesarios:
 		c.estado = Enums.EstadoColono.DISPONIBLE
-		EstadoJuego.registrar(Enums.Categoria.TRIPULACION, "%s se ha recuperado" % c.nombre)
+		EstadoJuego.registrar(Enums.Categoria.TRIPULACION, Idioma.t("%s se ha recuperado") % c.nombre)
 
 
 func enfermar(c: DatosColono) -> void:
 	EstadoJuego.curiosidades.disparar("colono:enfermo")
 	if c.estado == Enums.EstadoColono.EN_MISION:
-		EstadoJuego.registrar(Enums.Categoria.TRIPULACION, "Diagnóstico: %s enfermó y abandonó %s" % [c.nombre, c.tarea["titulo"]])
+		EstadoJuego.registrar(Enums.Categoria.TRIPULACION, Idioma.t("Diagnóstico: %s enfermó y abandonó %s") % [c.nombre, Idioma.t(c.tarea["titulo"])])
 	else:
-		EstadoJuego.registrar(Enums.Categoria.TRIPULACION, "Diagnóstico: %s ha enfermado" % c.nombre)
+		EstadoJuego.registrar(Enums.Categoria.TRIPULACION, Idioma.t("Diagnóstico: %s ha enfermado") % c.nombre)
 	c.estado = Enums.EstadoColono.ENFERMO
 	c.tarea = {}
 	c.soles_enfermo = 0
@@ -88,7 +88,7 @@ func anadir_radiacion(c: DatosColono, cantidad: float) -> void:
 	# Pico de radiación: al cruzar la mitad del umbral de enfermedad.
 	var umbral := datos.radiacion_enfermedad / 2.0
 	if antes < umbral and c.radiacion >= umbral:
-		EstadoJuego.registrar(Enums.Categoria.TRIPULACION, "Pico de radiación: %s supera %d de dosis" % [c.nombre, int(umbral)])
+		EstadoJuego.registrar(Enums.Categoria.TRIPULACION, Idioma.t("Pico de radiación: %s supera %d de dosis") % [c.nombre, int(umbral)])
 	if c.radiacion >= datos.radiacion_enfermedad and c.estado != Enums.EstadoColono.ENFERMO:
 		enfermar(c)
 
@@ -103,13 +103,13 @@ func enviar_a_la_tierra(c: DatosColono) -> void:
 	colonos.erase(c)
 	retirados.append(c)
 	EstadoJuego.colono_retirado.emit(c)
-	EstadoJuego.registrar(Enums.Categoria.ACCION, "%s regresó a la Tierra" % c.nombre)
+	EstadoJuego.registrar(Enums.Categoria.ACCION, Idioma.t("%s regresó a la Tierra") % c.nombre)
 	EstadoJuego.estado_cambiado.emit()
 
 
 func _nombre_usado(nombre: String) -> bool:
 	for c: DatosColono in colonos + en_viaje + retirados:
-		if c.nombre == nombre:
+		if c.nombre == Idioma.t(nombre):
 			return true
 	return false
 
@@ -157,7 +157,7 @@ func contratar(candidato: Dictionary) -> bool:
 	en_viaje.append(c)
 	EstadoJuego.economia.pagar(candidato["coste"], 0)
 	EstadoJuego.tierra.enviar(c.nombre, c.soles_restantes, {}, c)
-	EstadoJuego.registrar(Enums.Categoria.ACCION, "Contratado: %s (llegará en %d soles)" % [c.nombre, c.soles_restantes])
+	EstadoJuego.registrar(Enums.Categoria.ACCION, Idioma.t("Contratado: %s (llegará en %d soles)") % [c.nombre, c.soles_restantes])
 	return true
 
 
@@ -167,7 +167,7 @@ func llegar(c: DatosColono) -> void:
 	c.estado = Enums.EstadoColono.DISPONIBLE
 	colonos.append(c)
 	EstadoJuego.colono_agregado.emit(c)
-	EstadoJuego.registrar(Enums.Categoria.TRIPULACION, "%s llegó a la plataforma de aterrizaje" % c.nombre)
+	EstadoJuego.registrar(Enums.Categoria.TRIPULACION, Idioma.t("%s llegó a la plataforma de aterrizaje") % c.nombre)
 
 
 # --- Cuartos del módulo de descanso ---------------------------------------
@@ -182,5 +182,5 @@ func ampliar_cuartos() -> bool:
 		return false
 	cuartos += 1
 	EstadoJuego.economia.pagar(datos.expandir_descanso_dinero, datos.expandir_descanso_materiales)
-	EstadoJuego.registrar(Enums.Categoria.ACCION, "Módulo de descanso ampliado a %d cuartos" % cuartos, false)
+	EstadoJuego.registrar(Enums.Categoria.ACCION, Idioma.t("Módulo de descanso ampliado a %d cuartos") % cuartos, false)
 	return true

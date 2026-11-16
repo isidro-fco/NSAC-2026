@@ -28,10 +28,10 @@ var fila_botones: Control
 
 ## `filas`: cada una es [recurso, cambio, quedará] (textos ya formateados).
 func _init(titulo: String, texto: String, al_confirmar := Callable(), botones: Control = null,
-		filas: Array = [], texto_confirmar := "Confirmar", peligro := false) -> void:
+		filas: Array = [], texto_confirmar := Idioma.t("Confirmar"), peligro := false) -> void:
 	if botones == null:
 		botones = UI.fila(4)
-		var cancelar := boton("Cancelar", cerrar)
+		var cancelar := boton(Idioma.t("Cancelar"), cerrar)
 		cancelar.add_theme_color_override("font_color", UI.TEXTO_SUAVE)
 		var confirmar := boton(texto_confirmar, func() -> void:
 			cerrar()

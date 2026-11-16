@@ -66,7 +66,7 @@ func _barra_metricas() -> Control:
 	tabla.add_theme_constant_override("h_separation", 6)
 	tabla.add_theme_constant_override("v_separation", 4)
 	for recurso: String in ORDEN:
-		tabla.add_child(UI.expandir(Cabina.centrada(Cabina.mayus(Enums.NOMBRE_RECURSO[recurso]))))
+		tabla.add_child(UI.expandir(Cabina.centrada(Cabina.mayus(Idioma.t(Enums.NOMBRE_RECURSO[recurso])))))
 	for recurso: String in ORDEN:
 		var saldo := economia.balance(recurso)
 		var valor := economia.valor(recurso)
@@ -74,9 +74,9 @@ func _barra_metricas() -> Control:
 		var b := UI.boton("", _ver_historial.bind(recurso))
 		UI.aplicar_marco_boton(b)
 		b.custom_minimum_size = Vector2(0, 64)
-		b.tooltip_text = "Ver historial de %d soles" % EstadoJuego.datos_balance.soles_historial
+		b.tooltip_text = Idioma.t("Ver historial de %d soles") % EstadoJuego.datos_balance.soles_historial
 		if not is_inf(capacidad):
-			b.tooltip_text = "%s de %s\n%s" % [UI.cantidad(recurso, valor), UI.cantidad(recurso, capacidad), b.tooltip_text]
+			b.tooltip_text = Idioma.t("%s de %s\n%s") % [UI.cantidad(recurso, valor), UI.cantidad(recurso, capacidad), b.tooltip_text]
 		UI.expandir(b)
 		var c := UI.columna(5)
 		c.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -112,7 +112,7 @@ func _panel_mejora() -> Control:
 	var f := UI.fila(6)
 
 	var nivel: Array = Cabina.celda(150)
-	nivel[1].add_child(Cabina.centrada("NIVEL %d/%d" % [comando.nivel, comando.nivel_max()]))
+	nivel[1].add_child(Cabina.centrada(Idioma.t("NIVEL %d/%d") % [comando.nivel, comando.nivel_max()]))
 	var marcas := Cabina.marcas(comando.nivel, comando.nivel_max())
 	if comando.soles_mejora > 0 and comando.nivel < comando.nivel_max():
 		marcas.get_child(comando.nivel).color = Color(Cabina.NARANJA, 0.45)       # nivel en obra
@@ -120,24 +120,24 @@ func _panel_mejora() -> Control:
 	f.add_child(nivel[0])
 
 	var produccion: Array = Cabina.celda(170)
-	produccion[1].add_child(Cabina.centrada("PRODUCCION x%s" % UI.num(comando.multiplicador())))
-	var siguiente := "SIGUIENTE x%s" % UI.num(comando.multiplicador_siguiente()) if not mejora.is_empty() else "MAXIMA"
+	produccion[1].add_child(Cabina.centrada(Idioma.t("PRODUCCION x%s") % UI.num(comando.multiplicador())))
+	var siguiente := Idioma.t("SIGUIENTE x%s") % UI.num(comando.multiplicador_siguiente()) if not mejora.is_empty() else Idioma.t("MAXIMA")
 	produccion[1].add_child(Cabina.centrada(siguiente, UI.TEXTO_SUAVE, UI.T_DETALLE))
 	f.add_child(produccion[0])
 
-	var titulo := "NIVEL MAXIMO ALCANZADO"
-	var detalle := "EL MODULO DE COMANDO YA NO SE PUEDE MEJORAR"
+	var titulo := Idioma.t("NIVEL MAXIMO ALCANZADO")
+	var detalle := Idioma.t("EL MODULO DE COMANDO YA NO SE PUEDE MEJORAR")
 	if comando.soles_mejora > 0:
-		titulo = "MEJORANDO A NIVEL %d" % (comando.nivel + 1)
-		detalle = "FALTAN %s" % Cabina.mayus(UI.soles(comando.soles_mejora))
+		titulo = Idioma.t("MEJORANDO A NIVEL %d") % (comando.nivel + 1)
+		detalle = Idioma.t("FALTAN %s") % Cabina.mayus(UI.soles(comando.soles_mejora))
 	elif not mejora.is_empty():
-		titulo = "MEJORAR MODULO DE COMANDO"
-		detalle = "%s  ·  %d MATERIALES  ·  %s DE OBRA" % [UI.dinero(mejora["dinero"]), mejora["materiales"],
+		titulo = Idioma.t("MEJORAR MODULO DE COMANDO")
+		detalle = Idioma.t("%s  ·  %d MATERIALES  ·  %s DE OBRA") % [UI.dinero(mejora["dinero"]), mejora["materiales"],
 			Cabina.mayus(UI.soles(mejora["soles"]))]
 	var puede := comando.puede_mejorar()
 	var motivo := ""
 	if not puede and comando.soles_mejora == 0 and not mejora.is_empty():
-		motivo = "No alcanzan el presupuesto o los materiales"
+		motivo = Idioma.t("No alcanzan el presupuesto o los materiales")
 	var boton := Cabina.boton_grande(titulo, detalle, _pedir_mejora, puede, motivo, ALTO_FILA_MEJORA)
 	f.add_child(UI.expandir(boton))
 	return f
@@ -146,20 +146,20 @@ func _panel_mejora() -> Control:
 func _pedir_mejora() -> void:
 	var comando := EstadoJuego.comando
 	var mejora := comando.siguiente_mejora()
-	var texto := "Subir al nivel %d por %s y %d materiales.\nLa obra tarda %d soles; al terminar, la producción pasa a x%s (salvo la energía de los paneles)." % [
+	var texto := Idioma.t("Subir al nivel %d por %s y %d materiales.\nLa obra tarda %d soles; al terminar, la producción pasa a x%s (salvo la energía de los paneles).") % [
 		comando.nivel + 1, UI.dinero(mejora["dinero"]), mejora["materiales"], mejora["soles"],
 		UI.num(comando.multiplicador_siguiente())]
-	interfaz.confirmar("Mejorar Módulo de Comando", texto, comando.mejorar)
+	interfaz.confirmar(Idioma.t("Mejorar Módulo de Comando"), texto, comando.mejorar)
 
 
 func _construir_historial() -> void:
-	var nombre: String = Enums.NOMBRE_RECURSO[recurso_historial]
-	cabecera_subvista("%s: últimos %d soles" % [nombre, EstadoJuego.datos_balance.soles_historial],
+	var nombre: String = Idioma.t(Enums.NOMBRE_RECURSO[recurso_historial])
+	cabecera_subvista(Idioma.t("%s: últimos %d soles") % [nombre, EstadoJuego.datos_balance.soles_historial],
 		_ver_historial.bind(""))
 
 	var puntos: Array = EstadoJuego.economia.historial[recurso_historial]
-	contenido.add_child(_grafica("Reserva al final de cada sol", puntos, "valor", false))
-	contenido.add_child(_grafica("Ganancia o pérdida por sol", puntos, "cambio", true))
+	contenido.add_child(_grafica(Idioma.t("Reserva al final de cada sol"), puntos, "valor", false))
+	contenido.add_child(_grafica(Idioma.t("Ganancia o pérdida por sol"), puntos, "cambio", true))
 
 
 ## Gráfica de línea del historial. Reserva y balance van en gráficas separadas
@@ -178,7 +178,7 @@ func _grafica(titulo: String, puntos: Array, clave: String, con_cero: bool) -> C
 			g.draw_line(Vector2(1, y), Vector2(g.size.x - 1, y), Cabina.REJILLA_LINEA)
 		g.draw_string(UI.fuente_pixel(), Vector2(12, 20), Cabina.mayus(titulo), HORIZONTAL_ALIGNMENT_LEFT, -1, UI.T_TEXTO, UI.TEXTO)
 		if valores.size() < 2:
-			texto.call(Vector2(12, g.size.y / 2.0), "Se necesitan 2 soles de datos para trazar la línea.", 12)
+			texto.call(Vector2(12, g.size.y / 2.0), Idioma.t("Se necesitan 2 soles de datos para trazar la línea."), 12)
 			return
 		var area := Rect2(46, 28, g.size.x - 62, g.size.y - 52)
 		var minimo: float = minf(valores.min(), 0.0) if con_cero else valores.min()
@@ -209,17 +209,17 @@ func _columna_tripulacion() -> Control:
 		return c.estado == Enums.EstadoColono.DISPONIBLE).size()
 	var columna := UI.columna(6)
 	columna.custom_minimum_size = Vector2(340, 0)
-	columna.add_child(Cabina.encabezado("TRIPULACION", tripulacion.colonos.size(),
-		"%d LIBRE%s" % [libres, "" if libres == 1 else "S"]))
+	columna.add_child(Cabina.encabezado(Idioma.t("TRIPULACION"), tripulacion.colonos.size(),
+		Idioma.t("%d libre" if libres == 1 else "%d libres") % libres))
 	var pantalla := Cabina.pantalla(8)
 	columna.add_child(pantalla)
 	var lista := UI.columna(6)
 	for t in tripulacion.colonos + tripulacion.en_viaje:
 		lista.add_child(_ficha_colono(t))
 	if tripulacion.colonos.is_empty():
-		lista.add_child(UI.parrafo("No hay colonos. Recluta desde el módulo de descanso."))
+		lista.add_child(UI.parrafo(Idioma.t("No hay colonos. Recluta desde el módulo de descanso.")))
 	elif libres > 0:
-		lista.add_child(Cabina.vacio("Clic en un tripulante libre para ver sus tareas"))
+		lista.add_child(Cabina.vacio(Idioma.t("Clic en un tripulante libre para ver sus tareas")))
 	pantalla.add_child(vista_con_scroll(Cabina.con_margen_scroll(lista)))
 	return columna
 
@@ -231,7 +231,7 @@ func _ficha_colono(c: DatosColono) -> Control:
 	var ficha := Cabina.ficha_colono(c, null, seleccionado)
 	if c.estado == Enums.EstadoColono.DISPONIBLE:
 		ficha.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		ficha.tooltip_text += "\nClic: ver solo las tareas de %s" % Enums.NOMBRE_ROL[c.rol]
+		ficha.tooltip_text += Idioma.t("\nClic: ver solo las tareas de %s") % Idioma.t(Enums.NOMBRE_ROL[c.rol])
 		ficha.gui_input.connect(func(evento: InputEvent) -> void:
 			if evento is InputEventMouseButton and evento.pressed and evento.button_index == MOUSE_BUTTON_LEFT:
 				_filtrar_por(null if seleccionado else c))
@@ -258,11 +258,11 @@ func _tablero_tareas() -> Control:
 	var listas := tareas.filter(func(t: Dictionary) -> bool: return not EstadoJuego.tareas.colonos_para(t).is_empty())
 	var bloqueadas := tareas.filter(func(t: Dictionary) -> bool: return EstadoJuego.tareas.colonos_para(t).is_empty())
 	var columna := UI.columna(6)
-	var detalle := "%d SE PUEDEN ASIGNAR" % listas.size() if not tareas.is_empty() else ""
-	var encabezado := Cabina.encabezado("TAREAS DISPONIBLES", tareas.size(), "" if colono_filtro != null else detalle)
+	var detalle := Idioma.t("%d SE PUEDEN ASIGNAR") % listas.size() if not tareas.is_empty() else ""
+	var encabezado := Cabina.encabezado(Idioma.t("TAREAS DISPONIBLES"), tareas.size(), "" if colono_filtro != null else detalle)
 	if colono_filtro != null:
-		var quitar := Cabina.boton("Para %s  x" % colono_filtro.nombre.get_slice(" ", 0), _filtrar_por.bind(null), true)
-		quitar.tooltip_text = "Quitar el filtro y ver todas las tareas"
+		var quitar := Cabina.boton(Idioma.t("Para %s  x") % colono_filtro.nombre.get_slice(" ", 0), _filtrar_por.bind(null), true)
+		quitar.tooltip_text = Idioma.t("Quitar el filtro y ver todas las tareas")
 		for estado: String in ["normal", "hover", "pressed", "hover_pressed"]:
 			var caja: StyleBox = quitar.get_theme_stylebox(estado)
 			caja.content_margin_top = 3
@@ -275,14 +275,18 @@ func _tablero_tareas() -> Control:
 	for tarea: Dictionary in listas:
 		lista.add_child(_tarjeta_tarea(tarea))
 	if not bloqueadas.is_empty():
-		lista.add_child(Cabina.separador("SIN TRIPULANTE LIBRE", bloqueadas.size()))
+		lista.add_child(Cabina.separador(Idioma.t("SIN TRIPULANTE LIBRE"), bloqueadas.size()))
 		for tarea: Dictionary in bloqueadas:
 			lista.add_child(_tarjeta_tarea(tarea))
 	if tareas.is_empty():
-		var vacio := "No hay tareas disponibles: toda la tripulación está ocupada en ellas."
+		var vacio := Idioma.t("No hay tareas disponibles: toda la tripulación está ocupada en ellas.")
 		if colono_filtro != null:
-			vacio = "No quedan tareas de %s disponibles." % Enums.NOMBRE_ROL[colono_filtro.rol]
+			vacio = Idioma.t("No quedan tareas de %s disponibles.") % Idioma.t(Enums.NOMBRE_ROL[colono_filtro.rol])
 		lista.add_child(UI.parrafo(vacio))
+	if EstadoJuego.datos_balance.tareas.any(func(t: Dictionary) -> bool: return not EstadoJuego.tareas.se_puede_hacer(t)):
+		var aviso := UI.parrafo(Idioma.t("Construye más módulos para tener más tareas."), 12, UI.TEXTO_SUAVE)
+		aviso.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lista.add_child(aviso)
 	pantalla.add_child(vista_con_scroll(Cabina.con_margen_scroll(lista)))
 	return columna
 
@@ -305,7 +309,7 @@ func _tarjeta_tarea(tarea: Dictionary) -> Control:
 	f.add_child(UI.expandir(c))
 
 	var cabecera := UI.fila(8)
-	var titulo := UI.etiqueta_pixel(Cabina.mayus(tarea["titulo"]), UI.T_TEXTO)
+	var titulo := UI.etiqueta_pixel(Cabina.mayus(Idioma.t(tarea["titulo"])), UI.T_TEXTO)
 	titulo.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	cabecera.add_child(UI.expandir(titulo))
 	cabecera.add_child(Cabina.pildora(Cabina.mayus(UI.soles(tarea["soles"])), UI.TEXTO_SUAVE, false))
@@ -314,15 +318,15 @@ func _tarjeta_tarea(tarea: Dictionary) -> Control:
 	var etiquetas := HFlowContainer.new()
 	etiquetas.add_theme_constant_override("h_separation", 6)
 	etiquetas.add_theme_constant_override("v_separation", 4)
-	etiquetas.add_child(Cabina.pildora(Cabina.mayus(Enums.NOMBRE_ROL[tarea["rol"]]), Cabina.NARANJA, false))
+	etiquetas.add_child(Cabina.pildora(Cabina.mayus(Idioma.t(Enums.NOMBRE_ROL[tarea["rol"]])), Cabina.NARANJA, false))
 	if tarea["exterior"]:
-		etiquetas.add_child(Cabina.pildora("EXTERIOR +%s RAD" % UI.num(tarea["radiacion"]), UI.ADVERTENCIA, false))
+		etiquetas.add_child(Cabina.pildora(Idioma.t("EXTERIOR +%s RAD") % UI.num(tarea["radiacion"]), UI.ADVERTENCIA, false))
 	else:
-		etiquetas.add_child(Cabina.pildora("INTERIOR", UI.TEXTO_SUAVE, false))
+		etiquetas.add_child(Cabina.pildora(Cabina.mayus(DatosModulo.obtener(tarea["modulo"]).nombre), UI.TEXTO_SUAVE, false))
 	c.add_child(etiquetas)
 
 	var recompensa := UI.fila(6)
-	var rotulo := UI.etiqueta_pixel("RECOMPENSA", UI.T_DETALLE, UI.TEXTO_SUAVE)
+	var rotulo := UI.etiqueta_pixel(Idioma.t("RECOMPENSA"), UI.T_DETALLE, UI.TEXTO_SUAVE)
 	rotulo.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	recompensa.add_child(rotulo)
 	recompensa.add_child(UI.expandir(UI.parrafo(UI.texto_recompensa(tarea["recompensa"]), 12, Cabina.VERDE)))
@@ -337,30 +341,31 @@ func _tarjeta_tarea(tarea: Dictionary) -> Control:
 		var dosis: float = t.radiacion + (tarea["radiacion"] if tarea["exterior"] else 0.0)
 		var riesgo: bool = tarea["exterior"] and dosis >= enfermedad * 0.7
 		# Solo el nombre de pila para que la tarjeta no ensanche la ventana.
-		var b := Cabina.boton("%sAsignar a %s" % ["! " if riesgo else "", t.nombre.get_slice(" ", 0)],
+		var nombre_pila: String = Idioma.t(t.nombre).get_slice(" ", 0)
+		var b := Cabina.boton(Idioma.t("%sAsignar a %s") % ["! " if riesgo else "", nombre_pila],
 			_pedir_asignacion.bind(tarea, t), true, UI.CRITICO if dosis >= enfermedad else UI.ACENTO)
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		b.tooltip_text = "Asignar a %s" % t.nombre
+		b.tooltip_text = Idioma.t("Asignar a %s") % Idioma.t(t.nombre)
 		if tarea["exterior"]:
-			b.tooltip_text += "\nRadiación: %s → %s / %d" % [UI.num(t.radiacion), UI.num(dosis), int(enfermedad)]
+			b.tooltip_text += Idioma.t("\nRadiación: %s → %s / %d") % [UI.num(t.radiacion), UI.num(dosis), int(enfermedad)]
 			if dosis >= enfermedad:
-				b.tooltip_text += "\n¡Enfermaría por radiación!"
+				b.tooltip_text += Idioma.t("\n¡Enfermaría por radiación!")
 			elif riesgo:
-				b.tooltip_text += "\nQuedaría cerca del umbral de enfermedad"
+				b.tooltip_text += Idioma.t("\nQuedaría cerca del umbral de enfermedad")
 		botones.add_child(b)
 	if libres.is_empty():
-		var aviso := UI.etiqueta_pixel("REQUIERE\n%s" % Cabina.mayus(Enums.NOMBRE_ROL[tarea["rol"]]), UI.T_DETALLE, UI.TEXTO_SUAVE)
+		var aviso := UI.etiqueta_pixel(Idioma.t("REQUIERE\n%s") % Cabina.mayus(Idioma.t(Enums.NOMBRE_ROL[tarea["rol"]])), UI.T_DETALLE, UI.TEXTO_SUAVE)
 		aviso.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		aviso.mouse_filter = Control.MOUSE_FILTER_PASS
-		aviso.tooltip_text = "Ningún colono libre tiene el rol %s" % Enums.NOMBRE_ROL[tarea["rol"]]
+		aviso.tooltip_text = Idioma.t("Ningún colono libre tiene el rol %s") % Idioma.t(Enums.NOMBRE_ROL[tarea["rol"]])
 		botones.add_child(aviso)
 	return tarjeta
 
 
 func _pedir_asignacion(tarea: Dictionary, t: DatosColono) -> void:
-	var texto := "%s\nAsignar a %s durante %d soles" % [tarea["titulo"], t.nombre, tarea["soles"]]
+	var texto := Idioma.t("%s\nAsignar a %s durante %d soles") % [Idioma.t(tarea["titulo"]), Idioma.t(t.nombre), tarea["soles"]]
 	if tarea["exterior"]:
 		var dosis: float = t.radiacion + tarea["radiacion"]
-		texto += "\nRadiación: %s → %s / %d" % [UI.num(t.radiacion), UI.num(dosis),
+		texto += Idioma.t("\nRadiación: %s → %s / %d") % [UI.num(t.radiacion), UI.num(dosis),
 			int(EstadoJuego.datos_balance.radiacion_enfermedad)]
-	interfaz.confirmar("Confirmar asignación", texto, EstadoJuego.tareas.asignar.bind(tarea, t))
+	interfaz.confirmar(Idioma.t("Confirmar asignación"), texto, EstadoJuego.tareas.asignar.bind(tarea, t))

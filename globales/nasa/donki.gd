@@ -36,7 +36,7 @@ static func normalizar(tipo: String, lista: Variant) -> Array[Dictionary]:
 				e["id"] = str(d.get("flrID", ""))
 				_poner_fecha(e, d["peakTime"] if d.get("peakTime") != null else d.get("beginTime"))
 				e["valor"] = str(d.get("classType", ""))
-				e["nota"] = "Región activa %s" % d["activeRegionNum"] if d.get("activeRegionNum") != null else ""
+				e["nota"] = Idioma.t("Región activa %s") % d["activeRegionNum"] if d.get("activeRegionNum") != null else ""
 			"CME":
 				e["id"] = str(d.get("activityID", ""))
 				_poner_fecha(e, d.get("startTime", ""))
@@ -111,17 +111,20 @@ static func _instrumentos(d: Dictionary) -> String:
 	for i: Variant in _lista(d.get("instruments")):
 		if typeof(i) == TYPE_DICTIONARY and i.has("displayName"):
 			nombres.append(str(i["displayName"]))
-	return "Lo midió: %s." % ", ".join(nombres) if not nombres.is_empty() else ""
+	return Idioma.t("Lo midió: %s.") % ", ".join(nombres) if not nombres.is_empty() else ""
 
 
 # --- Utilidades para los textos -------------------------------------------
 
-## "2024-05-14" -> "14 de mayo de 2024".
+## "2024-05-14" -> "14 de mayo de 2024" (en inglés, "May 14, 2024").
 static func fecha_texto(fecha: String) -> String:
 	var partes := fecha.split("-")
 	if partes.size() != 3:
 		return fecha
-	return "%d de %s de %s" % [int(partes[2]), MESES[clampi(int(partes[1]) - 1, 0, 11)], partes[0]]
+	var mes := Idioma.t(MESES[clampi(int(partes[1]) - 1, 0, 11)])
+	if Idioma.en_ingles():
+		return "%s %d, %s" % [mes, int(partes[2]), partes[0]]
+	return "%d de %s de %s" % [int(partes[2]), mes, partes[0]]
 
 
 ## Horas entre dos fechas ISO ("2024-05-09T09:36Z" o "2024-05-10").

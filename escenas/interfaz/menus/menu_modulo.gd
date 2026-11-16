@@ -42,7 +42,7 @@ func atras() -> bool:
 ## Cabecera de una subvista (historial, reclutamiento): botón "< Volver" y título.
 func cabecera_subvista(titulo: String, al_volver: Callable) -> void:
 	var cabecera := UI.fila()
-	cabecera.add_child(UI.boton("< Volver", al_volver))
+	cabecera.add_child(UI.boton(Idioma.t("< Volver"), al_volver))
 	var etiqueta := UI.seccion(titulo)
 	etiqueta.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	cabecera.add_child(etiqueta)

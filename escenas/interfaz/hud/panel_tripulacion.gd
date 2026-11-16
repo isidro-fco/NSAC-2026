@@ -62,7 +62,7 @@ func _process(delta: float) -> void:
 ## Rehace las filas solo si cambió quién está en la colonia.
 func _reconstruir() -> void:
 	var colonos := EstadoJuego.tripulacion.colonos
-	titulo.text = "TRIPULACIÓN  %d" % colonos.size()
+	titulo.text = Idioma.t("TRIPULACIÓN  %d") % colonos.size()
 	if elegido != null and elegido not in colonos:
 		_elegir(null)
 	if filas.keys() == Array(colonos):
@@ -183,25 +183,25 @@ func _pintar_filas() -> void:
 func _contenido_tooltip(c: DatosColono) -> Dictionary:
 	var datos := EstadoJuego.datos_balance
 	var lineas := PackedStringArray([
-		"Rol: %s" % Enums.NOMBRE_ROL[c.rol],
-		"Estado: %s" % Enums.NOMBRE_ESTADO_COLONO[c.estado],
+		Idioma.t("Rol: %s") % Idioma.t(Enums.NOMBRE_ROL[c.rol]),
+		Idioma.t("Estado: %s") % Idioma.t(Enums.NOMBRE_ESTADO_COLONO[c.estado]),
 	])
 	if not c.tarea.is_empty():
-		lineas.append("Tarea: %s (le faltan %s)" % [c.tarea["titulo"], UI.soles(c.soles_restantes)])
+		lineas.append(Idioma.t("Tarea: %s (le faltan %s)") % [Idioma.t(c.tarea["titulo"]), UI.soles(c.soles_restantes)])
 	var lugar: String = filas[c]["lugar"].text if filas.has(c) else ""
 	if lugar != "":
-		lineas.append("Está en: %s" % lugar)
-	lineas.append("Radiación: %s de %d. A los %d enferma." % [UI.num(c.radiacion), int(datos.radiacion_max), int(datos.radiacion_enfermedad)])
+		lineas.append(Idioma.t("Está en: %s") % lugar)
+	lineas.append(Idioma.t("Radiación: %s de %d. A los %d enferma.") % [UI.num(c.radiacion), int(datos.radiacion_max), int(datos.radiacion_enfermedad)])
 	if c.estado == Enums.EstadoColono.ENFERMO:
-		lineas.append("Se recupera en %s si no le faltan oxígeno, agua ni comida." % UI.soles(c.soles_enfermo))
-	return { "titulo": c.nombre, "texto": "\n".join(lineas), "pie": "Clic: señalarlo en el mapa" }
+		lineas.append(Idioma.t("Se recupera en %s si no le faltan oxígeno, agua ni comida.") % UI.soles(c.soles_enfermo))
+	return { "titulo": c.nombre, "texto": "\n".join(lineas), "pie": Idioma.t("Clic: señalarlo en el mapa") }
 
 
 func _actualizar_lugares() -> void:
 	for c: DatosColono in filas:
 		var modulo := mapa.modulo_de(c)
 		var datos: DatosModulo = modulo.datos if modulo != null else null
-		filas[c]["lugar"].text = datos.nombre if datos != null else "Exterior"
+		filas[c]["lugar"].text = datos.nombre if datos != null else Idioma.t("Exterior")
 		if filas[c]["modulo"] != datos:
 			filas[c]["modulo"] = datos
 			filas[c]["icono"].queue_redraw()

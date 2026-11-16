@@ -26,7 +26,7 @@ const ALTO_ENCABEZADO := 24
 ## Mayúsculas sin tildes: la fuente pixel no trae las vocales acentuadas en
 ## mayúscula (y el diseño las escribe así: "OXIGENO", "INGENIERIA").
 static func mayus(texto: String) -> String:
-	var t := texto.to_upper()
+	var t := Idioma.t(texto).to_upper()
 	for par: Array in [["Á", "A"], ["É", "E"], ["Í", "I"], ["Ó", "O"], ["Ú", "U"], ["Ü", "U"]]:
 		t = t.replace(par[0], par[1])
 	return t
@@ -249,12 +249,12 @@ static func vacio(texto: String) -> Control:
 static func estado_colono(c: DatosColono) -> Array:
 	match c.estado:
 		Enums.EstadoColono.DISPONIBLE:
-			return [VERDE, "LIBRE"]
+			return [VERDE, Idioma.t("LIBRE")]
 		Enums.EstadoColono.EN_MISION:
-			return [UI.ACENTO, "EN MISION"]
+			return [UI.ACENTO, Idioma.t("EN MISION")]
 		Enums.EstadoColono.EN_VIAJE:
-			return [UI.ADVERTENCIA, "EN VIAJE"]
-	return [ROJO, mayus(Enums.NOMBRE_ESTADO_COLONO[c.estado])]
+			return [UI.ADVERTENCIA, Idioma.t("EN VIAJE")]
+	return [ROJO, mayus(Idioma.t(Enums.NOMBRE_ESTADO_COLONO[c.estado]))]
 
 
 ## Retrato cuadrado en pixel art sobre una placa gris; sin foto, el avatar redondo.
@@ -319,7 +319,7 @@ static func ficha_colono(c: DatosColono, accion: Control = null, seleccionado :=
 	ficha.add_theme_stylebox_override("panel", caja)
 	var radiacion_max := EstadoJuego.datos_balance.radiacion_max
 	var enfermedad := EstadoJuego.datos_balance.radiacion_enfermedad
-	ficha.tooltip_text = "Radiación: %s / %d (enferma a partir de %d)" % [UI.num(c.radiacion), int(radiacion_max), int(enfermedad)]
+	ficha.tooltip_text = Idioma.t("Radiación: %s / %d (enferma a partir de %d)") % [UI.num(c.radiacion), int(radiacion_max), int(enfermedad)]
 	var f := UI.fila(8)
 	f.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ficha.add_child(f)
@@ -339,7 +339,7 @@ static func ficha_colono(c: DatosColono, accion: Control = null, seleccionado :=
 	datos.add_child(cabecera)
 	var rol := UI.fila(6)
 	rol.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var etiqueta_rol := UI.etiqueta_pixel(mayus(Enums.NOMBRE_ROL[c.rol]), UI.T_DETALLE, NARANJA)
+	var etiqueta_rol := UI.etiqueta_pixel(mayus(Idioma.t(Enums.NOMBRE_ROL[c.rol])), UI.T_DETALLE, NARANJA)
 	etiqueta_rol.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	rol.add_child(UI.expandir(etiqueta_rol))
 	# La acción va junto al rol para que el nombre tenga todo el ancho.
@@ -353,13 +353,13 @@ static func ficha_colono(c: DatosColono, accion: Control = null, seleccionado :=
 			var total := maxf(float(c.tarea["soles"]), 1.0)
 			var mision := UI.fila(6)
 			mision.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			mision.add_child(UI.expandir(recortada("> " + mayus(c.tarea["titulo"]), UI.T_DETALLE)))
-			mision.add_child(UI.etiqueta_pixel("FALTA%s %s" % ["" if c.soles_restantes == 1 else "N",
+			mision.add_child(UI.expandir(recortada("> " + mayus(Idioma.t(c.tarea["titulo"])), UI.T_DETALLE)))
+			mision.add_child(UI.etiqueta_pixel(Idioma.t("FALTA %s" if c.soles_restantes == 1 else "FALTAN %s") % [
 				mayus(UI.soles(c.soles_restantes))], UI.T_DETALLE, UI.ACENTO))
 			datos.add_child(mision)
 			datos.add_child(barra(total - c.soles_restantes, total, UI.ACENTO, 3))
 		Enums.EstadoColono.EN_VIAJE:
-			datos.add_child(UI.etiqueta_pixel("LLEGA EN %s" % mayus(UI.soles(c.soles_restantes)),
+			datos.add_child(UI.etiqueta_pixel(Idioma.t("LLEGA EN %s") % mayus(UI.soles(c.soles_restantes)),
 				UI.T_DETALLE, UI.ADVERTENCIA))
 	if c.estado != Enums.EstadoColono.EN_VIAJE:
 		datos.add_child(fila_radiacion(c.radiacion))

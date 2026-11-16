@@ -53,7 +53,7 @@ func avanzar_tormenta() -> void:
 		tormenta_soles -= 1
 		if tormenta_soles == 0:
 			blindaje = 1.0
-			EstadoJuego.registrar(Enums.Categoria.EVENTO, "La tormenta solar ha terminado")
+			EstadoJuego.registrar(Enums.Categoria.EVENTO, Idioma.t("La tormenta solar ha terminado"))
 
 
 ## Se llama una vez por sol: true si toca un evento (queda en `evento` y el juego se pausa).
@@ -118,7 +118,7 @@ func resolver(indice: int) -> void:
 			blindaje = opcion.get("blindaje", 1.0)
 	if opcion.has("retraso_envios"):
 		EstadoJuego.tierra.retrasar(opcion["retraso_envios"])
-	EstadoJuego.registrar(Enums.Categoria.EVENTO, "%s: %s" % [evento["titulo"], opcion["texto"]])
+	EstadoJuego.registrar(Enums.Categoria.EVENTO, "%s: %s" % [Idioma.t(evento["titulo"]), Idioma.t(opcion["texto"])])
 	evento = {}
 	GestorTiempo.en_pausa = pausa_previa
 	EstadoJuego.estado_cambiado.emit()
